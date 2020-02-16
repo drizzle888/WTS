@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 随容器启动任务 需要实现ServletInitJobInter接口 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean id="startServerTasksId" class="com.farm.web.task.impl.TaskListImpl">
+		<property name="tasks">
+			<list>
+				<bean class="com.farm.web.init.InitParameter"></bean>
+				<bean class="com.farm.quartz.adapter.StartSysTask"></bean>
+				<bean class="com.farm.web.init.InitRmiInter"></bean>
+				<bean class="com.farm.web.init.BusinessHandlerInit"></bean>
+				<bean class="com.farm.web.init.InitStartInfo"></bean>
+			</list>
+		</property>
+	</bean>
+</beans>

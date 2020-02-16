@@ -1,0 +1,44 @@
+<?xml version="1.0"  encoding="utf-8" standalone="yes" ?>
+<conf>
+	<!-- 单点登陆-只能对接wcp -->
+	<group describe="单点登陆" name="sso">
+		<parameter name="config.sso.state">
+			<val>false</val>
+			<describe>是否启用单点登陆</describe>
+		</parameter>
+		<parameter name="config.sso.url">
+			<val>http://127.0.0.1:8080/wcp</val>
+			<describe>单点登系统的url，如：http://127.0.0.1:8080/wcp</describe>
+		</parameter>
+	</group>
+	<!-- restful接口 -->
+	<group describe="restful接口" name="restful">
+		<parameter name="config.restful.state">
+			<val>false</val>
+			<describe>是否启用restful接口</describe>
+		</parameter>
+		<parameter name="config.restful.debug">
+			<val>false</val>
+			<describe>是否启用接口调试模式</describe>
+		</parameter>
+		<parameter name="config.restful.secret.key">
+			<val>FB087A81D4DCA06C4910</val>
+			<describe>系统通用的接口密码</describe>
+		</parameter>
+	</group>
+	<!-- 对外RMI接口 -->
+	<group describe="对外RMI接口" name="rmi">
+		<parameter name="config.local.rmi.state">
+			<val>false</val>
+			<describe>是否启用rmi接口</describe>
+		</parameter>
+		<parameter name="config.local.rmi.port">
+			<val>8701</val>
+			<describe>对外RMI端口</describe>
+		</parameter>
+		<parameter name="config.local.rmi.secret.key">
+			<val>1D4DCA06C49105F7EDAFB087A</val>
+			<describe>对外RMI接口密码</describe>
+		</parameter>
+	</group>
+</conf>

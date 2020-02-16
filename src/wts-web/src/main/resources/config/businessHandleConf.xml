@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 系统中各种接口的服务类型配置 -->
+<servers>
+	<!-- 使用说明：1.增加配置文件，参考用户消息回调接口 。2.添加业务接口，如UserMessageHandleInter，3.制作业务接口的实现类，如SendMessageHandle。4.在具体业务中使用该类-->
+	<!-- 用户消息接口回调 -->
+	<server id="UserMessageHandleInterId">
+		<!-- 发送用户消息的接口实现,必须实现接口com.farm.core.inter.UserMessageHandleInter，所有用户消息也会发送到如下接口中 -->
+		<list inter="com.farm.core.inter.UserMessageHandleInter">
+			<!-- <bean class="com.farm.web.init.InitParameter" state="true"></bean> -->
+			<!-- state="true" 该handle可用，state="false" 该handle禁用-->
+			<bean class="com.farm.doc.handle.WcpMessageHandle"
+				state="true">
+				<tip>知识库站内消息</tip>
+			</bean>
+		</list>
+	</server>
+</servers>

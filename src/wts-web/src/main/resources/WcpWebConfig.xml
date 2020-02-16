@@ -1,0 +1,169 @@
+<?xml version="1.0"  encoding="utf-8" standalone="yes" ?>
+<conf>
+	<!-- 界面展示 -->
+	<group describe="文字标记/通用配置" name="webshow">
+		<parameter name="config.sys.title">
+			<val>WTS在线答题系统</val>
+			<describe>系统标题</describe>
+		</parameter>
+		<parameter name="config.sys.foot">
+			<val>WTS在线答题系统</val>
+			<describe>系统页面最下方显示</describe>
+		</parameter>
+	</group>
+	<group describe="首页显示" name="homepage">
+		<parameter name="config.sys.unreadmsg.show.num">
+			<val>5</val>
+			<describe>首页显示未读消息的数量</describe>
+		</parameter>
+	</group>
+	<group describe="知识" name="question">
+		<parameter name="config.kindeditor.media.able">
+			<val>false</val>
+			<describe>是否在文档知识超文本编辑器中启用mp4、mp3上传播放功能 (部分移动端浏览器和safari浏览器不支持)
+			</describe>
+		</parameter>
+	</group>
+	<group describe="用户权限，用户信息修改 " name="user">
+		<parameter name="config.useredit.showOrg">
+			<val>false</val>
+			<describe>前台编辑当前用户信息时，是否可以选择组织机构</describe>
+		</parameter>
+		<parameter name="config.useredit.showName">
+			<val>false</val>
+			<describe>前台编辑当前用户信息时，是否可以修改用户名</describe>
+		</parameter>
+	</group>
+	<group describe="登录,注册" name="regist/login">
+		<parameter name="config.sys.firstlogin.message">
+			<val>欢迎使用本系统，如果您的密码是系统自动生成的请及时重置密码!</val>
+			<describe>用户首次正常登录时的提示信息</describe>
+		</parameter>
+		<parameter name="config.sys.firstBind.message">
+			<val>欢迎使用本系统!</val>
+			<describe>用户首次通过外部账号绑定到系统登录后收到的提示信息</describe>
+		</parameter>
+		<parameter name="config.url.free.path.prefix">
+			<val>Pub</val>
+			<describe>是否允许用户不登录就访问知识页面，可选项：NONEPAGE(不允许访问)Pub(允许访问)</describe>
+		</parameter>
+		<parameter name="config.show.local.regist.able">
+			<val>true</val>
+			<describe>是否允许本地注册新用户</describe>
+		</parameter>
+		<parameter name="config.registed.audit">
+			<val>false</val>
+			<describe>用户前台注册后是否为待审核状态,true为需要审核,false直接为可用状态</describe>
+		</parameter>
+		<parameter name="config.sys.verifycode.able">
+			<val>true</val>
+			<describe>是否启用用户登录验证码</describe>
+		</parameter>
+		<parameter name="config.sys.verifycode.checknum">
+			<val>3</val>
+			<describe>用户免验证码登录失败次数，超过该数量就启用验证码，为0时总是启用验证码，外部免登绑定账户时直接启用验证码
+			</describe>
+		</parameter>
+		<parameter name="config.sys.perfect.userinfo.able">
+			<val>true</val>
+			<describe>用户登录后是否必须先完善个人信息,true时，如果用户没有完善个人信息直接跳到个人信息编辑页面(isCompleteUserInfo(LoginUser
+				currentUser)方法判断用户信息是否完善)
+			</describe>
+		</parameter>
+		<parameter name="config.regist.showOrg">
+			<val>false</val>
+			<describe>注册用户时是否要求选择组织机构</describe>
+		</parameter>
+	</group>
+	<group describe="密码" name="password">
+		<parameter name="config.default.password">
+			<val>111111</val>
+			<describe>用户创建时的默认密码</describe>
+		</parameter>
+		<parameter name="config.sys.enforce.password.update">
+			<val>false</val>
+			<describe>是否强制当前用户修改默认密码(true强制修改),在当前用户密码和默认密码一致时（没有修改过默认密码）。
+			</describe>
+		</parameter>
+		<parameter name="config.sys.password.update.regex">
+			<val>(.*)</val>
+			<describe>当前用户前台修改密码时,密码验证-正则表达式,如:密码规则为字母加数字至少
+				6位:^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$,如:密码不包含换行符:(.*)
+			</describe>
+		</parameter>
+		<parameter name="config.sys.password.update.tip">
+			<val>密码不能包含换行符</val>
+			<describe>当前用户前台修改密码时,密码验证-正则表达式验证失败提示信息</describe>
+		</parameter>
+	</group>
+	<!--文件上传 -->
+	<group describe="文件" name="document.properties">
+		<parameter name="config.doc.dir">
+			<val>D:\wcp3server\resource\file</val>
+			<describe>附件文件夹地址，
+				1.使用相对路径
+				[WEBROOT]表示部署路径的根目录比如：(WEBROOT/files=E:\server\wcp-tomcat-6.0.16\webapps\wcp\files)
+				2.或者使用绝对路径如：[D:\wcp3server\resource\file]
+			</describe>
+		</parameter>
+		<parameter name="config.doc.download.url">
+			<val>actionImg/Publoadfile.do?id=</val>
+		</parameter>
+		<parameter name="config.doc.photo.url">
+			<val>actionImg/Publoadphoto.do?id=</val>
+		</parameter>
+		<parameter name="config.doc.img.url">
+			<val>actionImg/Publoadimg.do?id=</val>
+		</parameter>
+		<!-- 附件 start -->
+		<parameter name="config.doc.upload.types">
+			<val>png,jpg,jpeg,zip,doc,docx,xls,xlsx,pdf,ppt,pptx,web,rar,txt,flv,mp3,mp4,dcr
+			</val>
+			<describe>上传文件允许的后缀名、文件类型</describe>
+		</parameter>
+		<parameter name="config.doc.media.upload.types">
+			<val>mp4,mp3</val>
+			<describe>上传多媒体允许的后缀名、文件类型</describe>
+		</parameter>
+		<parameter name="config.doc.upload.length.max">
+			<val>2147483648</val>
+			<describe>上传文件允许文件大小,单位是字节</describe>
+		</parameter>
+		<!--附件 end -->
+		<!--图片 start -->
+		<parameter name="config.doc.img.upload.types">
+			<val>png,jpg,jpeg,gif</val>
+			<describe>上传图片允许的后缀名、文件类型</describe>
+		</parameter>
+		<parameter name="config.doc.img.upload.length.max">
+			<val>10485760</val>
+			<describe>上传图片允许文件大小,单位是字节</describe>
+		</parameter>
+		<!--图片 end -->
+		<parameter name="config.doc.none.img.path">
+			<val>text/img/none.png</val>
+			<describe>如果图片文件不存在时，默认的图片</describe>
+		</parameter>
+		<parameter name="config.doc.noright.img.path">
+			<val>text/img/noRight.png</val>
+			<describe>如果无操作权限，默认的图片</describe>
+		</parameter>
+		<parameter name="config.doc.none.photo.path">
+			<val>text/img/photo.png</val>
+			<describe>如果头像文件不存在时，默认的图片</describe>
+		</parameter>
+		<parameter name="config.doc.downloadfile.safecode.valid">
+			<val>false</val>
+			<describe>在下载附件时是否验证安全码(防止在url中只填写附件id下载附件)，true验证安全码，false不验证安全码
+			</describe>
+		</parameter>
+		<parameter name="config.logic.remove.img.able">
+			<val>false</val>
+			<describe>是否允许删除图片附件</describe>
+		</parameter>
+		<parameter name="config.limit.cut.png.length">
+			<val>50</val>
+			<describe>大小（单位KB）超过该设置的PNG图片将被裁切(其他格式不做限制)否则不做处理，裁切后失去透明背景</describe>
+		</parameter>
+	</group>
+</conf>

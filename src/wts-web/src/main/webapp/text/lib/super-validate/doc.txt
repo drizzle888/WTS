@@ -1,0 +1,49 @@
+超级验证组件，适合验证信息灵活和复杂的表单
+
+<form action="admin/FL0009.do" method="post" id="schoolsFormId">
+<tr>
+	<td class="queryleft">
+		过敏史:
+	</td>
+	<td>
+		<textarea name="entity.studentallergy" id="entitystudentallergy"
+			rows="2" style="width: 300px;">${entity.studentallergy }</textarea>
+	</td>
+</tr>						
+</form>
+//进行全体表单的验证
+if (!validate('schoolsFormId')) {
+	alert('信息录入有误，请检查！');
+} else {
+	$('#schoolsFormId').submit();
+}
+ 
+//绑定一个表单的验证事件
+validateInput('entitystudentname', function(id, val, obj) {
+// 学生姓名
+	if (valid_isNull(val)) {
+		return {
+			valid : false,
+			msg : '不能为空'
+		};
+	}
+	if (valid_maxLength(val, 12)) {
+		return {
+			valid : false,
+			msg : '长度不能大于' + 12
+		};
+	}
+	return {
+		valid : true,
+		msg : '正确'
+	};
+});
+//加载select的值,并去掉表单标签
+$('select', '#schoolsInfoId').each(function(i, obj) {
+		var val = $(obj).attr('val');
+		var text = $(obj).attr('vat');
+		$(obj).val(val);
+		var checkText = $(obj).find("option:selected").text();
+		$(obj).parent().append(checkText);
+		$(obj).remove();
+	});

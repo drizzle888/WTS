@@ -1,0 +1,7 @@
+1.解决chrome中图片回显的问题（iframe中为html添加base标签）：<head><meta charset="utf-8" /><title></title>改为<head><meta charset="utf-8" /><title></title><base href="'+basePath+'" />
+2.2018年3月15日升级到4.1.12版本
+3.修改代码高亮功能，在kindeditor-all-min.js中修改（pre标签）（更新高亮类型选择时的select类型值）
+4（20191001）.解决滚动条错位的问题d=e.top+f.y改为d=(parseInt(e.top)<0?0:e.top)+f.y
+5（20191001）.在修改格式和添加内容后，页面不要滚动，{var o=K(b.endContainer).pos();i.scrollTo(o.x,o.y)}这句删除了i.scrollTo(o.x,o.y)
+6 上传音视频，编辑器中样式调整     img.ke-media 代码后增加  background-color:#000000; 背景图片
+7 上传音视频组件默认高度修改     修改class="ke-input-text ke-input-number" name="height" value="400" maxlength="4"中修改value=300

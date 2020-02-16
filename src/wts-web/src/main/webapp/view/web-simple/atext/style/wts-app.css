@@ -1,0 +1,90 @@
+@charset "utf-8";
+
+.wts-hometype-box {
+	padding: 1px;
+	background: #ffffff;
+	border-bottom: 1px solid #ccc;
+}
+
+.wts-hometype-ul {
+	color: rgb(153, 153, 153);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 24px;
+	margin-bottom: -1px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 30px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	text-align: center;
+	background-color: #ffffff;
+	height: 40px;
+}
+
+.wts-hometype-ul li {
+	box-sizing: border-box;
+	display: inline-block;
+	line-height: 16px;
+	list-style-type: none;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 10px;
+	padding-bottom: 13px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 0px;
+	position: relative;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+.wts-hometype-ul li:HOVER {
+	color: #000000;
+}
+
+.wts-hometype-active {
+	color: #000000;
+	border-bottom: 2px solid #000000;
+}
+
+.wts-subjects {
+	margin: 4px;
+	margin-top: 20px;
+	padding-left: 0px;
+}
+
+.wts-subjects li {
+	display: none;
+}
+
+.wts-subjects .active {
+	display: inline;
+}
+
+.wts-subjects .side_unit_info {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wts-select-unit {
+	margin-left: 20px;
+	cursor: pointer;
+}
+/*选择题选项，被选中的状态*/
+.wts-select-unit.selected {
+	color: #d13133;
+	font-weight: 700;
+}
+.wts-select-unit:HOVER {
+	color: #d13133;
+}
+
+.wts-red {
+	color: #d13133;
+}

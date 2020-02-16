@@ -1,0 +1,24 @@
+<tag name="embed" action="validate">
+			<attribute name="src">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="type">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="width"/>
+			<attribute name="height"/>
+			<attribute name="autostart">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+			<attribute name="loop">
+				<regexp-list>
+					<regexp name="anything" />
+				</regexp-list>
+			</attribute>
+		</tag>

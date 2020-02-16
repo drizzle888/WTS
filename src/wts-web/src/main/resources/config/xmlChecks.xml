@@ -1,0 +1,44 @@
+<?xml version="1.0"  encoding="utf-8" standalone="yes" ?>
+<conf>
+	<!-- 系统启动时会检查下列参数是否在xml配置文件中配置，用于校验配置文件 -->
+	<parameter versions='0.0.1'>config.restful.state</parameter>
+	<parameter versions='0.0.1'>config.restful.debug</parameter>
+	<parameter versions='0.0.1'>config.restful.secret.key</parameter>
+	<parameter versions='0.0.1'>config.local.rmi.state</parameter>
+	<parameter versions='0.0.1'>config.local.rmi.port</parameter>
+	<parameter versions='0.0.1'>config.local.rmi.secret.key</parameter>
+	<parameter versions='0.0.1'>config.sys.title</parameter>
+	<parameter versions='0.0.1'>config.sys.foot</parameter>
+	<parameter versions='0.0.1'>config.sys.unreadmsg.show.num</parameter>
+	<parameter versions='0.0.1'>config.kindeditor.media.able</parameter>
+	<parameter versions='0.0.1'>config.useredit.showOrg</parameter>
+	<parameter versions='0.0.1'>config.useredit.showName</parameter>
+	<parameter versions='0.0.1'>config.sys.firstlogin.message</parameter>
+	<parameter versions='0.0.1'>config.sys.firstBind.message</parameter>
+	<parameter versions='0.0.1'>config.url.free.path.prefix</parameter>
+	<parameter versions='0.0.1'>config.show.local.regist.able</parameter>
+	<parameter versions='0.0.1'>config.registed.audit</parameter>
+	<parameter versions='0.0.1'>config.sys.verifycode.able</parameter>
+	<parameter versions='0.0.1'>config.sys.verifycode.checknum</parameter>
+	<parameter versions='0.0.1'>config.sys.perfect.userinfo.able</parameter>
+	<parameter versions='0.0.1'>config.regist.showOrg</parameter>
+	<parameter versions='0.0.1'>config.default.password</parameter>
+	<parameter versions='0.0.1'>config.sys.enforce.password.update</parameter>
+	<parameter versions='0.0.1'>config.sys.password.update.regex</parameter>
+	<parameter versions='0.0.1'>config.sys.password.update.tip</parameter>
+	<parameter versions='0.0.1'>config.doc.dir</parameter>
+	<parameter versions='0.0.1'>config.doc.download.url</parameter>
+	<parameter versions='0.0.1'>config.doc.photo.url</parameter>
+	<parameter versions='0.0.1'>config.doc.img.url</parameter>
+	<parameter versions='0.0.1'>config.doc.upload.types</parameter>
+	<parameter versions='0.0.1'>config.doc.media.upload.types</parameter>
+	<parameter versions='0.0.1'>config.doc.upload.length.max</parameter>
+	<parameter versions='0.0.1'>config.doc.img.upload.types</parameter>
+	<parameter versions='0.0.1'>config.doc.img.upload.length.max</parameter>
+	<parameter versions='0.0.1'>config.doc.none.img.path</parameter>
+	<parameter versions='0.0.1'>config.doc.noright.img.path</parameter>
+	<parameter versions='0.0.1'>config.doc.none.photo.path</parameter>
+	<parameter versions='0.0.1'>config.doc.downloadfile.safecode.valid</parameter>
+	<parameter versions='0.0.1'>config.logic.remove.img.able</parameter>
+	<parameter versions='0.0.1'>config.limit.cut.png.length</parameter>
+</conf>

@@ -1,0 +1,723 @@
+.icon-blank {
+	background: url('icons/blank.gif') no-repeat center center;
+}
+
+.icon-add {
+	background: url('icons/edit_add.png') no-repeat center center;
+}
+
+.icon-edit {
+	background: url('icons/pencil.png') no-repeat center center;
+}
+
+.icon-remove {
+	background: url('icons/edit_remove.png') no-repeat center center;
+}
+
+.icon-save {
+	background: url('icons/filesave.png') no-repeat center center;
+}
+
+.icon-cut {
+	background: url('icons/cut.png') no-repeat center center;
+}
+
+.icon-ok {
+	background: url('icons/ok.png') no-repeat center center;
+}
+
+.icon-no {
+	background: url('icons/no.png') no-repeat center center;
+}
+
+.icon-cancel {
+	background: url('icons/cancel.png') no-repeat center center;
+}
+.icon-close-current {
+	background: url('icons/close-current.png') no-repeat center center;
+}
+.icon-close-others {
+	background: url('icons/close-others.png') no-repeat center center;
+}
+.icon-close-all {
+	background: url('icons/close-all.png') no-repeat center center;
+}
+
+.icon-reload {
+	background: url('icons/reload.png') no-repeat center center;
+}
+
+.icon-search {
+	background: url('icons/search.png') no-repeat center center;
+}
+
+.icon-print {
+	background: url('icons/print.png') no-repeat center center;
+}
+
+.icon-help {
+	background: url('icons/help.png') no-repeat center center;
+}
+
+.icon-undo {
+	background: url('icons/undo.png') no-repeat center center;
+}
+
+.icon-redo {
+	background: url('icons/redo.png') no-repeat center center;
+}
+
+.icon-back {
+	background: url('icons/back.png') no-repeat center center;
+}
+
+.icon-sum {
+	background: url('icons/sum.png') no-repeat center center;
+}
+
+.icon-tip {
+	background: url('icons/tip.png') no-repeat center center;
+}
+
+.icon-mini-add {
+	background: url('icons/mini_add.png') no-repeat center center;
+}
+
+.icon-mini-edit {
+	background: url('icons/mini_edit.png') no-repeat center center;
+}
+
+.icon-mini-refresh {
+	background: url('icons/mini_refresh.png') no-repeat center center;
+}
+
+/** Ӧ�ã��Ӵ˴����£�  **/
+.icon-address-book-open {
+	background: url('icons/address-book-open.png') no-repeat center center;
+}
+
+.icon-address-book {
+	background: url('icons/address-book.png') no-repeat center center;
+}
+
+.icon-address {
+	background: url('icons/address.png') no-repeat center center;
+}
+
+.icon-administrative-docs {
+	background: url('icons/administrative-docs.png') no-repeat center center
+		;
+}
+
+.icon-advertising {
+	background: url('icons/advertising.png') no-repeat center center;
+}
+
+.icon-application_osx_terminal {
+	background: url('icons/application_osx_terminal.png') no-repeat center
+		center;
+}
+
+.icon-archives {
+	background: url('icons/archives.png') no-repeat center center;
+}
+
+.icon-arrow_refresh {
+	background: url('icons/arrow_refresh.png') no-repeat center center;
+}
+
+.icon-arrow_rotate_clockwise {
+	background: url('icons/arrow_rotate_clockwise.png') no-repeat center
+		center;
+}
+
+.icon-attibutes {
+	background: url('icons/attibutes.png') no-repeat center center;
+}
+
+.icon-bank {
+	background: url('icons/bank.png') no-repeat center center;
+}
+
+.icon-basket {
+	background: url('icons/basket.png') no-repeat center center;
+}
+
+.icon-bell {
+	background: url('icons/bell.png') no-repeat center center;
+}
+
+.icon-bestseller {
+	background: url('icons/bestseller.png') no-repeat center center;
+}
+
+.icon-billing {
+	background: url('icons/billing.png') no-repeat center center;
+}
+
+.icon-blog--arrow {
+	background: url('icons/blog--arrow.png') no-repeat center center;
+}
+
+.icon-blog {
+	background: url('icons/blog.png') no-repeat center center;
+}
+
+.icon-blogs {
+	background: url('icons/blogs.png') no-repeat center center;
+}
+
+.icon-bookmark {
+	background: url('icons/bookmark.png') no-repeat center center;
+}
+
+.icon-books-brown {
+	background: url('icons/books-brown.png') no-repeat center center;
+}
+
+.icon-brainstorming {
+	background: url('icons/brainstorming.png') no-repeat center center;
+}
+
+.icon-business-contact {
+	background: url('icons/business-contact.png') no-repeat center center;
+}
+
+.icon-busy {
+	background: url('icons/busy.png') no-repeat center center;
+}
+
+.icon-calendar {
+	background: url('icons/calendar.png') no-repeat center center;
+}
+
+.icon-cash_register_2 {
+	background: url('icons/cash_register_2.png') no-repeat center center;
+}
+
+.icon-category {
+	background: url('icons/category.png') no-repeat center center;
+}
+
+.icon-cd_burn {
+	background: url('icons/cd_burn.png') no-repeat center center;
+}
+
+.icon-check {
+	background: url('icons/check.png') no-repeat center center;
+}
+
+.icon-client_account_template {
+	background: url('icons/client_account_template.png') no-repeat center
+		center;
+}
+
+.icon-collaboration {
+	background: url('icons/collaboration.png') no-repeat center center;
+}
+
+.icon-comment {
+	background: url('icons/comment.png') no-repeat center center;
+}
+
+.icon-communication {
+	background: url('icons/communication.png') no-repeat center center;
+}
+
+.icon-computer {
+	background: url('icons/computer.png') no-repeat center center;
+}
+
+.icon-config {
+	background: url('icons/config.png') no-repeat center center;
+}
+
+.icon-consulting {
+	background: url('icons/consulting.png') no-repeat center center;
+}
+
+.icon-contact {
+	background: url('icons/contact.png') no-repeat center center;
+}
+
+.icon-cost {
+	background: url('icons/cost.png') no-repeat center center;
+}
+
+.icon-credit-card {
+	background: url('icons/credit-card.png') no-repeat center center;
+}
+
+.icon-credit {
+	background: url('icons/credit.png') no-repeat center center;
+}
+
+.icon-current-work {
+	background: url('icons/current-work.png') no-repeat center center;
+}
+
+.icon-customers {
+	background: url('icons/customers.png') no-repeat center center;
+}
+
+.icon-cv {
+	background: url('icons/cv.png') no-repeat center center;
+}
+
+.icon-database {
+	background: url('icons/database.png') no-repeat center center;
+}
+
+.icon-database_gear {
+	background: url('icons/database_gear.png') no-repeat center center;
+}
+
+.icon-date {
+	background: url('icons/date.png') no-repeat center center;
+}
+
+.icon-date_magnify {
+	background: url('icons/date_magnify.png') no-repeat center center;
+}
+
+.icon-delicious {
+	background: url('icons/delicious.png') no-repeat center center;
+}
+
+.icon-document-library {
+	background: url('icons/document-library.png') no-repeat center center;
+}
+
+.icon-documents_email {
+	background: url('icons/documents_email.png') no-repeat center center;
+}
+
+.icon-donate {
+	background: url('icons/donate.png') no-repeat center center;
+}
+
+.icon-drawings {
+	background: url('icons/drawings.png') no-repeat center center;
+}
+
+.icon-email {
+	background: url('icons/email.png') no-repeat center center;
+}
+
+.icon-error {
+	background: url('icons/error.png') no-repeat center center;
+}
+
+.icon-error_delete {
+	background: url('icons/error_delete.png') no-repeat center center;
+}
+
+.icon-exclamation-button {
+	background: url('icons/exclamation-button.png') no-repeat center center;
+}
+
+.icon-exclamation-diamond-frame {
+	background: url('icons/exclamation-diamond-frame.png') no-repeat center
+		center;
+}
+
+.icon-exclamation-octagon-frame {
+	background: url('icons/exclamation-octagon-frame.png') no-repeat center
+		center;
+}
+
+.icon-exclamation-red-frame {
+	background: url('icons/exclamation-red-frame.png') no-repeat center
+		center;
+}
+
+.icon-exclamation-shield-frame {
+	background: url('icons/exclamation-shield-frame.png') no-repeat center
+		center;
+}
+
+.icon-exclamation-white {
+	background: url('icons/exclamation-white.png') no-repeat center center;
+}
+
+.icon-exclamation {
+	background: url('icons/exclamation.png') no-repeat center center;
+}
+
+.icon-eye {
+	background: url('icons/eye.png') no-repeat center center;
+}
+
+.icon-featured {
+	background: url('icons/featured.png') no-repeat center center;
+}
+
+.icon-feed {
+	background: url('icons/feed.png') no-repeat center center;
+}
+
+.icon-finished-work {
+	background: url('icons/finished-work.png') no-repeat center center;
+}
+
+.icon-fire--exclamation {
+	background: url('icons/fire--exclamation.png') no-repeat center center;
+}
+
+.icon-fire-big {
+	background: url('icons/fire-big.png') no-repeat center center;
+}
+
+.icon-flag {
+	background: url('icons/flag.png') no-repeat center center;
+}
+
+.icon-folder {
+	background: url('icons/folder.png') no-repeat center center;
+}
+
+.icon-free-for-job {
+	background: url('icons/free-for-job.png') no-repeat center center;
+}
+
+.icon-freelance {
+	background: url('icons/freelance.png') no-repeat center center;
+}
+
+.icon-full-time {
+	background: url('icons/full-time.png') no-repeat center center;
+}
+
+.icon-future-projects {
+	background: url('icons/future-projects.png') no-repeat center center;
+}
+
+.icon-graphic-design {
+	background: url('icons/graphic-design.png') no-repeat center center;
+}
+
+.icon-group_green_edit {
+	background: url('icons/group_green_edit.png') no-repeat center center;
+}
+
+.icon-group_green_new {
+	background: url('icons/group_green_new.png') no-repeat center center;
+}
+
+.icon-heart {
+	background: url('icons/heart.png') no-repeat center center;
+}
+
+.icon-hire-me {
+	background: url('icons/hire-me.png') no-repeat center center;
+}
+
+.icon-home {
+	background: url('icons/home.png') no-repeat center center;
+}
+
+.icon-illustration {
+	background: url('icons/illustration.png') no-repeat center center;
+}
+
+.icon-invoice {
+	background: url('icons/invoice.png') no-repeat center center;
+}
+
+.icon-issue {
+	background: url('icons/issue.png') no-repeat center center;
+}
+
+.icon-library {
+	background: url('icons/library.png') no-repeat center center;
+}
+
+.icon-lightbulb {
+	background: url('icons/lightbulb.png') no-repeat center center;
+}
+
+.icon-limited-edition {
+	background: url('icons/limited-edition.png') no-repeat center center;
+}
+
+.icon-link {
+	background: url('icons/link.png') no-repeat center center;
+}
+
+.icon-lock {
+	background: url('icons/lock.png') no-repeat center center;
+}
+
+.icon-login {
+	background: url('icons/login.png') no-repeat center center;
+}
+
+.icon-logout {
+	background: url('icons/logout.png') no-repeat center center;
+}
+
+.icon-map {
+	background: url('icons/map.png') no-repeat center center;
+}
+
+.icon-map2 {
+	background: url('icons/map2.png') no-repeat center center;
+}
+
+.icon-milestone {
+	background: url('icons/milestone.png') no-repeat center center;
+}
+
+.icon-move_to_folder {
+	background: url('icons/move_to_folder.png') no-repeat center center;
+}
+
+.icon-my-account {
+	background: url('icons/my-account.png') no-repeat center center;
+}
+
+.icon-networking {
+	background: url('icons/networking.png') no-repeat center center;
+}
+
+.icon-old-versions {
+	background: url('icons/old-versions.png') no-repeat center center;
+}
+
+.icon-order-1 {
+	background: url('icons/order-1.png') no-repeat center center;
+}
+
+.icon-order {
+	background: url('icons/order.png') no-repeat center center;
+}
+
+.icon-page_paintbrush {
+	background: url('icons/page_paintbrush.png') no-repeat center center;
+}
+
+.icon-page_paste {
+	background: url('icons/page_paste.png') no-repeat center center;
+}
+
+.icon-payment-card {
+	background: url('icons/payment-card.png') no-repeat center center;
+}
+
+.icon-paypal {
+	background: url('icons/paypal.png') no-repeat center center;
+}
+
+.icon-pen {
+	background: url('icons/pen.png') no-repeat center center;
+}
+
+.icon-pencil {
+	background: url('icons/pencil.png') no-repeat center center;
+}
+
+.icon-phone {
+	background: url('icons/phone.png') no-repeat center center;
+}
+
+.icon-photography {
+	background: url('icons/photography.png') no-repeat center center;
+}
+
+.icon-plus {
+	background: url('icons/plus.png') no-repeat center center;
+}
+
+.icon-premium {
+	background: url('icons/premium.png') no-repeat center center;
+}
+
+.icon-print {
+	background: url('icons/print.png') no-repeat center center;
+}
+
+.icon-process {
+	background: url('icons/process.png') no-repeat center center;
+}
+
+.icon-product-1 {
+	background: url('icons/product-1.png') no-repeat center center;
+}
+
+.icon-product-design {
+	background: url('icons/product-design.png') no-repeat center center;
+}
+
+.icon-product {
+	background: url('icons/product.png') no-repeat center center;
+}
+
+.icon-project {
+	background: url('icons/project.png') no-repeat center center;
+}
+
+.icon-publish {
+	background: url('icons/publish.png') no-repeat center center;
+}
+
+.icon-refresh {
+	background: url('icons/refresh.png') no-repeat center center;
+}
+
+.icon-report {
+	background: url('icons/report.png') no-repeat center center;
+}
+
+.icon-report_edit {
+	background: url('icons/report_edit.png') no-repeat center center;
+}
+
+.icon-search {
+	background: url('icons/search.png') no-repeat center center;
+}
+
+.icon-settings {
+	background: url('icons/settings.png') no-repeat center center;
+}
+
+.icon-shipping {
+	background: url('icons/shipping.png') no-repeat center center;
+}
+
+.icon-showreel {
+	background: url('icons/showreel.png') no-repeat center center;
+}
+
+.icon-sign-in {
+	background: url('icons/sign-in.png') no-repeat center center;
+}
+
+.icon-sign-out {
+	background: url('icons/sign-out.png') no-repeat center center;
+}
+
+.icon-sign-up {
+	background: url('icons/sign-up.png') no-repeat center center;
+}
+
+.icon-sitemap-application {
+	background: url('icons/sitemap-application.png') no-repeat center center
+		;
+}
+
+.icon-sitemap {
+	background: url('icons/sitemap.png') no-repeat center center;
+}
+
+.icon-sound {
+	background: url('icons/sound.png') no-repeat center center;
+}
+
+.icon-sound_low {
+	background: url('icons/sound_low.png') no-repeat center center;
+}
+
+.icon-special-offer {
+	background: url('icons/special-offer.png') no-repeat center center;
+}
+
+.icon-sprocket_dark {
+	background: url('icons/sprocket_dark.png') no-repeat center center;
+}
+
+.icon-star {
+	background: url('icons/star.png') no-repeat center center;
+}
+
+.icon-statistics {
+	background: url('icons/statistics.png') no-repeat center center;
+}
+
+.icon-suppliers {
+	background: url('icons/suppliers.png') no-repeat center center;
+}
+
+.icon-tag {
+	background: url('icons/tag.png') no-repeat center center;
+}
+
+.icon-ticket {
+	background: url('icons/ticket.png') no-repeat center center;
+}
+
+.icon-twitter {
+	background: url('icons/twitter.png') no-repeat center center;
+}
+
+.icon-upcoming-work {
+	background: url('icons/upcoming-work.png') no-repeat center center;
+}
+
+.icon-user {
+	background: url('icons/user.png') no-repeat center center;
+}
+
+.icon-user_gray {
+	background: url('icons/user_gray.png') no-repeat center center;
+}
+
+.icon-user_green {
+	background: url('icons/user_green.png') no-repeat center center;
+}
+
+.icon-user_medical {
+	background: url('icons/user_medical.png') no-repeat center center;
+}
+
+.icon-user_nude {
+	background: url('icons/user_nude.png') no-repeat center center;
+}
+
+.icon-user_orange {
+	background: url('icons/user_orange.png') no-repeat center center;
+}
+
+.icon-user_police_england {
+	background: url('icons/user_police_england.png') no-repeat center center
+		;
+}
+
+.icon-user_soldier {
+	background: url('icons/user_soldier.png') no-repeat center center;
+}
+
+.icon-world {
+	background: url('icons/world.png') no-repeat center center;
+}
+
+.icon-zoom {
+	background: url('icons/zoom.png') no-repeat center center;
+}
+
+.icon-control-pause {
+	background: url('icons/0300/control_pause.png') no-repeat center center;
+}
+.icon-control-play {
+	background: url('icons/0300/control_play.png') no-repeat center center;
+}
+.icon-control-repeat {
+	background: url('icons/0300/control_repeat.png') no-repeat center center;
+}
+.icon-control-rewind {
+	background: url('icons/0300/control_rewind.png') no-repeat center center;
+}
+.icon-control-start {
+	background: url('icons/0300/control_start.png') no-repeat center center;
+}
+.icon-control-stop {
+	background: url('icons/0300/control_stop.png') no-repeat center center;
+}
+.icon-state {
+	background: url('icons/state.png') no-repeat center center;
+}
+.icon-time {
+	background: url('icons/time.png') no-repeat center center;
+}
+.icon-device {
+	background: url('icons/device.png') no-repeat center center;
+}

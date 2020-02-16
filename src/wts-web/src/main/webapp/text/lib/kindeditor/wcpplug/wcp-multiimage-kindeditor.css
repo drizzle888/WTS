@@ -1,0 +1,38 @@
+.uploadedFileUnit img {
+	width: 64px;
+	height: 64px;
+}
+
+.uploadedFileUnit .file-title {
+	font-size: 12px;
+}
+
+.uploadedFileUnit {
+	margin: 4px;
+	height: 74px; 
+	padding: 4px;
+	border: 1px dashed #999999;
+	background-color: #f7f7f7;
+}
+
+.uploadedFileUnit table {
+	width: 100%;
+}
+
+.uploadedFileUnit .img-tr {
+	width: 68px;
+	text-align: center;
+}
+
+.uploadedFileUnit .file-del {
+	float: right;
+	font-size: 12px;
+	color: #31b0d5;
+	cursor: pointer;
+}
+
+.uploadedFileUnit .file-del:HOVER {
+	float: right;
+	font-size: 12px;
+	color: #5bc0de;
+}

@@ -1,0 +1,55 @@
+.ke-icon-wcpknow {
+        background-image: url(../themes/common/address-book.png);
+        width: 16px;
+        height: 16px;
+}
+.ke-icon-wcprelation {
+        background-image: url(../themes/common/relation.png);
+        width: 16px;
+        height: 16px;
+}
+.ke-icon-wcpfile {
+        background-image: url(../themes/common/mfile.png);
+        width: 16px;
+        height: 16px;
+}
+.ke-icon-wcpdraft {
+        background-image: url(../themes/common/cv.png);
+        width: 16px;
+        height: 16px;
+}
+.ke-icon-wcpimgs {
+        background-image: url(../themes/common/mimg.png);
+        width: 16px;
+        height: 16px;
+}
+.wcpknow_search_limit_box{
+	text-align: left;
+}
+.wcpknow_search_rbox_c{
+	width: 100%;
+	height: 500px; 
+	text-align: left;
+	padding: 4px;
+}
+.kindeditor_serch_table{
+	width: 100%;
+}
+.wcpMultiUploadButtonBox{
+	border: 1px dotted #ccc;
+	padding: 8px;
+	text-align: center;
+	background-color: #f2e9d2;
+}
+.wcp-relation-td1{
+	height: 330px; 
+	width: 350px; 
+}
+.wcp-relation-td2{
+	height: 330px; 
+	width: 350px; 
+}
+.wcp-relation-graph{
+	height: 310px; 
+	width: 350px;
+}

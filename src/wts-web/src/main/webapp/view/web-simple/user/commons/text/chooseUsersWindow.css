@@ -1,0 +1,67 @@
+
+<!--
+.modal-rows {
+	border-bottom: 1px solid #e5e5e5;
+	margin: 0px;
+	background-color: #f8f5ef;
+}
+
+.modal-col-right {
+	border-right: 1px solid #e5e5e5;
+}
+
+.modal-col-right .list-group-item {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.treeview span.indent {
+	margin-left: 3px;
+	margin-left: 3px;
+}
+
+.usernode-box {
+	padding: 8px;
+}
+.usernode-box img{
+	width: 52px;
+	height: 52px;
+}
+.usernode-box li {
+	float: left;
+	max-width: 52px;
+	overflow: hidden;
+	margin: 8px;
+	margin-left: 12px;
+	margin-right: 12px;
+	cursor: pointer;
+}
+
+.usernode-box li img {
+	max-width: 52px;
+}
+
+.usernode-box li p {
+	width: 52px;
+	font-size: 12px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.usernode-box li div {
+	text-align: center;
+	margin: auto;
+}
+
+.usernode-box li div:HOVER {
+	color: #428bca;
+}
+
+.chooseuser-tip {
+	text-align: center;
+	color: #888;
+}

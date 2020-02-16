@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<el-ignored>false</el-ignored>
+			<page-encoding>utf-8</page-encoding>
+		</jsp-property-group>
+	</jsp-config>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:/config/spring-*.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!--  编码配置  -->
+	<filter>
+		<filter-name>Filter_Encoding</filter-name>
+		<filter-class>com.farm.web.filter.FilterEncoding</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_Encoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--  编码配置  -->
+	<!--  日志信息  -->
+	<filter>
+		<filter-name>Filter_LOGINFO</filter-name>
+		<filter-class>com.farm.web.filter.FilterLogInfo</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_LOGINFO</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--  日志信息  -->
+	<!--  判断用户信息是否完善start，以及处理免登请求  -->
+	<filter>
+		<filter-name>Filter_USERINFO</filter-name>
+		<filter-class>com.farm.web.filter.FilterUserInfo</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_USERINFO</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+	<!--  判断用户信息是否完善end  -->
+	<!--  处理单点登陆Start  -->
+	<filter>
+		<filter-name>Filter_SSO</filter-name>
+		<filter-class>com.farm.web.filter.FilterSso</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_SSO</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Filter_SSO</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<!--  处理单点登陆end  -->
+	<!--  权限验证  -->
+	<filter>
+		<filter-name>Filter_VALIDATE</filter-name>
+		<filter-class>com.farm.web.filter.FilterValidate</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_VALIDATE</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--  权限验证  -->
+	<!--  xxl防远程js代码配置  -->
+	<filter>
+		<filter-name>Filter_Xss</filter-name>
+		<filter-class>com.farm.web.filter.FilterXss</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Filter_Xss</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--  xxl防远程js代码配置  -->
+	<servlet>
+		<servlet-name>spring</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:/config/spring-mvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>spring</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>SysInit</servlet-name>
+		<servlet-class>com.farm.web.task.SysInit</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>image/x-icon</mime-type>
+	</mime-mapping>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/view/web-simple/404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/view/web-simple/500.jsp</location>
+	</error-page>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

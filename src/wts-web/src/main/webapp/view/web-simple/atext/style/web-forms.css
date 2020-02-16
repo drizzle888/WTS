@@ -1,0 +1,34 @@
+@charset "utf-8";
+.taglistBox {
+	margin-top: -12px;
+	border: dotted 1px #ccc;
+	padding: 8px;
+	background-color: #fcfcf2;
+	padding: 8px;
+}
+
+.form-group .webfile-buttonplus .ke-button-common {
+	background-image: none;
+	background-color: transparent;
+	margin: 0px;
+	width: 100px;
+}
+
+.form-group .webfile-buttonplus .ke-button {
+	cursor: pointer;
+	color: #fff;
+	margin: 0px;
+}
+
+.form-group .ke-button {
+	cursor: pointer;
+	color: #fff;
+	margin: 0px;
+}
+
+.form-group .ke-button-common {
+	background-image: none;
+	background-color: transparent;
+	margin: 0px;
+	height: 26px;
+}

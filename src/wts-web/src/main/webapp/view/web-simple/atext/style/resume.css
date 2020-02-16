@@ -1,0 +1,41 @@
+.resum_unit {
+	font-size: 14px;
+}
+
+.resum_title {
+	width: 150px;
+	text-align: right;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: right;
+}
+
+.resum_a {
+	text-align: center;
+	float: right;
+	color: green;
+}
+
+.resum_button {
+	text-align: center;
+	float: right;
+	margin-left: 4px;
+}
+
+.phoneimg {
+	max-height: 400px;
+	max-width: 200px;
+}
+
+.webfile-buttonplus .ke-button-common {
+	background-image: none;
+	background-color: transparent;
+	margin: 0px;
+	width: 100px;
+}
+
+.webfile-buttonplus .ke-button {
+	cursor: pointer;
+	color: #fff;
+	margin: 0px;
+}

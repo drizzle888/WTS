@@ -1,0 +1,114 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #d3d7d7;
+	background-image: url('images/bgLogin.jpg');
+}
+
+html {
+	overflow-y: scroll;
+	font-size: 100%; 
+}
+
+body {
+	font-family: "Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB",STHeiti,"Microsoft YaHei";
+	font-size: 85%;
+	margin: 0;
+	padding: 0;
+	line-height: 1.5em;
+	color: #3f3f3f;
+}
+
+#loginPage {
+	margin: 100px auto 0 auto;
+	padding: 0 0 1em 0;
+	height: 100%;
+	width: 550px;
+	text-align: left;
+	background: #f6f8fa;
+	border: solid 1em #fff;
+}
+
+#pageContent {
+	margin: 40px 20px 0 150px;
+	padding: 0;
+}
+
+span.logo {
+	margin: 25px 0 0 0;
+	padding: 0;
+	float: left;
+	width: 135px;
+	text-align: center;
+}
+span.logo img {
+	margin: 8px;
+}
+.noCookiesEnabledMessage,.noJavaScriptEnabledMessage {
+	color: #ed2c10;
+	margin-top: 3em;
+	text-align: center;
+	font-size: 200%;
+}
+
+.bottomBorder {
+	border-bottom: 1px solid #babec1;
+}
+
+.form-horizontal .form-group {
+	margin-bottom: 12px; *
+	zoom: 1;
+}
+
+h1,h2,h3 {
+	line-height: 50px;
+	font-weight: normal;
+}
+
+#loginform .form-group .control-label {
+	font-size: 120%;
+	margin-right: 10px;
+}
+
+.form-horizontal .controls {
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+.form-horizontal .controls:first-child { *
+	padding-left: 0px;
+}
+
+#loginPage p#loginDescription {
+	margin-top: 10px;
+	font-size: 110%;
+}
+
+.errorMsg {
+	color: #FF0000;
+	margin: 1.5em 0 0;
+	padding-top: .2em;
+	display: none;
+	font-weight: normal;
+	border-top: 1px solid #babec1;
+}
+
+button {
+	font-family: "Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB",STHeiti,"Microsoft YaHei";
+}
+
+h1 {
+	font-size: 36px;
+}
+
+.login_bg1{ background:url(../../../../img/bgLogin.jpg) top left no-repeat; width:100%; height:100%;}
+.login_box1{ background:url(../../../../img/login_box.png) top left no-repeat; width:360px; height:401px; margin:0 auto; margin-top:10%;}
+.login_head{text-align: center;margin-top: 50px;}
+.login_title1{ font-size:22px; font-family:"Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB",STHeiti,"Microsoft YaHei"; text-align:center; margin-top:20px; margin-bottom:20px; color:#1c6d9f;}
+.login_table1{ margin:20px 15px;}
+.login_table1 td{ height:62px;}
+.login_ipt1{ width:325px; height:50px; background:#fff; border-radius:5px; border:none; font-family:"΢���ź�"; font-size:16px; padding:0 15px; color:#555;}
+.login_but1{ background:#1c6d9f;cursor:pointer; width:325px; height:50px; border-radius:5px; border:none; font-size:24px; color:#fff; font-family:"΢���ź�"; text-align:center;}
+.login_but1:hover{ background:#1189d3; width:325px; height:50px; border-radius:5px; border:none; font-size:24px; color:#fff; font-family:"΢���ź�"; text-align:center;}
+
+

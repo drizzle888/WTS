@@ -1,0 +1,40 @@
+@charset "utf-8";
+.containerbox {
+	background: #f9f6f1;
+	background-repeat: no-repeat;
+}
+/**页眉**/
+.super_content {
+	margin-top: 50px;
+	text-align: center;
+	background-color: #fff;
+	padding: 8px;
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+/**页脚**/
+.super_contentfoot {
+	margin-top: 50px;
+	text-align: center;
+	background-color: #1e1e1e;
+	padding: 8px;
+	border-bottom: 1px solid #292929;
+	border-top: 1px solid #585858;
+}
+
+.foot {
+	text-align: center;
+	color: #FFFFFF;
+	background-color: #111111;
+	padding: 8px;
+}
+
+.stream-blank {
+	height: 15px;
+	border-bottom: 1px solid #eee;
+	background-color: #f6f6f6;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	color: #cecece;
+}

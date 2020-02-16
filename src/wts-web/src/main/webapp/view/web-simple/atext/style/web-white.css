@@ -1,0 +1,44 @@
+@charset "utf-8";
+.containerbox {
+	background: #e9eaec;
+	background-repeat: no-repeat;
+}
+/**页眉**/
+.super_content {
+	margin-top: 50px;
+	text-align: center;
+	color: #FFFFFF;
+	background-color: #4d4d4d;
+	padding: 8px;
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+.super_content a {
+	color: #cbcbcb;
+}
+/**页脚**/
+.super_contentfoot {
+	margin-top: 50px;
+	text-align: center;
+	background-color: #fff;
+	padding: 8px;
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+.foot {
+	text-align: center;
+	color: #FFFFFF;
+	background-color: #4d4d4d;
+	padding: 8px;
+}
+.stream-blank {
+	height: 15px;
+	border-bottom: 1px solid #eee;
+	background-color: #e9eaec;
+}
+.widget-box {
+	border: 1px solid #d3d3d3;
+}
+.doc-conentinfo a {
+	color: #999999;
+}
