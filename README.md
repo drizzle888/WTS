@@ -19,6 +19,7 @@
 - mysql
 
 #### 演示环境
+演示环境部署的版本为0.3.0（此时此刻在发布源码时，演示环境和开源代码版本是完全一致的）
 [点击访问WTS演示环境](https://demo.wcpdoc.com/wts)
 
 #### 代码安装说明
@@ -26,7 +27,12 @@
 2. 创建数据库，数据库脚本在 WTS/resource/db-sql目录下
 3. 修改数据库配置文件 WTS/src/wts-web/src/main/resources/jdbc.properties
 4. 修改附件存储地址 WTS/src/wts-web/src/main/resources/WcpWebConfig.xml (第102行)
+5. 项目编译后可直接部署于tomcat7，mysql5.x中运行，支持jdk7/jdk8，如要使用tomcat8及以上版本可能会有报错，请自行修正（所以建议第一次运行在tomcat7中）
 
+#### 注意事项
+1. 建议tomcat7，tomcat8或以上版本可能会有报错，根据错误信息自行百度和修改，并不复杂
+2. 目前因为数据库方言的使用，只支持mysql，如果要切换数据库系统会有一些工作量，mysql要配置为大小写不敏感（linux环境下特别注意myslq默认大小写敏感）
+3. 请使用utf8字符集
 
 #### wts知识库，安装包下载
 
