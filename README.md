@@ -22,10 +22,10 @@
 [点击访问WTS演示环境](https://demo.wcpdoc.com/wts)
 
 
-#### 安装教程
+#### wts知识库，安装包下载
 
 1.  [wts知识库访问地址](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6739306301678806130d48fe.html)
-
+2.  [wts知识库访问地址](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6739306301678806130d48fe.html)
 
 #### 使用说明
 
