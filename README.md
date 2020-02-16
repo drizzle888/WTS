@@ -25,11 +25,11 @@
 #### wts知识库，安装包下载
 
 1.  [wts知识库访问地址](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6739306301678806130d48fe.html)
-2.  [wts知识库访问地址](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6739306301678806130d48fe.html)
+2.  [wts安装包下载地址](http://www.wcpdoc.com/webdoc/view/Pub2c909b2b6fbdee960170338a8220471d.html)
 
 #### 使用说明
 
-1.  [用户手册下载地址](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6739306301678806130d48fe.html)
+1.  [用户手册下载地址](http://www.wcpdoc.com/webdoc/view/Pub2c909b2b6fbdee960170394c7fa1517a.html)
 
 #### 界面截图
 
