@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib
+    PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+    "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>tagSample</short-name>
+	<uri>/hellotag</uri>
+	<tag><!-- 用户菜单__根据用户权限控制标签内的内容是否展示 -->
+		<name>AuthForUser</name>
+		<tag-class>com.farm.web.tag.AuthorityForUser</tag-class>
+		<body-content>jsp</body-content>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 默认首页 -->
+		<name>defaultIndexPage</name>
+		<tag-class>com.farm.web.tag.DefaultIndexPageTaget</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag><!-- 如果用户是管理员则内容展示 -->
+		<name>UserIsAdmin</name>
+		<tag-class>com.farm.web.tag.UserIsAdmin</tag-class>
+		<body-content>jsp</body-content>
+		<attribute>
+			<name>userid</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 项目url路径 -->
+		<name>basePath</name>
+		<tag-class>com.farm.web.tag.BasePathTaget</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag><!-- url编码 -->
+		<name>urlEncode</name>
+		<tag-class>com.farm.web.tag.UrlEncode</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>val</name><!-- 字段索引名 -->
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 从数据字典检出一个option列表 -->
+		<name>OptionDictionary</name>
+		<tag-class>
+			com.farm.web.tag.DictionaryOptionTaget
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>isTextValue</name>
+			<!--
+				是否用名称做值 1是(<option value=text >text</option>) 0否 (<option value=type
+				>text</option>)
+			-->
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute>
+			<name>index</name><!-- 字段索引名 -->
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 迭代数据字典的枚举项，根据标签内容进行展示类似C:forEach -->
+		<name>DictionaryHandle</name>
+		<tag-class>com.farm.web.tag.DictionaryHandle</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>key</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag><!-- 格式化时间 -->
+		<name>FormatTime</name>
+		<tag-class>
+			com.farm.web.tag.TimeFormat
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>date</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute>
+			<name>yyyyMMddHHmmss</name><!-- 字段索引名 -->
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>false</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 获得参数 -->
+		<name>ParameterValue</name>
+		<tag-class>
+			com.farm.web.tag.ParameterTaget
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>key</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+		<tag><!--如果参数等于 -->
+		<name>IfParameterEquals</name>
+		<tag-class>
+			com.farm.web.tag.ParameterEqualsTaget
+		</tag-class>
+		<body-content>jsp</body-content>
+		<attribute>
+			<name>key</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute>
+			<name>val</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!--如果参数不等于 -->
+		<name>IfParameterNoEquals</name>
+		<tag-class>
+			com.farm.web.tag.ParameterNoEqualsTaget
+		</tag-class>
+		<body-content>jsp</body-content>
+		<attribute>
+			<name>key</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute>
+			<name>val</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 页面数据字典转义字符 -->
+		<name>runDictionaryByStr</name>
+		<tag-class>
+			com.farm.web.tag.RunDictionaryByStr
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute><!-- 待转义值 -->
+			<name>val</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute><!-- 转义规则字符串1:字符,2:字符 -->
+			<name>dicStr</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 页面数据字典转义KEY -->
+		<name>runDictionaryByKey</name>
+		<tag-class>
+			com.farm.web.tag.RunDictionaryByKey
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute><!-- 待转义值 -->
+			<name>val</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute><!-- 数据字典KEY -->
+			<name>key</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>false</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+	<tag><!-- 页面数据字典转义parameter常量key-->
+		<name>runDictionaryByConstantKey</name>
+		<tag-class>
+			com.farm.web.tag.RunDictionaryByConstantKey
+		</tag-class>
+		<body-content>empty</body-content>
+		<attribute><!-- 待转义值 -->
+			<name>val</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+		<attribute><!-- 数据字典KEY -->
+			<name>key</name>
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>false</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
+</taglib>
+
