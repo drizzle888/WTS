@@ -57,7 +57,6 @@
 ![题型展示](https://images.gitee.com/uploads/images/2020/0216/151033_e21c1913_24089.png "火狐截图_2020-02-16T07-09-55.943Z.png")
 
 #### 推荐软件
-> PLOGS是我们的自用软件，同时可下载免费供大家使用，通过完成日程任务和写日报的形式记录项目信息和资料，可以方便的查询项目过程信息弥补某些传统项目管理软件使用成本高和丢失项目细节的缺陷
+> PLOGS是我们的自用软件，同时可下载供大家使用，通过完成日程任务和写日报的形式记录项目信息和资料，可以方便的查询项目过程信息弥补某些传统项目管理软件使用成本高和丢失项目细节的缺陷
 1.  [WCP知识管理系统-开源版](https://gitee.com/macplus/WCP)
-2.  [WCP知识管理系统-免费版](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b65e0f2850165e0fabd2a0020.html)
-2.  [PLOGS项目日报管理系统-免费版](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6eb4fe9e016f9495d1fb5ad7.html)
+2.  [PLOGS项目日报管理系统](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6eb4fe9e016f9495d1fb5ad7.html)
