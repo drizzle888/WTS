@@ -23,7 +23,7 @@
 > 演示环境部署的版本为0.3.0 和开源代码0.3.0版本是完全一致的）
 
 #### 代码安装说明
-1. maven部署源码（**主模块：WTS/src/wts-web** ）
+1. maven部署源码（**主模块：WTS/src/wts-web** ）编译顺序：wts-core > wts-parameter > wts-report > wts-authority > wts-quartz > wts-doc > wts-exam > wts-tag > wts-web
 2. 创建数据库，数据库脚本在 WTS/resource/db-sql目录下
 3. 修改数据库配置文件 WTS/src/wts-web/src/main/resources/jdbc.properties
 4. 修改附件存储地址 WTS/src/wts-web/src/main/resources/WcpWebConfig.xml (第102行)
