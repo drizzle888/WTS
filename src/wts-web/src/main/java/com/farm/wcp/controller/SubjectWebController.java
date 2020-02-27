@@ -1,11 +1,8 @@
 package com.farm.wcp.controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,19 +18,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.page.ViewMode;
-import com.farm.doc.server.commons.DocMessageCache;
 import com.farm.parameter.FarmParameterService;
 import com.farm.wcp.util.SubjectTestUtils;
+import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
+import com.wts.exam.domain.Card;
 import com.wts.exam.domain.SubjectAnalysis;
 import com.wts.exam.domain.SubjectComment;
+import com.wts.exam.domain.SubjectUserOwn;
 import com.wts.exam.domain.ex.AnswerUnit;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.SubjectUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.MaterialServiceInter;
 import com.wts.exam.service.PaperServiceInter;
+import com.wts.exam.service.PaperUserOwnServiceInter;
 import com.wts.exam.service.CardServiceInter;
+import com.wts.exam.service.ExamStatServiceInter;
 import com.wts.exam.service.RoomServiceInter;
 import com.wts.exam.service.SubjectAnalysisServiceInter;
 import com.wts.exam.service.SubjectCommentServiceInter;
@@ -67,6 +68,11 @@ public class SubjectWebController extends WebUtils {
 	private SubjectUserOwnServiceInter subjectUserOwnServiceImpl;
 	@Resource
 	private SubjectCommentServiceInter SubjectCommentServiceImpl;
+	@Resource
+	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
+	@Resource
+	private ExamStatServiceInter examStatServiceImpl;
+
 	private static final Logger log = Logger.getLogger(SubjectWebController.class);
 
 	public static String getThemePath() {
@@ -89,9 +95,26 @@ public class SubjectWebController extends WebUtils {
 				PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
 				List<SubjectUnit> subjects = paperServiceImpl.getPaperSubjects(paper.getChapters());
 				testid = SubjectTestUtils.creatTest(subjects, paper.getInfo().getName(), session);
+				if (StringUtils.isNotBlank(paperid)) {
+					// 把paperid存入测试参数中
+					SubjectTestUtils.putAttribute(testid, "paperid", paperid, session);
+					// 测试计数
+					examStatServiceImpl.addStartTestNum(paperid, getCurrentUser(session));
+				}
 				index = 1;
 			}
 			test = SubjectTestUtils.getTest(index, testid, materialServiceImpl, session);
+			{// 处理答题记录
+				if (getCurrentUser(session) != null && test.get("paperid") != null && test.get("YESPEN") != null) {
+					// 记录用户答卷记录(匿名房间不记录)
+					String spen = "0";
+					if (test.get("YESPEN") != null) {
+						spen = test.get("YESPEN").toString();
+					}
+					paperUserOwnServiceImpl.addDoPaperInfo((String) test.get("paperid"), Integer.valueOf(spen),
+							getCurrentUser(session));
+				}
+			}
 			if (test.get("STATE").equals(3)) {
 				index = (int) test.get("ALLNUM") + 1;
 			}
@@ -106,14 +129,14 @@ public class SubjectWebController extends WebUtils {
 			// 传出题目
 			return ViewMode.getInstance().putAttr("test", test).putAttr("subjectu", test.get("SUBJECTU"))
 					.putAttr("flag", "answer").putAttr("index", index).putAttr("testid", testid)
-					.returnModelAndView(getThemePath() + "/subject/randomPage");
+					.returnModelAndView(ThemesUtil.getThemePage("test-cardPage", request));
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
 	}
 
 	/**
-	 * 单独开辟一个随机测试，入参为随机测试的题集合
+	 * 单独开辟一个随机测试，入参为随机测试的题集合（题ID）
 	 * 
 	 * @param subjectids
 	 * @param testid
@@ -149,7 +172,45 @@ public class SubjectWebController extends WebUtils {
 			// 传出题目
 			return ViewMode.getInstance().putAttr("test", test).putAttr("subjectu", test.get("SUBJECTU"))
 					.putAttr("flag", "answer").putAttr("index", index).putAttr("testid", testid)
-					.returnModelAndView(getThemePath() + "/subject/randomPage");
+					.returnModelAndView(ThemesUtil.getThemePage("test-cardPage", request));
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
+		}
+	}
+
+	/**
+	 * 单独开辟一个随机测试，入参为随机测试的题集合（用户题库）
+	 * 
+	 * @param subjectOwnIds
+	 * @param testid
+	 * @param index
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/PubOwnSubject")
+	public ModelAndView PubOwnSubject(String subjectOwnIds, String testid, Integer index, HttpServletRequest request,
+			HttpSession session) {
+		try {
+			String subjectIds = "";
+			for (String id : parseIds(subjectOwnIds)) {
+				SubjectUserOwn ownEntity = subjectUserOwnServiceImpl.getSubjectuserownEntity(id);
+				if (ownEntity != null) {
+					if (StringUtils.isBlank(ownEntity.getCardid())) {
+						// 不是来源答卷的直接可见
+						subjectIds = subjectIds + "," + ownEntity.getSubjectid();
+					} else {
+						Card card = cardServiceImpl.getCardEntity(ownEntity.getCardid());
+						// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
+						if (card.getPstate().equals("6") || card.getPstate().equals("7")) {
+							// 不是来源答卷的直接可见
+							subjectIds = subjectIds + "," + ownEntity.getSubjectid();
+						}
+					}
+				}
+			}
+			// 传出题目
+			return PubSubject(subjectIds, testid, index, request, session);
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
@@ -184,7 +245,7 @@ public class SubjectWebController extends WebUtils {
 			}
 			if (user != null && unit != null && unit.getSubject() != null) {
 				// 2.把错题加入错题集合// 3.用户答题历史存入，答题历史记录
-				subjectUserOwnServiceImpl.addFinishSubject(unit.getSubject().getId(), pointWeight == 100, user);
+				subjectUserOwnServiceImpl.addFinishSubject(unit.getSubject().getId(), pointWeight == 100, null, user);
 			}
 			return page.putAttr("point", pointWeight).returnObjMode();
 		} catch (Exception e) {

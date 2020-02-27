@@ -55,8 +55,10 @@
 						<th field="TIPSTR" data-options="sortable:true" width="60">题目</th>
 						<th field="TYPENAME" data-options="sortable:true" width="20">题库分类</th>
 						<th field="ANSWERED" data-options="sortable:true" width="20">答案状态</th>
-						<th field=TITLE data-options="sortable:true" width="30">引用材料</th>
-						<th field=ANALYSISNUM data-options="sortable:true" width="30">题解析</th>
+						<th field="TITLE" data-options="sortable:true" width="30">引用材料</th>
+						<th field="ANALYSISNUM" data-options="sortable:true" width="30">题解析</th>
+						<th field="DONUM" data-options="sortable:true" width="15">答题量</th>
+						<th field="RIGHTNUM" data-options="sortable:true" width="15">正确量</th>
 					</tr>
 				</thead>
 			</table>

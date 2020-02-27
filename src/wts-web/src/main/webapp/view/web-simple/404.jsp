@@ -42,7 +42,7 @@
 								<a type="button" href="<PF:basePath/>"
 									class="btn btn-danger btn-xs">系统首页</a>
 								<c:if test="${USEROBJ!=null}">&nbsp;&nbsp;
-									<a type="button" href="<PF:basePath/>webuser/PubHome.do"
+									<a type="button" href="<PF:basePath/>webuser/Home.do"
 										class="btn btn-default btn-xs">我的信息</a>
 								</c:if>
 							</div>

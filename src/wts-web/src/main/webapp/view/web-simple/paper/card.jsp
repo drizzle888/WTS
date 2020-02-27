@@ -30,16 +30,17 @@
 					<div style="text-align: center;">
 						<!-- 卷头部 -->
 						<h1>${paper.info.name}</h1>
-						<span style="font-weight: 700;">共${paper.rootChapterNum}道大题，${paper.subjectNum}道小题，满分${paper.allPoint}分，
-							答题时间<span class="wts-red">${room.timelen}分钟</span>,答题人: <c:if
+						<span style="font-weight: 700;">共${paper.rootChapterNum}道大题，${paper.subjectNum}道小题，满分${paper.allPoint}分</span>
+						<span style="font-weight: 700;"><br />答题时间<span
+							class="wts-red">${room.timelen}分钟</span>,答题人: <c:if
 								test="${room.writetype=='2'}">
 								<span class="wts-red">匿名</span>
 							</c:if> <c:if test="${room.writetype!='2'}">
 								<span class="wts-red">${USEROBJ.name}</span>
-							</c:if>
-						</span>
+							</c:if> </span>
 						<c:if test="${!empty paper.info.papernote}">
-							<div class="ke-content ke-content-borderbox">${paper.info.papernote}</div>
+							<div class="ke-content ke-content-borderbox"
+								style="border-top: 1px dashed #cccccc; margin-top: 20x; padding-top: 20px;">${paper.info.papernote}</div>
 						</c:if>
 						<input type="hidden" id="roomId-Input" value="${room.id}">
 						<input type="hidden" id="paperId-Input" value="${paper.info.id}">
@@ -65,7 +66,7 @@
 								</c:if>
 								<%@ include file="commons/IncludeLeve1Subjects.jsp"%>
 								<c:forEach items="${chapter1.chapters}" var="chapter2">
-									<div style="padding-left: 20px;">
+									<div>
 										<!-- 二级章節头部 -->
 										<h3 id='${chapter2.chapter.id}-NAVI'>${chapter2.chapter.name}<span
 												class="chapter-info">共${chapter2.subjectNum}道小题，${chapter2.allpoint}分</span>
@@ -84,7 +85,7 @@
 									</c:if>
 									<%@ include file="commons/IncludeLeve2Subjects.jsp"%>
 									<c:forEach items="${chapter2.chapters}" var="chapter3">
-										<div style="padding-left: 40px;">
+										<div>
 											<!-- 二级章節头部 -->
 											<h4 id='${chapter3.chapter.id}-NAVI'>${chapter3.chapter.name}<span
 													class="chapter-info">共${chapter3.subjectNum}道小题，${chapter3.allpoint}分</span>

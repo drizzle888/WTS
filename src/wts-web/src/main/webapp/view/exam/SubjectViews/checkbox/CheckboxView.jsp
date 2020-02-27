@@ -36,23 +36,26 @@
 			</c:if>
 			<c:if test="${flag=='answer'||flag==null}">
 				<!-- 用户答题和预览时显示，填写答案 -->
-				<ul class="answerUnitViewBox alert alert-warning">
-					<c:forEach items="${subjectu.answers}" var="node"
-						varStatus="status">
-						<li><label style="cursor: pointer;"> <TIP:WordCode
-									code="${status.index+1}" /> &nbsp;<input
-								id="${node.answer.id}-INPUT"
-								${node.val=='true'?'checked="checked"':''}
-								style="cursor: pointer;" type="checkbox"
-								name="${subjectu.version.id}" value="${node.answer.id}">
-						</label></li>
-					</c:forEach>
-				</ul>
+				<div class="answerUnitViewBox">
+					<ul>
+						<c:forEach items="${subjectu.answers}" var="node"
+							varStatus="status">
+							<li><label style="cursor: pointer;"> <TIP:WordCode
+										code="${status.index+1}" /> &nbsp;<input
+									id="${node.answer.id}-INPUT"
+									${node.val=='true'?'checked="checked"':''}
+									style="cursor: pointer;" type="checkbox"
+									name="${subjectu.version.id}" value="${node.answer.id}">
+							</label></li>
+						</c:forEach>
+					</ul>
+					<div style="clear: both;"></div>
+				</div>
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!-- 答案检查和阅卷时显示，答案展示-->
 				<c:if test="${subjectu.finishIs}">
-					<div class="answerUnitViewBox alert alert-warning"
+					<div class="answerUnitViewBox"
 						style="height: auto; padding-left: 12px;">
 						<div>
 							<b>多选题-答案:</b>

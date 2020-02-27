@@ -12,7 +12,7 @@
 		if(obj.newMessage){
 			message += "最新消息："+obj.newMessage + "；";
 		}
-		var href = "<span class='glyphicon glyphicon-envelope'></span> " + obj.unReadCount + " <a href='webuser/PubHome.do?type=usermessage&userid=${USEROBJ.id}'>"+message+"</a>";
+		var href = "<span class='glyphicon glyphicon-envelope'></span> " + obj.unReadCount + " <a href='webuser/Home.do?type=usermessage&userid=${USEROBJ.id}'>"+message+"</a>";
 		if(obj.unReadCount>0){
 			$("#showHomeMessageId").html(href);
 		}

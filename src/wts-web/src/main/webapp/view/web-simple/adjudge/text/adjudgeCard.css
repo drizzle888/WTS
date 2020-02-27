@@ -112,3 +112,21 @@
 .wts-sidecard-buttons {
 	margin-top: 50px;
 }
+.wts-paper-forms h2 {
+	font-size: 20px;
+	margin-left: 8px;
+	font-weight: 700;
+	margin-top: 1em;
+}
+
+.wts-paper-forms h3 {
+	font-size: 18px;
+	margin-left: 8px;
+	margin-top: 1em;
+}
+
+.wts-paper-forms h4 {
+	font-size: 16px;
+	margin-left: 8px;
+	margin-top: 1em;
+}

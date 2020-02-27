@@ -84,4 +84,29 @@
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>
 	<jsp:include page="../commons/foot.jsp"></jsp:include>
 </body>
+<script type="text/javascript">
+	//收藏答卷
+	function bookPaper(boxid, roomid, paperid, isdo) {
+		$.post("webpaper/book.do", {
+			'roomid' : roomid,
+			'paperid' : paperid,
+			'isDo' : isdo
+		}, function(flag) {
+			if (flag.STATE == 0) {
+				$('#' + boxid + ' #bookNumId').text(flag.num);
+				if (flag.isBook) {
+					$('#' + boxid + ' #book-y').show();
+					$('#' + boxid + ' #book-n').hide();
+					$('#' + boxid + ' #bookTitleId').text("已");
+				} else {
+					$('#' + boxid + ' #book-n').show();
+					$('#' + boxid + ' #book-y').hide();
+					$('#' + boxid + ' #bookTitleId').text("未");
+				}
+			} else {
+				pAlert(flag.MESSAGE);
+			}
+		}, 'json');
+	}
+</script>
 </html>

@@ -2,7 +2,6 @@
 	padding: 20px;
 	background-color: #f5f5f5;
 	border: 1px solid #e3e3e3;
-	margin: 8px;
 	margin-top: 40px;
 	margin-bottom: 40px;
 }
@@ -37,6 +36,10 @@
 	background-color: #ffffff;
 }
 
+.subjectUnitViewBox label {
+	margin-bottom: 0px;
+}
+
 .subjectUnitViewBox:HOVER {
 	border: 1px solid #d13133;
 }
@@ -61,9 +64,14 @@
 	font-size: 14px;
 	line-height: 26px;
 	border: 1px dashed;
-	padding: 4px;
-	height: 45px;
 	background-color: #fcf8e3;
+	border-radius: 6px;
+	padding: 6px;
+	margin-bottom: 6px;
+}
+
+.answerUnitViewBox ul {
+	margin-left: -30px;
 }
 
 .answerUnitViewBox li {
@@ -82,31 +90,39 @@
 	font-size: 14px;
 	border: 1px dashed;
 	line-height: 26px;
-	padding-top: 10px;
-	padding-bottom: 7px;
 	background-color: #fcf8e3;
+	border-radius: 6px;
+	padding: 6px;
+	margin-bottom: 6px;
 }
 
 .answerInterLocutionViewBox textarea {
 	border: 1px dashed;
-	width: 100%;
 }
 
 .answerRightViewBox {
 	font-size: 14px;
 	border: 1px dashed;
 	line-height: 26px;
-	padding-top: 10px;
-	padding-bottom: 7px;
+	background-color: #dff0d8;
+	border-radius: 6px;
+	padding: 6px;
+	margin-bottom: 6px;
 }
 
 .answerVacancyViewBox {
 	font-size: 14px;
 	border: 1px dashed;
 	line-height: 26px;
-	padding-top: 10px;
-	padding-bottom: 7px;
 	background-color: #fcf8e3;
+	margin-top: 4px;
+	border-radius: 6px;
+	padding: 6px;
+	margin-bottom: 6px;
+}
+
+.answerVacancyViewBox .form-group {
+	margin-bottom: 12px;
 }
 
 .answerVacancyViewBox li {
@@ -132,4 +148,52 @@
 	text-align: center;
 	margin-top: 4px;
 	margin-bottom: 1em;
+}
+
+/* 下面为移动端css */
+.chapterBox-mobile {
+	background-color: #f5f5f5;
+	border: 1px solid #e3e3e3;
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+.chapterBox-mobile .subjectUnitViewBox {
+	padding: 10px;
+	font-size: 16px;
+	line-height: 32px;
+	padding-left: 15px;
+	padding-top: 16px;
+	border: 1px solid #e3e3e3;
+	margin: 4px;
+	margin-top: 40px;
+	margin-bottom: 30px;
+	background-color: #ffffff;
+	border: 1px solid #e3e3e3;
+}
+
+.chapterBox-mobile .subjectUnitViewBox .subjectOrder {
+	float: left;
+	margin-left: -20px;
+	margin-top: -35px;
+	background-color: #d13133;
+	color: #ffffff;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 12px;
+	background-color: #d13133;
+}
+
+.chapterBox-mobile .chapter-title {
+	margin-left: 16px;
+}
+
+.chapterBox-mobile .chapter-note {
+	color: #666;
+	font-size: 14px;
+	line-height: 1.5em;
+	padding-left: 8px;
+	border: 1px dashed #e3e3e3;
+	margin: 10px;
+	background-color: #ffffff;
 }

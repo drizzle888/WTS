@@ -19,7 +19,7 @@
 			<div class="col-sm-12 doc_node">
 				<div class="media message_boxunit">
 					<a class="pull-left"
-						href="webuser/PubHome.do?userid=${node.cuser }"
+						href="webuser/Home.do?userid=${node.cuser }"
 						style="max-width: 200px; text-align: center;"
 						title="${node.cusername }"><i class="glyphicon glyphicon-user"></i>
 					</a>
@@ -27,7 +27,7 @@
 						<div class="side_unit_info">
 							<div class="side_unit_info">
 								<span class="side_unit_info"> <a
-									href="webuser/PubHome.do?userid=${node.cuser }">${node.cusername }</a>
+									href="webuser/Home.do?userid=${node.cuser }">${node.cusername }</a>
 									<PF:FormatTime date="${node.ctime }"
 										yyyyMMddHHmmss="yyyy-MM-dd HH:mm" />&nbsp;&nbsp; <PF:UserIsAdmin
 										userid="${USEROBJ.id}">

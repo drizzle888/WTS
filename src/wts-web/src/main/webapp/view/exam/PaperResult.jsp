@@ -73,9 +73,15 @@
 				<div class="menu-sep"></div>
 				<div data-options="iconCls:'icon-remove'" onclick="delDataPaper()">删除</div>
 			</div>
-			<a class="easyui-linkbutton"
-				data-options="iconCls:'icon-communication',plain:true,onClick:manageSubject">题管理
-			</a> <a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
+			<a href="javascript:void(0)" id="mb9" class="easyui-menubutton"
+				data-options="menu:'#mm9',iconCls:'icon-communication'">题管理</a>
+			<div id="mm9" style="width: 150px;">
+				<div data-options="iconCls:'icon-edit'" onclick="manageSubject()">手工管理</div>
+				<div class="menu-sep"></div>
+				<div data-options="iconCls:'icon-showreel'"
+					onclick="addRandomSubject()">随机出题</div>
+			</div>
+			<a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
 				data-options="menu:'#mm7',iconCls:'icon-networking'">发布</a>
 			<div id="mm7" style="width: 150px;">
 				<div onclick="examPublic()">发布</div>
@@ -135,7 +141,7 @@
 			$.farm.openWindow({
 				id : 'winPaperView',
 				width : 800,
-				height : 500, 
+				height : 500,
 				modal : true,
 				url : "paper/view.do?paperId=" + selectedArray[0].ID,
 				title : '答卷预览'
@@ -161,6 +167,25 @@
 			title : '新增'
 		});
 	}
+
+	//随机组题
+	function addRandomSubject() {
+		var selectedArray = $(gridPaper).datagrid('getSelections');
+		if (selectedArray.length > 0 && selectedArray.length <= 5) {
+			$.farm.openWindow({
+				id : 'winPaper',
+				width : 600,
+				height : 350,
+				modal : true,
+				url : "paper/addRandomSubjects.do?paperids="
+						+ $.farm.getCheckedIds(gridPaper, 'ID'),
+				title : '添加随机题'
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, "请至少选择一套题,最多不超过5套!", 'info');
+		}
+	}
+
 	//修改
 	function editDataPaper() {
 		var selectedArray = $(gridPaper).datagrid('getSelections');

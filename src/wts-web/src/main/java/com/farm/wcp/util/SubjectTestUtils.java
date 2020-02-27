@@ -70,6 +70,7 @@ public class SubjectTestUtils {
 				test.put("STATE", 1);
 				return test;
 			}
+			test.putAll(ctest);
 			test.put("TESTID", testid);
 			test.put("TITLE", ctest.get("title"));
 			test.put("ALLNUM", ctest.get("allnum"));
@@ -122,5 +123,18 @@ public class SubjectTestUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * 给test设置一个参数
+	 * 
+	 * @param testid
+	 * @param key
+	 * 
+	 * @param value
+	 */
+	public static void putAttribute(String testid, String key, Object value, HttpSession session) {
+		Map<String, Object> ctest = (Map<String, Object>) session.getAttribute(testid);
+		ctest.put(key, value);
 	}
 }

@@ -23,7 +23,7 @@
 	<jsp:include page="commons/superContent.jsp"></jsp:include>
 	<!-- /.carousel -->
 	<div class="containerbox">
-		<jsp:include page="commons/homeTypeSubject.jsp"></jsp:include>
+		<jsp:include page="commons/homeTypeRooms.jsp"></jsp:include>
 		<c:if test="${!isHaveRoome }">
 			<div
 				style="max-width: 400px; margin: auto; background-color: #ffffff; border: 1px dashed #666; padding: 4px;">

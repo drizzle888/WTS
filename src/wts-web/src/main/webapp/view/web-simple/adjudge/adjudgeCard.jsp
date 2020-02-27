@@ -44,31 +44,37 @@
 					</div>
 					<div class="wts-paper-forms">
 						<c:forEach items="${paper.chapters}" var="chapter1">
-							<div class="chapterBox">
-								<!-- 一级章節头部 -->
-								<h2 id='${chapter1.chapter.id}-NAVI'>${chapter1.chapter.name}<span
-										class="chapter-info">共${chapter1.subjectNum}道小题，${chapter1.allpoint}分</span>
-								</h2>
-								<%@ include file="commons/IncludeLeve1Subjects.jsp"%>
-								<c:forEach items="${chapter1.chapters}" var="chapter2">
-									<div style="padding-left: 20px;">
-										<!-- 二级章節头部 -->
-										<h3 id='${chapter2.chapter.id}-NAVI'>${chapter2.chapter.name}<span
-												class="chapter-info">共${chapter2.subjectNum}道小题，${chapter2.allpoint}分</span>
-										</h3>
-									</div>
-									<%@ include file="commons/IncludeLeve2Subjects.jsp"%>
-									<c:forEach items="${chapter2.chapters}" var="chapter3">
-										<div style="padding-left: 40px;">
-											<!-- 二级章節头部 -->
-											<h4 id='${chapter3.chapter.id}-NAVI'>${chapter3.chapter.name}<span
-													class="chapter-info">共${chapter3.subjectNum}道小题，${chapter3.allpoint}分</span>
-											</h4>
-										</div>
-										<%@ include file="commons/IncludeLeve3Subjects.jsp"%>
+							<c:if test="${chapter1.vasNum>0}">
+								<div class="chapterBox">
+									<!-- 一级章節头部 -->
+									<h2 id='${chapter1.chapter.id}-NAVI'>${chapter1.chapter.name}<span
+											class="chapter-info">共${chapter1.subjectNum}道小题/完成${chapter1.vasNum}道题，共${chapter1.allpoint}分</span>
+									</h2>
+									<%@ include file="commons/IncludeLeve1Subjects.jsp"%>
+									<c:forEach items="${chapter1.chapters}" var="chapter2">
+										<c:if test="${chapter2.vasNum>0}">
+											<div>
+												<!-- 二级章節头部 -->
+												<h3 id='${chapter2.chapter.id}-NAVI'>${chapter2.chapter.name}<span
+														class="chapter-info">共${chapter2.subjectNum}道小题，${chapter2.allpoint}分</span>
+												</h3>
+											</div>
+											<%@ include file="commons/IncludeLeve2Subjects.jsp"%>
+											<c:forEach items="${chapter2.chapters}" var="chapter3">
+												<c:if test="${chapter3.vasNum>0}">
+													<div>
+														<!-- 二级章節头部 -->
+														<h4 id='${chapter3.chapter.id}-NAVI'>${chapter3.chapter.name}<span
+																class="chapter-info">共${chapter3.subjectNum}道小题，${chapter3.allpoint}分</span>
+														</h4>
+													</div>
+													<%@ include file="commons/IncludeLeve3Subjects.jsp"%>
+												</c:if>
+											</c:forEach>
+										</c:if>
 									</c:forEach>
-								</c:forEach>
-							</div>
+								</div>
+							</c:if>
 						</c:forEach>
 					</div>
 				</div>

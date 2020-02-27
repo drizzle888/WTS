@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.page.ViewMode;
 import com.farm.parameter.FarmParameterService;
+import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
 import com.wts.exam.domain.ex.RoomUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
@@ -47,6 +48,9 @@ public class ExamWebController extends WebUtils {
 	public ModelAndView index(String roomid, HttpServletRequest request, HttpSession session) {
 		try {
 			ViewMode view = ViewMode.getInstance();
+			if (roomServiceImpl.getRoomEntity(roomid) == null) {
+				throw new RuntimeException("该房间不存在!");
+			}
 			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session));
 			// 进入答题室：1.判断时间，判断人员
 			if (!roomServiceImpl.isLiveTimeRoom(roomunit.getRoom())) {
@@ -55,7 +59,8 @@ public class ExamWebController extends WebUtils {
 			if (!roomServiceImpl.isUserAbleRoom(roomid, getCurrentUser(session))) {
 				throw new RuntimeException("当前用户无进入权限!");
 			}
-			return view.putAttr("room", roomunit).returnModelAndView(getThemePath() + "/exam/examRoom");
+			return view.putAttr("room", roomunit)
+					.returnModelAndView(ThemesUtil.getThemePage("room-indexPage", request));
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
@@ -88,7 +93,7 @@ public class ExamWebController extends WebUtils {
 			if (!roomServiceImpl.isUserAbleRoom(roomid, user)) {
 				throw new RuntimeException("当前用户无进入权限!");
 			}
-			return view.putAttr("room", roomunit).returnModelAndView(getThemePath() + "/exam/examRoom");
+			return view.putAttr("room", roomunit).returnModelAndView(ThemesUtil.getThemePage("room-indexPage", request));
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}

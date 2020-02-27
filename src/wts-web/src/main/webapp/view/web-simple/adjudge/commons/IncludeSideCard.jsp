@@ -6,31 +6,14 @@
 	<div class="wts-sidecard-subjects"
 		style="overflow: auto; max-height: 300px;">
 		<c:forEach items="${paper.chapters}" var="chapter1">
-			<!-- 一级章節头部 -->
-			<h1 targetId='${chapter1.chapter.id}-NAVI'>${chapter1.chapter.name}<span
-					class="chapter-info">${chapter1.allpoint}分</span>
-			</h1>
-			<c:if test="${!empty chapter1.subjects}">
-				<ul>
-					<c:forEach items="${chapter1.subjects}" var="subjectu"
-						varStatus="status">
-						<c:if test="${subjectu.finishIs}">
-							<li targetId='${subjectu.version.id}-NAVI'
-								class="${subjectu.cardSubject.complete=='1'?'active':''}"
-								id="${subjectu.version.id}-NAVIID">${status.index + 1}</li>
-						</c:if>
-					</c:forEach>
-				</ul>
-			</c:if>
-			<div class="wts-sidecard-split"></div>
-			<c:forEach items="${chapter1.chapters}" var="chapter2">
-				<!-- 二级章節头部 -->
-				<h2 targetId='${chapter2.chapter.id}-NAVI'>${chapter2.chapter.name}<span
-						class="chapter-info">${chapter2.allpoint}分</span>
-				</h2>
-				<c:if test="${!empty chapter2.subjects}">
+			<c:if test="${chapter1.vasNum>0}">
+				<!-- 一级章節头部 -->
+				<h1 targetId='${chapter1.chapter.id}-NAVI'>${chapter1.chapter.name}<span
+						class="chapter-info">${chapter1.allpoint}分</span>
+				</h1>
+				<c:if test="${!empty chapter1.subjects}">
 					<ul>
-						<c:forEach items="${chapter2.subjects}" var="subjectu"
+						<c:forEach items="${chapter1.subjects}" var="subjectu"
 							varStatus="status">
 							<c:if test="${subjectu.finishIs}">
 								<li targetId='${subjectu.version.id}-NAVI'
@@ -41,26 +24,49 @@
 					</ul>
 				</c:if>
 				<div class="wts-sidecard-split"></div>
-				<c:forEach items="${chapter2.chapters}" var="chapter3">
-					<!-- 二级章節头部 -->
-					<h3 targetId='${chapter3.chapter.id}-NAVI'>${chapter3.chapter.name}<span
-							class="chapter-info">${chapter3.allpoint}分</span>
-					</h3>
-					<c:if test="${!empty chapter3.subjects}">
-						<ul>
-							<c:forEach items="${chapter3.subjects}" var="subjectu"
-								varStatus="status">
-								<c:if test="${subjectu.finishIs}">
-									<li targetId='${subjectu.version.id}-NAVI'
-										class="${subjectu.cardSubject.complete=='1'?'active':''}"
-										id="${subjectu.version.id}-NAVIID">${status.index + 1}</li>
+				<c:forEach items="${chapter1.chapters}" var="chapter2">
+					<c:if test="${chapter2.vasNum>0}">
+						<!-- 二级章節头部 -->
+						<h2 targetId='${chapter2.chapter.id}-NAVI'>${chapter2.chapter.name}<span
+								class="chapter-info">${chapter2.allpoint}分</span>
+						</h2>
+						<c:if test="${!empty chapter2.subjects}">
+							<ul>
+								<c:forEach items="${chapter2.subjects}" var="subjectu"
+									varStatus="status">
+									<c:if test="${subjectu.finishIs}">
+										<li targetId='${subjectu.version.id}-NAVI'
+											class="${subjectu.cardSubject.complete=='1'?'active':''}"
+											id="${subjectu.version.id}-NAVIID">${status.index + 1}</li>
+									</c:if>
+								</c:forEach>
+							</ul>
+						</c:if>
+						<div class="wts-sidecard-split"></div>
+						<c:forEach items="${chapter2.chapters}" var="chapter3">
+							<c:if test="${chapter3.vasNum>0}">
+								<!-- 二级章節头部 -->
+								<h3 targetId='${chapter3.chapter.id}-NAVI'>${chapter3.chapter.name}<span
+										class="chapter-info">${chapter3.allpoint}分</span>
+								</h3>
+								<c:if test="${!empty chapter3.subjects}">
+									<ul>
+										<c:forEach items="${chapter3.subjects}" var="subjectu"
+											varStatus="status">
+											<c:if test="${subjectu.finishIs}">
+												<li targetId='${subjectu.version.id}-NAVI'
+													class="${subjectu.cardSubject.complete=='1'?'active':''}"
+													id="${subjectu.version.id}-NAVIID">${status.index + 1}</li>
+											</c:if>
+										</c:forEach>
+									</ul>
 								</c:if>
-							</c:forEach>
-						</ul>
+								<div class="wts-sidecard-split"></div>
+							</c:if>
+						</c:forEach>
 					</c:if>
-					<div class="wts-sidecard-split"></div>
 				</c:forEach>
-			</c:forEach>
+			</c:if>
 		</c:forEach>
 	</div>
 	<div class="btn-group btn-group-justified wts-sidecard-buttons"

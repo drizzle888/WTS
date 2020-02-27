@@ -40,6 +40,9 @@ import com.farm.doc.server.UsermessageServiceInter;
 import com.farm.parameter.FarmParameterService;
 import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
+import com.wts.exam.domain.ExamStat;
+import com.wts.exam.service.ExamStatServiceInter;
+import com.wts.exam.service.PaperUserOwnServiceInter;
 import com.wts.exam.service.SubjectUserOwnServiceInter;
 
 /**
@@ -64,6 +67,10 @@ public class UserWebController extends WebUtils {
 	private OrganizationServiceInter organizationServiceImpl;
 	@Resource
 	private SubjectUserOwnServiceInter subjectUserOwnServiceImpl;
+	@Resource
+	private ExamStatServiceInter examStatServiceImpl;
+	@Resource
+	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
 	private static final Logger log = Logger.getLogger(UserWebController.class);
 
 	/**
@@ -175,7 +182,7 @@ public class UserWebController extends WebUtils {
 	 * @return
 	 */
 	@SuppressWarnings({ "unused", "deprecation" })
-	@RequestMapping("/PubHome")
+	@RequestMapping("/Home")
 	public ModelAndView showUserHome(String userid, String type, Integer num, HttpSession session,
 			HttpServletRequest request) {
 		ViewMode mode = ViewMode.getInstance();
@@ -205,6 +212,8 @@ public class UserWebController extends WebUtils {
 				}
 			}
 			mode.putAttr("user", user);
+			ExamStat stat = examStatServiceImpl.getExamstatEntity(user);
+			mode.putAttr("examStat", stat == null ? new ExamStat(0, 0, 0, 0) : stat);
 			mode.putAttr("org", userServiceImpl.getOrg(user.getId()));
 			mode.putAttr("posts", userServiceImpl.getPost(user.getId()));
 			mode.putAttr("photourl", farmFileManagerImpl.getPhotoURL(user.getImgid()));
@@ -215,19 +224,11 @@ public class UserWebController extends WebUtils {
 			if (type == null) {
 				type = "AllSubject";
 			}
-			if (type.equals("usermessage")) {
-				// 用户消息
-				result = usermessageServiceImpl.getMyMessageByUser(getCurrentUserOrThrowException(session).getId(), 10,
-						num);
-				result.runformatTime("USERMESSAGECTIME", "yyyy-MM-dd HH:mm");
-				result.runDictionary("0:未读,1:已读", "READSTATE");
-			}
-		} catch (UserNoLoginException e) {
+		} catch (Exception e) {
 			return mode.setError(e.getMessage(), e).returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
-		return mode.putAttr("docs", result).putAttr("userid", user.getId()).putAttr("username", user.getName())
-				.putAttr("type", type).putAttr("num", num)
-				.returnModelAndView(ThemesUtil.getThemePath() + "/user/userHome");
+		return mode.putAttr("userid", user.getId()).putAttr("username", user.getName()).putAttr("type", type)
+				.putAttr("num", num).returnModelAndView(ThemesUtil.getThemePage("user-homePage", request));
 	}
 
 	/**
@@ -249,7 +250,7 @@ public class UserWebController extends WebUtils {
 					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
 		return ViewMode.getInstance().putAttr("userid", userid).putAttr("type", type).putAttr("num", num)
-				.returnRedirectUrl("/webuser/PubHome.do");
+				.returnRedirectUrl("/webuser/Home.do");
 	}
 
 	/**
@@ -450,8 +451,11 @@ public class UserWebController extends WebUtils {
 			query.addRule(new DBRule("a.MODELTYPE", "1", "="));
 			query = subjectUserOwnServiceImpl.createSubjectuserownSimpleQuery(query);
 			DataResult result = query.search();
-			return ViewMode.getInstance().putAttr("result", query.search())
+			// result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档",
+			// "CARDSTATE");
+			return ViewMode.getInstance().putAttr("result", result)
 					.putAttr("ids", getIdsFromResult(result, "SUBJECTID"))
+					.putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnAllSubject");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e)
@@ -471,12 +475,14 @@ public class UserWebController extends WebUtils {
 			DataResult result = query.search();
 			return ViewMode.getInstance().putAttr("result", result)
 					.putAttr("ids", getIdsFromResult(result, "SUBJECTID"))
+					.putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnErrorSubject");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e)
 					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
 	}
+
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/loadBookSubjects")
 	public ModelAndView loadBookSubjects(String pagenum, HttpSession session) {
@@ -489,12 +495,57 @@ public class UserWebController extends WebUtils {
 			DataResult result = query.search();
 			return ViewMode.getInstance().putAttr("result", result)
 					.putAttr("ids", getIdsFromResult(result, "SUBJECTID"))
+					.putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadBookSubject");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e)
 					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
 	}
+
+	@SuppressWarnings("deprecation")
+	@RequestMapping("/loadOwnAllPapers")
+	public ModelAndView loadOwnAllPapers(String pagenum, HttpSession session) {
+		try {
+			DataQuery query = DataQuery.getInstance();
+			query.setCurrentPage(pagenum);
+			query.addRule(new DBRule("a.CUSER", getCurrentUser(session).getId(), "="));
+			query.addRule(new DBRule("a.MODELTYPE", "1", "="));
+			query = paperUserOwnServiceImpl.createPaperuserownSimpleQuery(query);
+			DataResult result = query.search();
+			result.runDictionary("1:答卷模式,3:练习模式", "PAPERMODELTITLE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "CARDSTATE");
+			return ViewMode.getInstance().putAttr("result", result).putAttr("ownids", getIdsFromResult(result, "ID"))
+					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnAllPaper");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e)
+					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
+		}
+	}
+
+	
+	
+	@SuppressWarnings("deprecation")
+	@RequestMapping("/loadOwnBookPapers")
+	public ModelAndView loadOwnBookPapers(String pagenum, HttpSession session) {
+		try {
+			DataQuery query = DataQuery.getInstance();
+			query.setCurrentPage(pagenum);
+			query.addRule(new DBRule("a.CUSER", getCurrentUser(session).getId(), "="));
+			query.addRule(new DBRule("a.MODELTYPE", "2", "="));
+			query = paperUserOwnServiceImpl.createPaperuserownSimpleQuery(query);
+			DataResult result = query.search();
+			result.runDictionary("1:答卷模式,3:练习模式", "PAPERMODELTITLE");
+			return ViewMode.getInstance().putAttr("result", result).putAttr("ownids", getIdsFromResult(result, "ID"))
+					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnBookPaper");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e)
+					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
+		}
+	}
+	
+	
+	
 	/**
 	 * 拼接DataResult中的字段为逗号分隔的字符串
 	 * 

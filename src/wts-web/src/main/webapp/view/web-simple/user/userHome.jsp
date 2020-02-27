@@ -23,11 +23,12 @@
 	<div class="containerbox">
 		<div class="container ">
 			<div class="row column_box">
-				<div class="col-md-2 hidden-xs hidden-sm clear-both">
-					<jsp:include page="../statis/commons/includeMyStatis.jsp"></jsp:include>
+				<div class="col-md-2 hidden-xs hidden-sm clear-both"
+					style="padding-top: 26px;">
 					<jsp:include page="../operation/includeUserOperate.jsp"></jsp:include>
 				</div>
 				<div class="col-md-10 clear-both">
+					<jsp:include page="../statis/commons/includeMyStatis.jsp"></jsp:include>
 					<c:if test="${type=='AllSubject'}">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
@@ -55,6 +56,24 @@
 							<div class="panel-body" id="userBookSubjectsId">loading...</div>
 						</div>
 					</c:if>
+					<c:if test="${type=='AllPaper'}">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3 class="panel-title"
+									style="margin-left: 0; padding-left: 0px;">答卷记录(考卷/练习卷)</h3>
+							</div>
+							<div class="panel-body" id="userAllPapersId">loading...</div>
+						</div>
+					</c:if>
+					<c:if test="${type=='BookPaper'}">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title"
+									style="margin-left: 0; padding-left: 0px;">收藏答卷</h3>
+							</div>
+							<div class="panel-body" id="userBookPapersId">loading...</div>
+						</div>
+					</c:if>
 				</div>
 			</div>
 		</div>
@@ -65,38 +84,67 @@
 <script type="text/javascript">
 	function knowBoxGoPage(page) {
 		window.location = basePath
-				+ "webuser/PubHome.do?userid=${id}&query.currentPage=" + page;
+				+ "webuser/Home.do?userid=${id}&query.currentPage=" + page;
 	}
 
 	$(function() {
-		loadAllSubjects(1);
-		loadErrorSubjects(1);
-		loadBookSubjects(1);
+		if (document.getElementById("userAllSubjectsId")) {
+			loadAllSubjects(1);
+		}
+		if (document.getElementById("userErrorSubjectsId")) {
+			loadErrorSubjects(1);
+		}
+		if (document.getElementById("userBookSubjectsId")) {
+			loadBookSubjects(1);
+		}
+		if (document.getElementById("userAllPapersId")) {
+			loadAllPapers(1);
+		}
+		if (document.getElementById("userBookPapersId")) {
+			loadBookPapers(1);
+		}
 	});
+	
+	//加载答卷收藏
+	function loadBookPapers(page) {
+		$('#userBookPapersId').text('loading...');
+		$('#userBookPapersId').load("webuser/loadOwnBookPapers.do", {
+			pagenum : page
+		});
+	}
+	
+	//加载答卷记录
+	function loadAllPapers(page) {
+		$('#userAllPapersId').text('loading...');
+		$('#userAllPapersId').load("webuser/loadOwnAllPapers.do", {
+			pagenum : page
+		});
+	}
 
+	//加载答题记录
 	function loadAllSubjects(page) {
 		$('#userAllSubjectsId').text('loading...');
 		$('#userAllSubjectsId').load("webuser/loadOwnAllSubjects.do", {
 			pagenum : page
 		});
 	}
-
+	//加载错题
 	function loadErrorSubjects(page) {
 		$('#userErrorSubjectsId').text('loading...');
 		$('#userErrorSubjectsId').load("webuser/loadOwnErrorSubjects.do", {
 			pagenum : page
 		});
 	}
-
+	//加载关注题
 	function loadBookSubjects(page) {
 		$('#userBookSubjectsId').text('loading...');
 		$('#userBookSubjectsId').load("webuser/loadBookSubjects.do", {
 			pagenum : page
 		});
 	}
-
+	//练习题目
 	function subjectsTest(ids) {
-		window.location = "<PF:basePath/>websubject/PubSubject.do?subjectids="
+		window.location = "<PF:basePath/>websubject/PubOwnSubject.do?subjectOwnIds="
 				+ ids;
 	}
 </script>

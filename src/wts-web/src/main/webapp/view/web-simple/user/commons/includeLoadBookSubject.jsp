@@ -2,27 +2,42 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%><%@taglib
 	uri="http://java.sun.com/jsp/jstl/functions" prefix="fun"%>
-<table class="table table-bordered table-striped">
-	<thead>
-		<tr>
-			<th style="width: 70%;">题目</th>
-			<th>答题时间</th>
-			<th>操作</th>
-		</tr>
-	</thead>
-	<tbody>
-		<c:forEach items="${result.resultList}" var="node">
+<div class="table-responsive">
+	<table class="table table-bordered table-striped">
+		<thead>
 			<tr>
-				<td>${node.TITLE }</td>
-				<td><PF:FormatTime date="${node.CTIME }"
-						yyyyMMddHHmmss="yyyy-MM-dd HH:mm" /></td>
-				<td><a href="javascript:delSubjectByBook('${node.ID}')">取消</a>&nbsp;&nbsp;<a
-					target="_blank"
-					href="websubject/PubSubject.do?subjectids=${node.SUBJECTID}">查看</a></td>
+				<th style="width: 70%;">题目</th>
+				<th>答题时间</th>
+				<th>状态</th>
+				<th>操作</th>
 			</tr>
-		</c:forEach>
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			<c:forEach items="${result.resultList}" var="node">
+				<tr>
+					<td>${node.TITLE }</td>
+					<td><PF:FormatTime date="${node.CTIME }"
+							yyyyMMddHHmmss="yyyy-MM-dd HH:mm" /></td>
+					<td><c:if
+							test="${node.CARDSTATE=='6'||node.CARDSTATE=='7'||empty node.CARDSTATE}">
+							<span style="color: green;">公开</span>
+						</c:if> <c:if
+							test="${node.CARDSTATE!='6'&&node.CARDSTATE!='7'&& not empty node.CARDSTATE}">
+							<span style="color: red;" title="答卷未完成阅卷期间，禁止查看答案"> 密封</span>
+						</c:if></td>
+					<td>
+						<!--  --> <a href="javascript:delSubjectByAll('${node.ID}')">刪除</a>
+						<!--  --> <c:if
+							test="${node.CARDSTATE=='6'||node.CARDSTATE=='7'||empty node.CARDSTATE}">
+				&nbsp;&nbsp;<a target="_blank"
+								href="websubject/PubOwnSubject.do?subjectOwnIds=${node.ID}">查看</a>
+						</c:if>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+</div>
 <div style="text-align: center;">
 	<nav aria-label="Page navigation">
 		<ul class="pagination" style="margin: 0px;">
@@ -39,14 +54,22 @@
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</c:if>
-			<li><a href="javascript:subjectsTest('${ids}')"><i
+			<li><a href="javascript:subjectsTest('${ownids}')"><i
 					class="glyphicon glyphicon-play-circle"
-					style="position: relative; top: 2px;"></i> 开始练习本页所有题</a></li>
+					style="position: relative; top: 2px;"></i>练习本页</a></li>
+			<li><a href="javascript:delSubjectByBook('${ownids}',true)"><i
+					class="glyphicon glyphicon-trash"
+					style="position: relative; top: 2px;"></i>取消关注 </a></li>
 		</ul>
 	</nav>
 </div>
 <script type="text/javascript">
-	function delSubjectByBook(id) {
+	function delSubjectByBook(id, isConfirm) {
+		if (isConfirm) {
+			if (!confirm("是否取消本页所有关注题目?")) {
+				return;
+			}
+		}
 		$.post("subjectuserown/del.do?ids=" + id, {}, function() {
 			loadBookSubjects('${result.currentPage}');
 		}, 'json');

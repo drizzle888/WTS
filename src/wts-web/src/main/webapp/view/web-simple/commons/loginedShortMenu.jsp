@@ -15,7 +15,7 @@
 					<a href="<PF:defaultIndexPage/>" class="list-group-item active"> 进入首页</a>
 				</div> 
 				<div class="list-group text-center">
-					<a href="webuser/PubHome.do?type=usermessage&userid=${USEROBJ.id}" class="list-group-item">我的消息</a>
+					<a href="webuser/Home.do?type=usermessage&userid=${USEROBJ.id}" class="list-group-item">我的消息</a>
 					<a href="login/webout.do" class="list-group-item">注销</a>
 				</div>
 			</div>

@@ -27,48 +27,72 @@
 	aria-label="..." style="width: 150px; margin-top: 8px;">
 	<!-- 答题记录-->
 	<c:if test="${type=='AllSubject'}">
-		<a href="webuser/PubHome.do?type=AllSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=AllSubject&userid=${userid}"
 			class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
 	</c:if>
 	<!-- 答题记录-->
 	<c:if test="${type!='AllSubject'}">
-		<a href="webuser/PubHome.do?type=AllSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=AllSubject&userid=${userid}"
 			class="btn btn-default"><span
 			class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
 	</c:if> 
 	<!-- 错题记录-->
 	<c:if test="${type=='ErrorSubject'}">
-		<a href="webuser/PubHome.do?type=ErrorSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
 			class="btn btn-info"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
 	</c:if>
 	<!-- 错题记录--> 
 	<c:if test="${type!='ErrorSubject'}">
-		<a href="webuser/PubHome.do?type=ErrorSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
 			class="btn btn-default"><span
 			class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
 	</c:if>
 	<!-- 收藏-->
 	<c:if test="${type=='BookSubject'}">
-		<a href="webuser/PubHome.do?type=BookSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=BookSubject&userid=${userid}"
 			class="btn btn-info"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏题目</a>
 	</c:if>
 	<!-- 收藏-->
 	<c:if test="${type!='BookSubject'}">
-		<a href="webuser/PubHome.do?type=BookSubject&userid=${userid}"
+		<a href="webuser/Home.do?type=BookSubject&userid=${userid}"
 			class="btn btn-default"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏题目</a>
 	</c:if>
 	<c:if test="${type=='usermessage'}">
 		<c:if test="${self}">
-			<a href="webuser/PubHome.do?type=usermessage&userid=${userid}"
+			<a href="webuser/Home.do?type=usermessage&userid=${userid}"
 				class="btn btn-info"><span class="glyphicon glyphicon-envelope"></span>
 				我的消息</a>
 		</c:if>
 	</c:if>
 	<c:if test="${type!='usermessage'}">
 		<c:if test="${self}">
-			<!-- 	<a href="webuser/PubHome.do?type=usermessage&userid=${userid}"
+			<!-- 	<a href="webuser/Home.do?type=usermessage&userid=${userid}"
 				class="btn btn-default"><span
 				class="glyphicon glyphicon-envelope"></span> 我的消息</a> -->
 		</c:if>
+	</c:if>
+</div>
+<div class="btn-group-vertical btn-group-sm" role="group"
+	aria-label="..." style="width: 150px; margin-top: 8px;">
+	<!-- 答卷记录-->
+	<c:if test="${type=='AllPaper'}">
+		<a href="webuser/Home.do?type=AllPaper&userid=${userid}"
+			class="btn btn-info"><span class="glyphicon glyphicon-file"></span>&nbsp;答卷记录</a>
+	</c:if>
+	<!-- 答卷记录-->
+	<c:if test="${type!='AllPaper'}">
+		<a href="webuser/Home.do?type=AllPaper&userid=${userid}"
+			class="btn btn-default"><span
+			class="glyphicon glyphicon-file"></span>&nbsp;答卷记录</a>
+	</c:if> 
+	<!-- 收藏答卷-->
+	<c:if test="${type=='BookPaper'}">
+		<a href="webuser/Home.do?type=BookPaper&userid=${userid}"
+			class="btn btn-info"><span class="glyphicon glyphicon-book"></span>&nbsp;收藏答卷</a>
+	</c:if>
+	<!-- 收藏答卷-->
+	<c:if test="${type!='BookPaper'}">
+		<a href="webuser/Home.do?type=BookPaper&userid=${userid}"
+			class="btn btn-default"><span class="glyphicon glyphicon-book"></span>&nbsp;收藏答卷</a>
 	</c:if>
 </div>

@@ -20,7 +20,7 @@
 			</c:if>
 			<c:if test="${flag=='answer'||flag==null}">
 				<!-- 用户答题和预览时显示，填写答案 -->
-				<div class="answerInterLocutionViewBox alert alert-warning">
+				<div class="answerInterLocutionViewBox">
 					<div>答：</div>
 					<div>
 						<textarea name="${subjectu.version.id}" class="form-control"
@@ -30,7 +30,7 @@
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!-- 答案检查和阅卷时显示，答案展示-->
-				<div class="answerInterLocutionViewBox alert alert-warning">
+				<div class="answerInterLocutionViewBox">
 					<div>
 						<b>答案：</b>
 					</div>

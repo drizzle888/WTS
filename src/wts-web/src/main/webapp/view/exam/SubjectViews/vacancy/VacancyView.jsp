@@ -20,7 +20,7 @@
 			</c:if>
 			<c:if test="${flag=='answer'||flag==null}">
 				<!-- 用户答题和预览时显示，填写答案 -->
-				<div class="answerVacancyViewBox alert alert-warning">
+				<div class="answerVacancyViewBox">
 					<div class="row" style="padding-top: 8px;">
 						<c:forEach items="${subjectu.answers}" var="node">
 							<div class="col-md-6">
@@ -39,7 +39,7 @@
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!-- 答案检查和阅卷时显示-->
-				<div class="answerVacancyViewBox alert alert-warning"
+				<div class="answerVacancyViewBox"
 					style="height: auto;">
 					<c:forEach items="${subjectu.answers}" var="node">
 						<div>

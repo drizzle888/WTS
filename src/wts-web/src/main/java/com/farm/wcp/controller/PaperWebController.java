@@ -19,6 +19,7 @@ import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.page.ViewMode;
 import com.farm.parameter.FarmParameterService;
 import com.farm.wcp.util.AntiXSS;
+import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,6 +30,7 @@ import com.wts.exam.domain.Room;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
+import com.wts.exam.service.PaperUserOwnServiceInter;
 import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.RoomServiceInter;
 
@@ -49,6 +51,8 @@ public class PaperWebController extends WebUtils {
 	private RoomServiceInter roomServiceImpl;
 	@Resource
 	private CardServiceInter cardServiceImpl;
+	@Resource
+	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
 	private static final Logger log = Logger.getLogger(PaperWebController.class);
 
 	public static String getThemePath() {
@@ -112,7 +116,7 @@ public class PaperWebController extends WebUtils {
 				view.putAttr("CountDownSecond", 0);
 			}
 			return view.putAttr("paper", paper).putAttr("flag", "answer").putAttr("room", room).putAttr("card", card)
-					.returnModelAndView(getThemePath() + "/paper/card");
+					.returnModelAndView(ThemesUtil.getThemePage("pager-cardPage", request));
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
@@ -264,6 +268,35 @@ public class PaperWebController extends WebUtils {
 			}
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
+		}
+	}
+
+	/**
+	 * 收藏题（/取消收藏）
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/book")
+	@ResponseBody
+	public Map<String, Object> book(String roomid, String paperid, Boolean isDo, HttpSession session) {
+		try {
+			LoginUser user = getCurrentUser(session);
+			ViewMode page = ViewMode.getInstance();
+			if (user == null) {
+				throw new RuntimeException("请先登陆用户!");
+			}
+			boolean isBook = false;
+			if (isDo) {
+				// 执行收藏
+				isBook = paperUserOwnServiceImpl.doBook(roomid, paperid, getCurrentUser(session));
+			} else {
+				// 获取状态
+				isBook = paperUserOwnServiceImpl.isBook(paperid, user.getId());
+			}
+			int bookNum = paperServiceImpl.getBookNum(paperid);
+			return page.putAttr("num", bookNum).putAttr("isBook", isBook).returnObjMode();
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 }

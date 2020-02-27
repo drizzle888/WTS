@@ -25,7 +25,7 @@
 						${status.index+1}
 					</td>
 					<td>
-						<a href="webuser/PubHome.do?userid=${node.ID}">${node.NAME}</a>
+						<a href="webuser/Home.do?userid=${node.ID}">${node.NAME}</a>
 					</td>
 					<td>
 						${node.NUM}

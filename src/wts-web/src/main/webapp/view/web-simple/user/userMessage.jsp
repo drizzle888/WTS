@@ -78,7 +78,7 @@
 												style="line-height: 30px; font-size: 14px;">${usermessage.content }</div>
 										</div>
 										<br /> <a class="btn btn-primary"
-											href="webuser/PubHome.do?type=usermessage&num=${num }&userid=${USEROBJ.id}">返回消息列表</a>
+											href="webuser/Home.do?type=usermessage&num=${num }&userid=${USEROBJ.id}">返回消息列表</a>
 									</div>
 								</div>
 							</div>

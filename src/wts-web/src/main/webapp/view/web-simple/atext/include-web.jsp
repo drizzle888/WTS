@@ -15,6 +15,8 @@
 	rel="stylesheet">
 <script src="text/lib/bootstrap/js/bootstrap.min.js"></script>
 <script src="text/lib/bootstrap/respond.min.js"></script>
+<script charset="utf-8"
+	src="<PF:basePath/>text/lib/alert/sweetalert.min.js"></script>
 <link href="view/web-simple/atext/style/web-base.css" rel="stylesheet">
 <link href="view/web-simple/atext/style/web-black.css" rel="stylesheet">
 <link href="view/web-simple/atext/style/wts-app.css" rel="stylesheet">
@@ -67,5 +69,21 @@
 		if (confirm(mgs)) {
 			window.location = basePath + url;
 		}
+	}
+	function pAlert(tip, timenum) {
+		if (timenum) {
+			swal({
+				text : tip,
+				timer : timenum,
+				buttons : false
+			});
+		} else {
+			swal(tip);
+		}
+	}
+	function pClose() {
+		setTimeout(function() {
+			swal.close();
+		}, 200);
 	}
 </script>

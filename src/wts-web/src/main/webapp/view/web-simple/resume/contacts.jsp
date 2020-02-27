@@ -78,7 +78,7 @@
 								<td class="success">${node.QQCODE}</td>
 								<td class="warning">${node.WXCODE}</td>
 								<td align="center"><a
-									href="webuser/PubHome.do?type=comment&userid=${node.USERID}"><span
+									href="webuser/Home.do?type=comment&userid=${node.USERID}"><span
 										class="glyphicon glyphicon-envelope"></span></a></td>
 							</tr>
 						</c:forEach>

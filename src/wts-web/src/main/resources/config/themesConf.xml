@@ -3,7 +3,7 @@
 	<!--1.自定义配置： 当前使用的样式，填themes的id；设置为NONE则不加载个性化样式，沿用版本样式或基础样式 : alwaysLoad，如果為true就每次取值都加載xml，如果為false就只在啟動時加載 -->
 	<!-- ++++++++++++++++++++++++++++++++++++++<<<PC自定义配置>>>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<currentThemes alwaysLoad="true">
-		<pc>version-ult</pc> 
+		<pc>version-ult</pc>
 		<mobile>version-mobile</mobile>
 	</currentThemes>
 	<!-- ++++++++++++++++++++++++++++++++++++++<<<移动端自定义配置>>>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -11,21 +11,26 @@
 		<!-- 移动端配置 -->
 		<page id="error-sys">web-mobile/error</page>
 		<page id="home-indexPage">web-mobile/index</page>
+		<!-- 答题室首页 -->
+		<page id="room-indexPage">web-mobile/exam/examRoom</page>
+		<!-- 答题卡 -->
+		<page id="pager-cardPage">web-mobile/paper/mobile-card</page>
+		<!-- 练习题卡 -->
+		<page id="test-cardPage">web-mobile/subject/mobile-testCard</page>
+		<!-- 用户空间 -->
+		<page id="user-homePage">web-mobile/user/mobile-userHome</page>
 	</themes>
 	<!-- -->
 	<!-- -->
 	<!--2.系统固定配置 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<!-- -->
 	<!-- -->
-	<!-- <<<PC标准版>>> -->
 	<themes id="version-sta">
 		<!-- 标准版空则使用默认配置 -->
 	</themes>
-	<!-- <<<PC专业版>>> -->
 	<themes id="version-pro">
 		<!-- 专业版空则使用默认配置 -->
 	</themes>
-	<!-- <<<PC旗舰版>>> -->
 	<themes id="version-ult">
 		<!-- 站点首页 -->
 	</themes>
@@ -37,6 +42,14 @@
 		<page id="error-sys">web-simple/error</page>
 		<!-- 系统首页 -->
 		<page id="home-indexPage">web-simple/index</page>
+		<!-- 答题室首页 -->
+		<page id="room-indexPage">web-simple/exam/examRoom</page>
+		<!-- 答题卡 -->
+		<page id="pager-cardPage">web-simple/paper/card</page>
+		<!-- 练习题卡 -->
+		<page id="test-cardPage">web-simple/subject/testCard</page>
+		<!-- 用户空间 -->
+		<page id="user-homePage">web-simple/user/userHome</page>
 	</baseThemes>
 	<mobileAgents>
 		<agentKey>iphone</agentKey>

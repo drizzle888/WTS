@@ -39,7 +39,7 @@
 				</c:if>
 				<%@ include file="comment/IncludeLeve1Subjects.jsp"%>
 				<c:forEach items="${chapter1.chapters}" var="chapter2">
-					<div style="padding-left: 20px;">
+					<div>
 						<!-- 二级章節头部 -->
 						<h3>${chapter2.chapter.name}<span class="chapter-info">共${chapter2.subjectNum}道小题，${chapter2.allpoint}分</span>
 						</h3>
@@ -57,7 +57,7 @@
 					</c:if>
 					<%@ include file="comment/IncludeLeve2Subjects.jsp"%>
 					<c:forEach items="${chapter2.chapters}" var="chapter3">
-						<div style="padding-left: 40px;">
+						<div>
 							<!-- 三级章節头部 -->
 							<h4>${chapter3.chapter.name}<span class="chapter-info">共${chapter3.subjectNum}道小题，${chapter3.allpoint}分</span>
 							</h4>

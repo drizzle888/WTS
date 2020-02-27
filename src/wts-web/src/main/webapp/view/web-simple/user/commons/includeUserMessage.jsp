@@ -30,7 +30,7 @@
 					</c:if>
 					<c:if test="${page!=docs.currentPage}">
 						<li><a
-							href="webuser/PubHome.do?type=${type}&num=${page}&userid=${userid}">${page}</a></li>
+							href="webuser/Home.do?type=${type}&num=${page}&userid=${userid}">${page}</a></li>
 					</c:if>
 				</c:forEach>
 			</ul>

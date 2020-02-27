@@ -21,13 +21,24 @@
 					<tr>
 						<td class="title">业务分类:</td>
 						<td><input id="PARENTTITLESUB_RULE" type="text"
-							readonly="readonly" style="background: #F3F3E8"> <input
-							id="PARENTIDSUB_RULE" name="C.TREECODE:like" type="hidden"></td>
+							readonly="readonly" style="background: #F3F3E8; width: 100px;">
+							<input id="PARENTIDSUB_RULE" name="C.TREECODE:like" type="hidden"></td>
+						<td class="title">题型:</td>
+						<td><select name="TIPTYPE:like" style="width: 100px;">
+								<option value=""></option>
+								<option value="1">填空</option>
+								<option value="2">单选</option>
+								<option value="3">多选</option>
+								<option value="4">判断</option>
+								<option value="5">问答</option>
+								<option value="6">附件</option>
+						</select></td>
 						<td class="title">题目:</td>
-						<td><input name="TIPSTR:like" type="text"></td>
+						<td><input name="TIPSTR:like" type="text"
+							style="width: 100px;"></td>
 					</tr>
 					<tr style="text-align: center;">
-						<td colspan="4"><a id="a_search" href="javascript:void(0)"
+						<td colspan="6"><a id="a_search" href="javascript:void(0)"
 							class="easyui-linkbutton" iconCls="icon-search">查询</a> <a
 							id="a_reset" href="javascript:void(0)" class="easyui-linkbutton"
 							iconCls="icon-reload">清除条件</a></td>
@@ -82,8 +93,8 @@
 			<div id="cmm7" style="width: 150px;">
 				<div data-options="iconCls:'icon-edit'" onclick="editDataSubject()">修改
 				</div>
-				<div data-options="iconCls:'icon-remove'" onclick="delDataSubject()">删除
-				</div>
+				<!-- <div data-options="iconCls:'icon-remove'" onclick="delDataSubject()">删除
+				</div> -->
 				<div data-options="iconCls:'icon-communication'"
 					onclick="moveSubjectTypetree()">设置分类</div>
 			</div>
@@ -91,7 +102,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	var funtype='1';
+	var funtype = '1';
 	//查看
 	function chooseSubjects() {
 		chooseSubjectCallback(gridSubject);

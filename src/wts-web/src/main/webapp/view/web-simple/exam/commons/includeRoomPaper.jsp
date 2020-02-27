@@ -10,18 +10,26 @@
 				<div
 					style="text-align: center; border-bottom: 1px dashed #ccc; margin-bottom: 8px; padding-bottom: 0px;">
 					<div class="doc_node_title_box"
-						style="font-size: 16px; white-space: nowrap;">${paper.info.name}</div>
+						style="font-size: 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+						<code style="float: left;">考卷</code>
+						&nbsp;${paper.info.name}
+					</div>
 				</div>
 				<div class="pull-right">
 					<img alt="答题室" style="width: 64px; height: 64px;"
 						src="text/img/paper.png">
 				</div>
 				<div class="media-body">
-					<div style="margin-left: 4px;" class="pull-left">
-
-						<div class="side_unit_info">答题时长：${room.room.timelen}分</div>
-						<div class="side_unit_info">题量：共${paper.rootChapterNum}道大题,${paper.subjectNum}道小题</div>
-						<div class="side_unit_info">总分：${paper.allPoint}</div>
+					<div style="margin-left: 4px; height: 56px; overflow: hidden;"
+						class="pull-left">
+						<div class="side_unit_info"
+							style="max-height: 38px; overflow: hidden;">
+							<b>答题时长</b>：${room.room.timelen}分&nbsp;<b>题量</b>：共${paper.rootChapterNum}道大题&nbsp;${paper.subjectNum}道小题&nbsp;<b>总分</b>：${paper.allPoint}
+						</div>
+						<div style="margin-left: -6px;">
+							<%@ include
+								file="/view/web-simple/exam/commons/includeRoomMenus.jsp"%>
+						</div>
 					</div>
 				</div>
 				<div style="padding-top: 20px;">
@@ -42,7 +50,7 @@
 									<a
 										href="webpaper/card.do?paperid=${paper.info.id}&roomId=${room.room.id}"
 										data-toggle="modal" type="button" class="btn btn-success">继续答题&nbsp;
-										<span style="font-size: 11px;"><PF:FormatTime
+										<span class="exam-dotime" style="font-size: 11px;"><PF:FormatTime
 												date="${paper.card.starttime}" yyyyMMddHHmmss="HH:mm:ss" />-<PF:FormatTime
 												date="${paper.card.endtime}" yyyyMMddHHmmss="HH:mm:ss" /> </span>
 									</a>
@@ -51,7 +59,7 @@
 							<c:if test="${paper.card.pstate=='3'||paper.card.pstate=='4'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-warning" disabled="disabled">已结束&nbsp;<span
-										style="font-size: 11px;"><PF:FormatTime
+										title="答题时间" class="exam-dotime" style="font-size: 11px;"><PF:FormatTime
 												date="${paper.card.starttime}"
 												yyyyMMddHHmmss="yyyy-MM-dd HH:mm:ss" /> - <PF:FormatTime
 												date="${paper.card.endtime}" yyyyMMddHHmmss="HH:mm:ss" /> </span>
@@ -61,7 +69,8 @@
 							<c:if test="${paper.card.pstate=='2'||paper.card.pstate=='5'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-success" disabled="disabled">
-										已完成&nbsp;<span style="font-size: 11px;"><PF:FormatTime
+										已完成&nbsp;<span title="答题时间" class="exam-dotime"
+										style="font-size: 11px;"><PF:FormatTime
 												date="${paper.card.starttime}"
 												yyyyMMddHHmmss="yyyy-MM-dd HH:mm:ss" /> - <PF:FormatTime
 												date="${paper.card.endtime}" yyyyMMddHHmmss="HH:mm:ss" /> </span>
@@ -71,9 +80,10 @@
 							<c:if test="${paper.card.pstate=='6'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-success" disabled="disabled">
-										得分：${paper.card.point}分&nbsp;<span style="font-size: 11px;"><PF:FormatTime
+										得分：${paper.card.point}分&nbsp;<span title="判卷时间"
+										class="exam-dotime" style="font-size: 11px;"><PF:FormatTime
 												date="${paper.card.adjudgetime}"
-												yyyyMMddHHmmss="yyyy-MM-dd HH:mm:ss" /> </span>)
+												yyyyMMddHHmmss="yyyy-MM-dd HH:mm:ss" /></span>
 									</a>
 								</div>
 							</c:if>
@@ -91,7 +101,7 @@
 		</div>
 	</div>
 </div>
-<!-- 开始答题-->
+<!-- 开始答题(弹出窗口)-->
 <div class="modal fade" id="${paper.info.id}-win" tabindex="-1"
 	role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
@@ -133,7 +143,7 @@
 		</div>
 	</div>
 </div>
-<!-- 重新答题-->
+<!-- 重新答题(弹出窗口)-->
 <div class="modal fade" id="${paper.info.id}-restart-win" tabindex="-1"
 	role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">

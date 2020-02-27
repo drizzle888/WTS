@@ -9,7 +9,7 @@
 				<c:if test="${empty unreadMessages}">
 					<a
 						style="font-size: 14px; font-weight: lighter; color: #D9534F; float: right;"
-						href="webuser/PubHome.do?type=usermessage">查看已读消息</a>
+						href="webuser/Home.do?type=usermessage">查看已读消息</a>
 				</c:if>
 			</h3>
 		</div>
@@ -31,7 +31,7 @@
 		<c:if test="${!empty unreadMessages}">
 			<div style="margin: 8px;">
 				<a style="font-size: 14px; float: right; margin-bottom: 6px;"
-					href="webuser/PubHome.do?type=usermessage">查看更多消息</a>
+					href="webuser/Home.do?type=usermessage">查看更多消息</a>
 			</div>
 		</c:if>
 	</div>

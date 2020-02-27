@@ -10,19 +10,25 @@
 				<div
 					style="text-align: center; border-bottom: 1px dashed #ccc; margin-bottom: 8px; padding-bottom: 0px;">
 					<div class="doc_node_title_box"
-						style="font-size: 16px; white-space: nowrap;">
-						<code>随机答题</code>${paper.info.name}</div>
+						style="font-size: 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+						<code style="float: left;">练习</code>
+						&nbsp;${paper.info.name}
+					</div>
 				</div>
 				<div class="pull-right">
 					<img alt="答题室" style="width: 64px; height: 64px;"
 						src="text/img/random.png">
 				</div>
 				<div class="media-body">
-					<div style="margin-left: 4px;" class="pull-left">
-						<div class="side_unit_info">练习题-不限时</div>
-						<div class="side_unit_info">题量：共${paper.subjectNum}道题</div>
-						<div class="side_unit_info">
-							随机出题<code>错题进入用戶错题集</code>
+					<div style="margin-left: 4px; height: 56px; overflow: hidden;"
+						class="pull-left">
+						<div class="side_unit_info"
+							style="max-height: 38px; overflow: hidden;">
+							<b>练习题不限时</b> &nbsp; <b>题量</b>：共${paper.subjectNum}道题 &nbsp; <b>随机出题</b>
+						</div>
+						<div style="margin-left: -6px;">
+							<%@ include
+								file="/view/web-simple/exam/commons/includeRoomMenus.jsp"%>
 						</div>
 					</div>
 				</div>

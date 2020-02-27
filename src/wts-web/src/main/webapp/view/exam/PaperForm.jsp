@@ -24,8 +24,8 @@
 				<tr>
 					<td class="title">考卷类型:</td>
 					<td><select name="modeltype" id="entity_modeltype"
-						val="${entity.modeltype}"><option value="1">手工组卷</option>
-							<option value="2">随机组卷</option><option value="3">随机答题</option></select></td>
+						val="${entity.modeltype}"><option value="1">答卷模式</option>
+							<option value="3">练习模式</option></select></td>
 					<td class="title">业务分类:</td>
 					<td><input type="hidden" style="width: 120px;"
 						id="entity_examtypeid" name="examtypeid"

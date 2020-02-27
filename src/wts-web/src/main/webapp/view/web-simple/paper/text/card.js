@@ -237,11 +237,18 @@ function enCodeFormInput(docObj) {
 }
 // 提交保存一道題的答案
 function submitSubject(jsonStr, versionId) {
+	var timeout_post = setTimeout(function() {
+		alert("数据提交异常,请及时检查网络或联系管理员[p1]!");
+	}, 20000);
 	$.post('webpaper/PubsaveSubjectVal.do', {
 		'paperid' : $('#paperId-Input').val(),
 		'roomid' : $('#roomId-Input').val(),
 		'jsons' : jsonStr
 	}, function(flag) {
+		if (timeout_post) { // 清除定时器
+			clearTimeout(timeout_post);
+			timeout_post = null;
+		}
 		if (flag.STATE == '0') {
 			// 成功 //alert('成功');
 			if (flag.isAnswer) {
@@ -268,6 +275,10 @@ function submitSubject(jsonStr, versionId) {
 }
 // 提交保存试卷的答案
 function submitSavePaper(jsonStr, fun) {
+	// 设置超时提醒用户检查网络
+	var timeout_post = setTimeout(function() {
+		alert("数据提交异常,请及时检查网络或联系管理员[p2]!");
+	}, 20000);
 	$('#sideCardSaveButton').attr('disabled', 'disabled');
 	$('#savePaper-win').modal({
 		backdrop : true,
@@ -280,6 +291,10 @@ function submitSavePaper(jsonStr, fun) {
 		'roomid' : $('#roomId-Input').val(),
 		'jsons' : jsonStr
 	}, function(flag) {
+		if (timeout_post) { // 清除定时器
+			clearTimeout(timeout_post);
+			timeout_post = null;
+		}
 		openLoadingWindows = false;
 		setTimeout(function() {
 			$('#savePaper-win').modal('hide');

@@ -24,7 +24,7 @@
 			</c:if>
 			<c:if test="${flag=='answer'||flag==null}">
 				<!--回答组件 -->
-				<div class="answerVacancyViewBox alert alert-warning">
+				<div class="answerVacancyViewBox">
 					<div class="row" style="padding-top: 8px;">
 						<div class="col-md-6">
 							<div class="form-group has-warning has-feedback">
@@ -96,7 +96,7 @@
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!--回答回显-->
-				<div class="answerVacancyViewBox alert alert-warning"
+				<div class="answerVacancyViewBox"
 					style="height: auto;">
 					<div>
 						<label>附件下载：</label> <a
