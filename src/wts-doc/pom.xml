@@ -57,6 +57,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>com.farm</groupId>
 			<artifactId>wts-lucene</artifactId>
@@ -67,7 +68,7 @@
 					<artifactId>jsp-api</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.farm</groupId>
 			<artifactId>wts-authority</artifactId>
