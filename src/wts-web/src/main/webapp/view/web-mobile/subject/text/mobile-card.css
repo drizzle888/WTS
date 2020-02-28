@@ -1,0 +1,52 @@
+.subjectOrder {
+	display: none;
+}
+
+.subjectPoint {
+	display: none;
+}
+
+.innerTitle {
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.innerTitle img {
+	width: 16px;
+	height: 16px;
+	position: relative;
+	top: -1px;
+}
+
+.innerbox .answerUnit {
+	border-left: 4px solid #6dd46f;
+	margin-bottom: 4px;
+	padding-left: 4px;
+}
+
+.innerbox .analysisUnit {
+	border-left: 4px solid #6dd46f;
+	margin-bottom: 4px;
+	padding-left: 4px;
+}
+
+.innerbox .answerWeight {
+	font-size: 12px;
+	font-weight: 700;
+	margin-left: 20px;
+}
+
+.sub-material {
+	border: 1px dashed #999999;
+	margin: 4px;
+	margin-top: 8px;
+	padding: 12px;
+	background-color: #ffffff;
+}
+
+.wts-paper-forms .subjectUnitViewBox {
+	padding-left: 12px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
