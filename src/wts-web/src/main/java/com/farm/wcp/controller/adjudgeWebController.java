@@ -1,6 +1,7 @@
 package com.farm.wcp.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +31,18 @@ import com.google.gson.JsonParser;
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.Card;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.SubjectAnalysis;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.RoomUnit;
+import com.wts.exam.domain.ex.SubjectUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
+import com.wts.exam.service.MaterialServiceInter;
 import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.ExamPopsServiceInter;
 import com.wts.exam.service.RoomServiceInter;
+import com.wts.exam.service.SubjectAnalysisServiceInter;
+import com.wts.exam.service.SubjectServiceInter;
 
 /**
  * 判卷
@@ -56,6 +63,12 @@ public class adjudgeWebController extends WebUtils {
 	private CardServiceInter cardServiceImpl;
 	@Resource
 	private ExamPopsServiceInter examPopsServiceImpl;
+	@Resource
+	private SubjectServiceInter subjectServiceImpl;
+	@Resource
+	private MaterialServiceInter materialServiceImpl;
+	@Resource
+	private SubjectAnalysisServiceInter SubjectAnalysisServiceImpl;
 	private static final Logger log = Logger.getLogger(adjudgeWebController.class);
 
 	public static String getThemePath() {
@@ -82,6 +95,37 @@ public class adjudgeWebController extends WebUtils {
 			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session));
 			cardServiceImpl.loadPaperUserNum(roomunit);
 			return view.putAttr("room", roomunit).returnModelAndView(getThemePath() + "/adjudge/roomPaper");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
+		}
+	}
+
+	/***
+	 * 加载题解析
+	 * 
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/loadSubjectinfo")
+	public ModelAndView loadSubjectinfo(String subjectId, HttpServletRequest request, HttpSession session) {
+		try {
+			ViewMode view = ViewMode.getInstance();
+			SubjectUnit subjectUnit = subjectServiceImpl
+					.getSubjectUnit(subjectServiceImpl.getSubjectVersionId(subjectId));
+
+			if (StringUtils.isNotBlank(subjectUnit.getSubject().getMaterialid())) {
+				// 如有有引用材料的话f
+				view.putAttr("material",
+						materialServiceImpl.getMaterialEntity(subjectUnit.getSubject().getMaterialid()));
+			}
+			if (subjectUnit.getSubject().getAnalysisnum() > 0) {
+				// 如有解析的話
+				view.putAttr("analysis", (List<SubjectAnalysis>) SubjectAnalysisServiceImpl
+						.getSubjectAnalysies(subjectUnit.getSubject().getId()));
+			}
+
+			return view.putAttr("subjectu", subjectUnit)
+					.returnModelAndView(getThemePath() + "/adjudge/commons/loadSubjectInfo");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}

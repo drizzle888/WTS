@@ -6,7 +6,7 @@
 <c:if
 	test="${(flag=='adjudge'&&(subjectu.cardSubject.complete=='0'||subjectu.cardSubject.complete=='1'))||flag==null}">
 	<!-- 阅卷時顯示标准答案-->
-	<div class="answerRightViewBox"
+	<div class="answerRightViewBox" subjectId="${subjectu.subject.id}"
 		style="height: auto;">
 		<c:forEach items="${subjectu.answers}" var="node" varStatus="status">
 			<c:if test="${subjectu.version.tiptype=='1'}">

@@ -18,7 +18,7 @@
 <jsp:include page="../atext/include-web.jsp"></jsp:include>
 <link href="view/web-simple/paper/text/card.css" rel="stylesheet">
 </head>
-<body>
+<body oncontextmenu="return false"  onselectstart="return false">
 	<jsp:include page="../commons/head.jsp"></jsp:include>
 	<jsp:include page="../commons/superContent.jsp"></jsp:include>
 	<!-- /.carousel -->

@@ -235,7 +235,7 @@
 				return;
 			}
 			// 有数据执行操作
-			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS;
+			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS+"（删除答题室将清除相关全部答题数据包括人员答题得分）";
 			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
 				if (flag) {
 					$(gridRoom).datagrid('loading');

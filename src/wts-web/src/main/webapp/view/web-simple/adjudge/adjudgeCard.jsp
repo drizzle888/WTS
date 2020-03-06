@@ -84,6 +84,7 @@
 			</div>
 		</div>
 	</div>
+	<jsp:include page="commons/includeSubjectInfoWin.jsp"></jsp:include>
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>
 	<jsp:include page="../commons/foot.jsp"></jsp:include>
 	<script src="view/web-simple/adjudge/text/adjudgeCard.js"></script>
