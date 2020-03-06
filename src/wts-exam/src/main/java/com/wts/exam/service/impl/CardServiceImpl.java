@@ -100,6 +100,7 @@ public class CardServiceImpl implements CardServiceInter {
 	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
 	@Resource
 	private ExamStatServiceInter examStatServiceImpl;
+	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(CardServiceImpl.class);
 
 	@Override
@@ -230,7 +231,7 @@ public class CardServiceImpl implements CardServiceInter {
 				// 记录用户答卷记录(匿名房间不记录)
 				if (!room.getWritetype().equals("2")) {
 					paperUserOwnServiceImpl.addDoPaperInfo(card.getId(), currentUser);
-					//計數
+					// 計數
 					examStatServiceImpl.addStartCardNum(card.getId(), currentUser);
 				}
 			}
@@ -803,6 +804,23 @@ public class CardServiceImpl implements CardServiceInter {
 			for (Card card : cards) {
 				deleteCardEntity(card.getId(), user);
 			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteCardsByRoom(String roomid, LoginUser user) {
+		List<Card> cards = cardDaoImpl
+				.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
+		for (Card card : cards) {
+			// 删除答题卡用户答案
+			cardAnswerDaoImpl
+					.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", card.getId(), "=")).toList());
+			// 删除答卷试题得分
+			cardPointDaoImpl
+					.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", card.getId(), "=")).toList());
+			// 删除答题卡
+			cardDaoImpl.deleteEntity(card);
 		}
 	}
 }

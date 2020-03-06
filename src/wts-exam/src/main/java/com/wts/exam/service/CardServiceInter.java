@@ -240,4 +240,10 @@ public interface CardServiceInter {
 	 * @param userid
 	 */
 	public void clearPaperUserCard(String roomid, String paperid, LoginUser user);
+
+	/**删除考场答卷
+	 * @param roomid
+	 * @param user
+	 */
+	public void deleteCardsByRoom(String roomid, LoginUser user);
 }

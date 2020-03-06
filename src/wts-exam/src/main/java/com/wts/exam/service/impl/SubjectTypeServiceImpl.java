@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.wts.exam.dao.SubjectDaoInter;
+import com.wts.exam.dao.SubjectPopDaoInter;
 import com.wts.exam.dao.SubjectTypeDaoInter;
 import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.SubjectTypeServiceInter;
@@ -42,6 +43,8 @@ public class SubjectTypeServiceImpl implements SubjectTypeServiceInter {
 	private SubjectServiceInter subjectServiceImpl;
 	@Resource
 	private SubjectDaoInter subjectDaoImpl;
+	@Resource
+	private SubjectPopDaoInter subjectpopDaoImpl;
 	private static final Logger log = Logger.getLogger(SubjectTypeServiceImpl.class);
 
 	@Override
@@ -125,6 +128,7 @@ public class SubjectTypeServiceImpl implements SubjectTypeServiceInter {
 				subjectServiceImpl.deleteSubjectEntity(subject.getId(), user);
 			}
 		}
+		subjectpopDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("TYPEID", id, "=")).toList());
 		subjecttypeDaoImpl.deleteEntity(subjecttypeDaoImpl.getEntity(id));
 	}
 

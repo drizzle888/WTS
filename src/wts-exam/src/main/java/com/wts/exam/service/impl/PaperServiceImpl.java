@@ -461,12 +461,12 @@ public class PaperServiceImpl implements PaperServiceInter {
 			// 过滤题库分类
 			if (typeid != null && !typeid.equals("NONE")) {
 				SubjectType type = subjecttypeDaoImpl.getEntity(typeid);
-				query.setSqlRule("and a.TREECODE like '" + type.getTreecode() + "%' ");
+				query.addSqlRule("and a.TREECODE like '" + type.getTreecode() + "%' ");
 			}
 		}
 		{
 			// 过滤题型
-			query.setSqlRule("and b.id is not null and b.PSTATE='1' and c.TIPTYPE='" + tiptype + "'");
+			query.addSqlRule("and b.id is not null and b.PSTATE='1' and c.TIPTYPE='" + tiptype + "'");
 		}
 		{
 			// 过滤权限

@@ -10,6 +10,8 @@ import com.farm.web.easyui.EasyUiTreeNode;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import com.wts.exam.dao.ExamPopDaoInter;
 import com.wts.exam.dao.ExamTypeDaoInter;
 import com.wts.exam.dao.PaperDaoInter;
 import com.wts.exam.dao.RoomDaoInter;
@@ -52,6 +54,8 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 	private PaperDaoInter paperDaoImpl;
 	@Resource
 	private RoomDaoInter roomDaoImpl;
+	@Resource
+	private ExamPopDaoInter exampopDaoImpl;
 	@Resource
 	private RoomServiceInter roomServiceImpl;
 	private static final Logger log = Logger.getLogger(ExamTypeServiceImpl.class);
@@ -116,7 +120,7 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 			List<Paper> papers = paperDaoImpl
 					.selectEntitys(DBRuleList.getInstance().add(new DBRule("EXAMTYPEID", id, "=")).toList());
 			if (papers.size() > 0) {
-				throw new RuntimeException("分类下还有题卷，请先删除或移动题卷！");
+				throw new RuntimeException("分类下还有答卷，请先删除或移动答卷！");
 			}
 		}
 		{
@@ -125,7 +129,8 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 			if (rooms.size() > 0) {
 				throw new RuntimeException("分类下还有答题室，请先删除或移动答题室！");
 			}
-		}
+		} 
+		exampopDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("TYPEID", id, "=")).toList());
 		examtypeDaoImpl.deleteEntity(examtypeDaoImpl.getEntity(id));
 	}
 

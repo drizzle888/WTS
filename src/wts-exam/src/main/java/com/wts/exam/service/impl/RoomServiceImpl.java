@@ -134,9 +134,12 @@ public class RoomServiceImpl implements RoomServiceInter {
 		// 删除参考人员和考场试卷
 		roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 		roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
+		cardServiceImpl.deleteCardsByRoom(id, user);
 		roomDaoImpl.deleteEntity(roomDaoImpl.getEntity(id));
 		farmFileManagerImpl.cancelFilesByApp(id);
 	}
+	
+	
 
 	@Override
 	@Transactional
