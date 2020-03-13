@@ -54,6 +54,7 @@ public class ActionController extends WebUtils {
 			result.runDictionary("1:是,0:否", "CHECKIS");
 			result.runDictionary("1:是,0:否", "LOGINIS");
 			result.runDictionary("1:可用,0:不可用", "STATE");
+			result.runformatTime("UTIME", "yyyy-MM-dd HH:mm");
 			return ViewMode.getInstance()
 					.putAttrs(EasyUiUtils.formatGridData(result))
 					.returnObjMode();
