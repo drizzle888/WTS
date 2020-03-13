@@ -98,14 +98,6 @@ public interface CardServiceInter {
 	public boolean saveCardVal(Card card, String versionid, String answerid, String value);
 
 	/**
-	 * 结束考试(用户主动结束考试，或判卷人强制收卷)
-	 * 
-	 * @param cardId
-	 * @param currentUser
-	 */
-	public void finishExam(String cardId, LoginUser currentUser);
-
-	/**
 	 * 汇总答題卡總分
 	 * 
 	 * @param card
@@ -155,19 +147,6 @@ public interface CardServiceInter {
 	 * @return 是否全部完成计算（如果全部都是选择题或判断题就可以全部完成计算）
 	 */
 	public boolean runPointCount(List<SubjectUnit> userSubjects, Card card);
-
-	/**
-	 * 获得考场试卷的人员信息
-	 * 
-	 * @param roomId
-	 *            房间id
-	 * @param paperid
-	 *            试卷id
-	 * @param query
-	 *            查询条件
-	 * @return
-	 */
-	public DataResult getRoomPaperUsers(String roomId, String paperid, DataQuery query);
 
 	/**
 	 * 加载考卷的得分到试卷中，判卷的时候会用
@@ -241,9 +220,74 @@ public interface CardServiceInter {
 	 */
 	public void clearPaperUserCard(String roomid, String paperid, LoginUser user);
 
-	/**删除考场答卷
+	/**
+	 * 删除考场答卷
+	 * 
 	 * @param roomid
 	 * @param user
 	 */
 	public void deleteCardsByRoom(String roomid, LoginUser user);
+
+	/**
+	 * 获得用户在某个房间答过的卷子(当前房间的答卷，历史的不算)
+	 * 
+	 * @param roomid
+	 * @param userid
+	 * @return
+	 */
+	public List<String> getUserPaperidsByRoom(String roomid, String userid);
+
+	/**
+	 * 获得考场试卷的人员信息
+	 * 
+	 * @param roomId
+	 *            房间id
+	 * @param paperid
+	 *            试卷id
+	 * @param query
+	 *            查询条件
+	 * @return
+	 */
+	public DataResult getRoomPaperUsers(String roomId, String paperid, DataQuery query);
+
+	/**
+	 * 获得考场的人员信息（合并考場中全部試卷）
+	 * 
+	 * @param roomId
+	 * @param query
+	 * @return
+	 */
+	public DataResult getRoomUsers(String roomId, DataQuery query);
+
+	/**
+	 * 获得房间的所有答题卡
+	 * 
+	 * @param roomid
+	 * @return
+	 */
+	public List<Card> getRoomCards(String roomid);
+
+	/**
+	 * 结束考试(用户主动结束考试，或判卷人强制收卷)(不判断权限)
+	 * 
+	 * @param id
+	 * @param currentUser
+	 */
+	public void finishExamNoPop(String id, LoginUser currentUser);
+
+	/**
+	 * 结束考试(用户主动结束考试，或判卷人强制收卷)(判断权限，只有判卷人和本人可以收卷或交卷)
+	 * 
+	 * @param cardId
+	 * @param currentUser
+	 */
+	public void finishExam(String cardId, LoginUser currentUser);
+
+	/**
+	 * 删除答题室的所有答题卡
+	 * 
+	 * @param roomid
+	 * @param currentUser
+	 */
+	public void clearRoomCard(String roomid, LoginUser currentUser);
 }

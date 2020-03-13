@@ -81,4 +81,12 @@ public interface ExamPopsServiceInter {
 	 * @return
 	 */
 	boolean isJudger(String roomId, LoginUser currentUser);
+	/**
+	 * 判断是管理人
+	 * 
+	 * @param roomId
+	 * @param currentUser
+	 * @return
+	 */
+	boolean isManager(String roomId, LoginUser currentUser);
 }

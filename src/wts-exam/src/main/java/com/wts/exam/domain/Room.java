@@ -71,6 +71,37 @@ public class Room implements java.io.Serializable {
 	private String restarttype;
 	@Column(name = "IMGID", length = 32)
 	private String imgid;
+	@Column(name = "SSORTTYPE", length = 2, nullable = false)
+	private String ssorttype;
+	@Column(name = "OSORTTYPE", length = 2, nullable = false)
+	private String osorttype;
+	@Column(name = "PSHOWTYPE", length = 2, nullable = false)
+	private String pshowtype;
+	
+	public String getSsorttype() {
+		return ssorttype;
+	}
+
+	public void setSsorttype(String ssorttype) {
+		this.ssorttype = ssorttype;
+	}
+
+	public String getOsorttype() {
+		return osorttype;
+	}
+
+	public void setOsorttype(String osorttype) {
+		this.osorttype = osorttype;
+	}
+
+	public String getPshowtype() {
+		return pshowtype;
+	}
+
+	public void setPshowtype(String pshowtype) {
+		this.pshowtype = pshowtype;
+	}
+
 	public String getRestarttype() {
 		return restarttype;
 	}

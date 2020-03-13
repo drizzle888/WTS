@@ -13,9 +13,12 @@ import com.wts.exam.domain.ex.TipType;
 import com.farm.core.time.TimeTool;
 import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
+import com.farm.parameter.FarmParameterService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
 import com.wts.exam.dao.PaperDaoInter;
 import com.wts.exam.dao.PaperChapterDaoInter;
 import com.wts.exam.dao.PaperSubjectDaoInter;
@@ -32,6 +35,7 @@ import com.wts.exam.service.SubjectAnswerServiceInter;
 import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.SubjectTypeServiceInter;
 import com.wts.exam.service.SubjectVersionServiceInter;
+import com.wts.exam.utils.WordPaperCreator;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DBSort;
@@ -43,6 +47,10 @@ import com.farm.core.sql.result.ResultsHandle;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -423,7 +431,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 		if (allsubs.size() < catchNum) {
 			// 题不够取
 			catchNum = allsubs.size();
-			warnTip = warnTip + "分类下题量不足(" + catchNum + ")";
+			warnTip = warnTip + "题库分类【" + typeid + "】下题量不足(" + catchNum + ")";
 		}
 		// 抽取随机题
 		for (; catchNum > 0; catchNum--) {
@@ -506,4 +514,57 @@ public class PaperServiceImpl implements PaperServiceInter {
 		papersubjectDaoImpl.deleteEntitys(rules);
 		paperchapterDaoImpl.deleteEntitys(rules);
 	}
+
+	/**
+	 * 獲得用戶答卷下載的臨時文件
+	 * 
+	 * @param user
+	 * @return
+	 */
+	private File getUserPaperFile(LoginUser user) {
+		// 附件根目錄
+		String fileDirPath = FarmParameterService.getInstance().getParameter("config.doc.dir");
+		// 附件用戶臨時目錄
+		String uesrDirPath = fileDirPath + File.separator + "user" + user.getId();
+		new File(uesrDirPath).mkdirs();
+		// 答卷臨時文件
+		String papaerFilePath = uesrDirPath + File.separator + "paper.docx";
+		File papaerFile = new File(papaerFilePath);
+		if (papaerFile.exists()) {
+			papaerFile.delete();
+		}
+		return papaerFile;
+	}
+
+	@Override
+	@Transactional
+	public File exprotWord(PaperUnit paper, LoginUser user) {
+		// 获取一个空得docx文件
+		File papaerFile = getUserPaperFile(user);
+		FileOutputStream out = null;
+		XWPFDocument document = null;
+		try {
+			document = new XWPFDocument();
+			out = new FileOutputStream(papaerFile);
+			WordPaperCreator.initWordPaper(document, paper);
+			document.write(out);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				document.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return papaerFile;
+	}
+
 }

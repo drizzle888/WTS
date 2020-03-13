@@ -2,6 +2,7 @@ package com.wts.exam.service;
 
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.RoomUnit;
 import com.farm.core.sql.query.DataQuery;
 
@@ -85,9 +86,11 @@ public interface RoomServiceInter {
 	 * 
 	 * @param roomid
 	 * @param loginUser
+	 * @param isShuffle
+	 *            是否允许随机抽卷（当判卷获取答卷时用false，因为判卷要显示全部答卷）
 	 * @return
 	 */
-	public RoomUnit getRoomUnit(String roomid, LoginUser loginUser);
+	public RoomUnit getRoomUnit(String roomid, LoginUser loginUser, boolean isShuffle);
 
 	/**
 	 * 房间是否在答题时间
@@ -158,9 +161,44 @@ public interface RoomServiceInter {
 	 */
 	public boolean isHaveEffectiveAnswer(String roomid);
 
-	/**检查考场是否有阅卷人
+	/**
+	 * 检查考场是否有阅卷人
+	 * 
 	 * @param roomid
 	 * @return
 	 */
 	public boolean isHaveAdjudger(String roomid);
+
+	/**
+	 * 按照房间配置打乱题顺序
+	 * 
+	 * @param paper
+	 * @param roomId
+	 */
+	public void disorganizePaper(PaperUnit paper, String roomId);
+
+	/**
+	 * 結束答題（前台可见，但是不允许答题）
+	 * 
+	 * @param roomid
+	 * @param currentUser
+	 */
+	public void finishRoom(String roomid, LoginUser currentUser);
+
+	/**
+	 * 数据归档到历史表并清空答题卡
+	 * 
+	 * @param id
+	 * @param currentUser
+	 * @throws Exception
+	 */
+	public void backupRoom(String roomid, LoginUser currentUser) throws Exception;
+
+	/**
+	 * 获得房间的所有答卷
+	 * 
+	 * @param roomid
+	 * @return
+	 */
+	public List<String> getPapers(String roomid);
 }

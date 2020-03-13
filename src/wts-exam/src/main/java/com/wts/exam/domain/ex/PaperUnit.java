@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.RoomPaper;
 import com.wts.exam.domain.Card;
 
 /**
@@ -21,6 +22,12 @@ public class PaperUnit implements java.io.Serializable {
 	 * 考卷信息
 	 */
 	private Paper info;
+
+	/**
+	 * 答题室答卷
+	 */
+	private RoomPaper roomPaper;
+
 	/**
 	 * 考场
 	 */
@@ -57,13 +64,11 @@ public class PaperUnit implements java.io.Serializable {
 	 * 当前参考人员
 	 */
 	private int currentUserNum;
-	
+
 	/**
 	 * 已经完成阅卷人员
 	 */
 	private int adjudgeUserNum;
-	
-	
 
 	public int getAdjudgeUserNum() {
 		return adjudgeUserNum;
@@ -92,6 +97,14 @@ public class PaperUnit implements java.io.Serializable {
 	public int getRootChapterNum() {
 		return rootChapterNum;
 	}
+	
+	public RoomPaper getRoomPaper() {
+		return roomPaper;
+	}
+
+	public void setRoomPaper(RoomPaper roomPaper) {
+		this.roomPaper = roomPaper;
+	}
 
 	public void setRootChapterNum(int rootChapterNum) {
 		this.rootChapterNum = rootChapterNum;
@@ -100,7 +113,7 @@ public class PaperUnit implements java.io.Serializable {
 	public int getSubjectNum() {
 		return subjectNum;
 	}
-	
+
 	public Room getRoom() {
 		return room;
 	}

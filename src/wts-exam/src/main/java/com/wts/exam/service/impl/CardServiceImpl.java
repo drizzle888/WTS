@@ -6,6 +6,7 @@ import com.wts.exam.domain.Card;
 import com.wts.exam.domain.CardPoint;
 import com.wts.exam.domain.PaperSubject;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.RoomPaper;
 import com.wts.exam.domain.SubjectAnswer;
 import com.wts.exam.domain.SubjectVersion;
 import com.wts.exam.domain.ex.AnswerUnit;
@@ -52,9 +53,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -290,38 +293,6 @@ public class CardServiceImpl implements CardServiceInter {
 
 	@Override
 	@Transactional
-	public void finishExam(String cardId, LoginUser currentUser) {
-		Card card = cardDaoImpl.getEntity(cardId);
-		{
-			// 数据校验
-			if (!card.getUserid().equals(currentUser.getId())
-					&& examPopsServiceImpl.isNotJudger(card.getRoomid(), currentUser)) {
-				throw new RuntimeException("答题卡用户非当前用户和判卷人!");
-			}
-			if (!card.getPstate().equals("1") && !card.getPstate().equals("3")) {
-				// 非答题状态，不用交卷
-				return;
-			}
-		}
-
-		if (isAnswerAble(card)) {
-			// 在答题时间内，手动交卷
-			card.setPstate("2");
-			card.setEndtime(TimeTool.getTimeDate14());
-		} else {
-			// 非答题时间内，自动强制交卷
-			card.setPstate("4");
-		}
-		{// 计算得分(回填用戶完成題的數量)
-			CardInfo info = autoCountCardPoint(cardId, currentUser);
-			card.setCompletenum(info.getCompleteNum());
-			card.setAllnum(info.getAllNum());
-		}
-		cardDaoImpl.editEntity(card);
-	}
-
-	@Override
-	@Transactional
 	public float getCardPointSum(Card card) {
 		List<CardPoint> cardSubs = cardPointDaoImpl
 				.selectEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", card.getId(), "=")).toList());
@@ -447,12 +418,15 @@ public class CardServiceImpl implements CardServiceInter {
 			// <题版本id，题对象>
 			Map<String, SubjectUnit> subjectMap = new HashMap<>();
 			for (SubjectVersion version : versions) {
-				// 构造试题字典
-				SubjectUnit unit = new SubjectUnit();
-				unit.setVersion(version);
-				unit.setTipType(TipType.getTipType(version.getTiptype()));
-				unit.setAnswers(new ArrayList<AnswerUnit>());
-				subjectMap.put(version.getId(), unit);
+				if (version != null && version.getId() != null) {
+					// 构建答卷时可能试题已经不存在了
+					// 构造试题字典
+					SubjectUnit unit = new SubjectUnit();
+					unit.setVersion(version);
+					unit.setTipType(TipType.getTipType(version.getTiptype()));
+					unit.setAnswers(new ArrayList<AnswerUnit>());
+					subjectMap.put(version.getId(), unit);
+				}
 			}
 			Map<String, List<CardAnswer>> answerValsMap = new HashMap<>();
 			for (CardAnswer answer : panswers) {
@@ -627,43 +601,63 @@ public class CardServiceImpl implements CardServiceInter {
 	public DataResult getRoomPaperUsers(final String roomId, final String paperid, DataQuery query) {
 		final Room room = roomDaoImpl.getEntity(roomId);
 		// 用户名称，得分，判卷人，判卷时间，答题开始时间，答题交卷时间，状态
+		if (StringUtils.isNotBlank(paperid)) {
+			DataQuerys.wipeVirus(paperid);
+		}
 		DataQuery thisQuery = null;
 		if (room.getWritetype().equals("1")) {
+			String paperRule = "";
+			if (StringUtils.isNotBlank(paperid)) {
+				paperRule = "and B.PAPERID = '" + paperid + "'";
+			}
 			// /1指定人
 			thisQuery = DataQuery.init(query,
-					"WTS_ROOM_USER a LEFT JOIN WTS_CARD b ON a.USERID = b.USERID AND a.ROOMID = b.ROOMID and B.PAPERID = '"
-							+ paperid + "'  LEFT JOIN alone_auth_user c ON c.ID = a.USERID",
-					"c. NAME AS NAME,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+					"WTS_ROOM_USER a LEFT JOIN WTS_CARD b ON a.USERID = b.USERID AND a.ROOMID = b.ROOMID " + paperRule
+							+ "  LEFT JOIN alone_auth_user c ON c.ID = a.USERID LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
+					"c. NAME AS NAME,d.NAME as PAPERNAME,d.id as PAPERID,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
 			thisQuery.addRule(new DBRule("A.ROOMID", roomId, "="));
-			DataQuerys.wipeVirus(paperid);
 		}
 		if (room.getWritetype().equals("0")) {
 			// 0任何人
-			thisQuery = DataQuery.init(query, "WTS_CARD b  LEFT JOIN alone_auth_user c ON c.ID = b.USERID",
-					"c. NAME AS NAME,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
-			thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
+			thisQuery = DataQuery.init(query,
+					"WTS_CARD b  LEFT JOIN alone_auth_user c ON c.ID = b.USERID LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
+					"c. NAME AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,d.id as PAPERID,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+			if (StringUtils.isNotBlank(paperid)) {
+				thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
+			}
 			thisQuery.addRule(new DBRule("B.ROOMID", roomId, "="));
 		}
 		if (room.getWritetype().equals("2")) {
 			// 2匿名用戶（userid是一個伪id）
-			thisQuery = DataQuery.init(query, "WTS_CARD b ",
-					"b.USERID AS NAME,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,B.USERID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
-			thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
+			thisQuery = DataQuery.init(query, "WTS_CARD b LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
+					"b.USERID AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,d.id as PAPERID,b.ALLNUM as ALLNUM,B.USERID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+			if (StringUtils.isNotBlank(paperid)) {
+				thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
+			}
 			thisQuery.addRule(new DBRule("B.ROOMID", roomId, "="));
 		}
 		try {
 			thisQuery.addDefaultSort(new DBSort("B.STARTTIME", "ASC"));
 			DataResult roomPaperUsers = thisQuery.search();
 			roomPaperUsers.runHandle(new ResultsHandle() {
-				// 处理答题且超时的答题卡，设置未超时未提交的状态
 				@Override
 				public void handle(Map<String, Object> row) {
+					// 处理答题且超时的答题卡，设置未超时未提交的状态
 					if (row.get("PSTATE") != null && row.get("PSTATE").equals("1")
 							&& StringUtils.isNotBlank((String) row.get("USERID"))) {
-						Card card = loadCard(paperid, roomId, (String) row.get("USERID"));
-						row.put("PSTATE", card.getPstate());
-						row.put("PSTATETITLE", card.getPstate());
+						Card card = null;
+						if (StringUtils.isNotBlank(paperid)) {
+							card = loadCard(paperid, roomId, (String) row.get("USERID"));
+						}
+						if (StringUtils.isNotBlank((String) row.get("CARDID"))) {
+							card = getCardEntity((String) row.get("CARDID"));
+						}
+						if (card != null) {
+							row.put("PSTATE", card.getPstate());
+							row.put("PSTATETITLE", card.getPstate());
+						}
 					}
+					// 处理匿名用户的名称
 					if (room.getWritetype().equals("2")) {
 						row.put("NAME", ((String) row.get("NAME")).replaceAll("ANONYMOUS", "匿名"));
 					}
@@ -681,6 +675,7 @@ public class CardServiceImpl implements CardServiceInter {
 		Card card = getCardEntity(cardid);
 		Room room = roomDaoImpl.getEntity(card.getRoomid());
 		List<SubjectUnit> subjects = loadUserSubjects(card);
+		// 此处主要慢
 		boolean isAllComplete = runPointCount(subjects, card);
 		// 如果题目全部判完，就把考卷状态设置为已经阅卷完成的状态
 		if (isAllComplete) {
@@ -821,6 +816,93 @@ public class CardServiceImpl implements CardServiceInter {
 					.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", card.getId(), "=")).toList());
 			// 删除答题卡
 			cardDaoImpl.deleteEntity(card);
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<String> getUserPaperidsByRoom(String roomid, String userid) {
+		Set<String> roompaperIds = new HashSet<>();
+		{
+			// 房间当前有的答卷（房间有可能有历史答卷，用户之前答卷但是后来被从房间删除了）
+			List<RoomPaper> papers = roompaperDaoImpl
+					.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
+
+			for (RoomPaper paper : papers) {
+				roompaperIds.add(paper.getPaperid());
+			}
+		}
+		List<Card> list = cardDaoImpl.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "="))
+				.add(new DBRule("USERID", userid, "=")).toList());
+		List<String> ids = new ArrayList<>();
+		for (Card card : list) {
+			if (roompaperIds.contains(card.getPaperid())) {
+				// 只传出当前房间有的答卷
+				ids.add(card.getPaperid());
+			}
+		}
+		return ids;
+	}
+
+	@Override
+	@Transactional
+	public DataResult getRoomUsers(String roomId, DataQuery query) {
+		return getRoomPaperUsers(roomId, null, query);
+	}
+
+	@Override
+	@Transactional
+	public List<Card> getRoomCards(String roomid) {
+		List<Card> list = cardDaoImpl
+				.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public void finishExam(String cardId, LoginUser currentUser) {
+		Card card = cardDaoImpl.getEntity(cardId);
+		{
+			// 数据校验
+			if (!card.getUserid().equals(currentUser.getId())
+					&& examPopsServiceImpl.isNotJudger(card.getRoomid(), currentUser)) {
+				throw new RuntimeException("答题卡用户非当前用户和判卷人!");
+			}
+			if (!card.getPstate().equals("1") && !card.getPstate().equals("3")) {
+				// 非答题状态，不用交卷
+				return;
+			}
+		}
+		finishExamNoPop(cardId, currentUser);
+	}
+
+	@Override
+	@Transactional
+	public void finishExamNoPop(String cardid, LoginUser currentUser) {
+		Card card = cardDaoImpl.getEntity(cardid);
+		if (isAnswerAble(card)) {
+			// 在答题时间内，手动交卷
+			card.setPstate("2");
+			card.setEndtime(TimeTool.getTimeDate14());
+		} else {
+			// 非答题时间内，自动强制交卷
+			card.setPstate("4");
+		}
+		{// 计算得分(回填用戶完成題的數量)
+			CardInfo info = autoCountCardPoint(cardid, currentUser);
+			card.setCompletenum(info.getCompleteNum());
+			card.setAllnum(info.getAllNum());
+		}
+		cardDaoImpl.editEntity(card);
+	}
+
+	@Override
+	@Transactional
+	public void clearRoomCard(String roomid, LoginUser currentUser) {
+		List<DBRule> rules = DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList();
+		List<Card> cards = cardDaoImpl.selectEntitys(rules);
+		for (Card card : cards) {
+			deleteCardEntity(card.getId(), currentUser);
 		}
 	}
 }

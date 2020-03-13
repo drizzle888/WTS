@@ -19,6 +19,8 @@ public interface SubjectUserOwnServiceInter {
 	 * 
 	 * @param subjectid
 	 * @param isRight
+	 * @param cardId
+	 *            可以爲空（因为随机练习的题没有答题卡）
 	 * @param user
 	 */
 	public void addFinishSubject(String subjectid, Boolean isRight, String cardId, LoginUser user);

@@ -30,6 +30,7 @@ import com.wts.exam.dao.SubjectTypeDaoInter;
 import com.wts.exam.dao.SubjectUserOwnDaoInter;
 import com.wts.exam.dao.SubjectVersionDaoInter;
 import com.wts.exam.service.SubjectServiceInter;
+import com.wts.exam.utils.SubjectUnitCaches;
 import com.wts.exam.service.SubjectAnswerServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
@@ -95,6 +96,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		// --------------------------------------------------
 		farmFileManagerImpl.submitFileByAppHtml(entity.getTipnote(), entity.getId(), FILE_APPLICATION_TYPE.SUBJECTNOTE);
 		updateAnswered(entity2.getSubjectid());
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 		return entity2;
 	}
 
@@ -193,6 +196,10 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	@Override
 	@Transactional
 	public SubjectUnit getSubjectUnit(String versionId) {
+		if (SubjectUnitCaches.get(versionId) != null) {
+			// 抓取缓存
+			return SubjectUnitCaches.get(versionId);
+		}
 		SubjectUnit unit = new SubjectUnit();
 		unit.setVersion(subjectversionDaoImpl.getEntity(versionId));
 		unit.setSubject(subjectDaoImpl.getEntity(unit.getVersion().getSubjectid()));
@@ -215,6 +222,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 			}
 		});
 		SubjectUnit newunit = (SubjectUnit) FarmUtils.deepCopy(unit);
+		// 写入缓存
+		SubjectUnitCaches.put(versionId, newunit);
 		return newunit;
 	}
 
@@ -225,6 +234,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 			Subject entity2 = subjectDaoImpl.getEntity(subjectId);
 			entity2.setTypeid(typeId);
 			subjectDaoImpl.editEntity(entity2);
+			// 更新缓存
+			SubjectUnitCaches.refresh(entity2.getVersionid());
 		}
 	}
 
@@ -336,6 +347,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 			version.setAnswered("0");
 		}
 		subjectversionDaoImpl.editEntity(version);
+		// 更新缓存
+		SubjectUnitCaches.refresh(versionId);
 	}
 
 	@Override
@@ -344,6 +357,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectId);
 		subject.setMaterialid(materialId);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 	}
 
 	@Override
@@ -352,6 +367,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectId);
 		subject.setMaterialid(null);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 	}
 
 	@Override
@@ -391,6 +408,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectid);
 		subject.setAnalysisnum(num);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 		return num;
 	}
 
@@ -413,6 +432,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 			subject.setPraisenum(subject.getPraisenum() - 1);
 		}
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 		return subject.getPraisenum();
 	}
 
@@ -424,6 +445,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectid);
 		subject.setCommentnum(num);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 		return num;
 	}
 
@@ -433,6 +456,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectid);
 		subject.setDonum(subject.getDonum() + 1);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 	}
 
 	@Override
@@ -441,5 +466,7 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		Subject subject = subjectDaoImpl.getEntity(subjectid);
 		subject.setRightnum(subject.getRightnum() + 1);
 		subjectDaoImpl.editEntity(subject);
+		// 更新缓存
+		SubjectUnitCaches.refresh(subject.getVersionid());
 	}
 }

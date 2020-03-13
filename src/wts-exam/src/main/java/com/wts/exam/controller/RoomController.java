@@ -74,10 +74,13 @@ public class RoomController extends WebUtils {
 				}
 			}
 			DataResult result = roomServiceImpl.createRoomSimpleQuery(query).search();
+			result.runDictionary("1:固定,2:随机", "SSORTTYPE");
+			result.runDictionary("1:固定,2:随机", "OSORTTYPE");
+			result.runDictionary("1:全部,2:随机一套", "PSHOWTYPE");
 			result.runDictionary("1:永久,2:限时", "TIMETYPE");
 			result.runDictionary("1:指定人员,0:任何人员,2:匿名答题", "WRITETYPETITLE");
 			result.runDictionary("1:自动/人工,2:自动,3:人工", "COUNTTYPE");
-			result.runDictionary("1:新建,2:发布,0:禁用", "PSTATETITLE");
+			result.runDictionary("1:新建,2:发布,0:停用,3:结束,4:归档", "PSTATETITLE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -202,6 +205,45 @@ public class RoomController extends WebUtils {
 		}
 	}
 
+	/**
+	 * 结束答题
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/finish")
+	@ResponseBody
+	public Map<String, Object> finish(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				roomServiceImpl.finishRoom(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+	
+	/**
+	 * 数据归档
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/backup")
+	@ResponseBody
+	public Map<String, Object> backup(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				roomServiceImpl.backupRoom(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+	
+	
 	/**
 	 * 考试禁用
 	 * 

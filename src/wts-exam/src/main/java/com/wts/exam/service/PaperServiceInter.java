@@ -6,6 +6,7 @@ import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.SubjectUnit;
 import com.farm.core.sql.query.DataQuery;
 
+import java.io.File;
 import java.util.List;
 
 import com.farm.core.auth.domain.LoginUser;
@@ -173,4 +174,12 @@ public interface PaperServiceInter {
 	 * @param paperid
 	 */
 	public void clearPaper(String paperid);
+
+	/**
+	 * 将答卷导出为word
+	 * 
+	 * @param paper
+	 * @return
+	 */
+	public File exprotWord(PaperUnit paper, LoginUser user);
 }

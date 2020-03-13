@@ -6,8 +6,10 @@ import com.wts.exam.domain.Card;
 import com.wts.exam.domain.Room;
 import com.wts.exam.domain.RoomPaper;
 import com.wts.exam.domain.RoomUser;
+import com.wts.exam.domain.ex.ChapterUnit;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.RoomUnit;
+import com.wts.exam.domain.ex.SubjectUnit;
 import com.farm.core.time.TimeTool;
 import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
@@ -21,6 +23,7 @@ import com.wts.exam.dao.RoomDaoInter;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.dao.RoomUserDaoInter;
 import com.wts.exam.service.PaperServiceInter;
+import com.wts.exam.service.CardHisServiceInter;
 import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.ExamPopsServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
@@ -33,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +77,8 @@ public class RoomServiceImpl implements RoomServiceInter {
 	private FarmFileManagerInter farmFileManagerImpl;
 	@Resource
 	private ExamTypeServiceInter examTypeServiceImpl;
+	@Resource
+	private CardHisServiceInter cardHisServiceImpl;
 	private static final Logger log = Logger.getLogger(RoomServiceImpl.class);
 
 	@Override
@@ -87,6 +93,9 @@ public class RoomServiceImpl implements RoomServiceInter {
 		if (StringUtils.isBlank(entity.getExamtypeid())) {
 			entity.setExamtypeid(null);
 		}
+		if (StringUtils.isBlank(entity.getPstate())) {
+			entity.setPstate("1");
+		}
 		entity = roomDaoImpl.insertEntity(entity);
 		// --------------------------------------------------
 		farmFileManagerImpl.submitFileByAppHtml(entity.getRoomnote(), entity.getId(), FILE_APPLICATION_TYPE.ROOMNOTE);
@@ -97,9 +106,6 @@ public class RoomServiceImpl implements RoomServiceInter {
 	@Transactional
 	public Room editRoomEntity(Room entity, LoginUser user) {
 		Room entity2 = roomDaoImpl.getEntity(entity.getId());
-		// entity2.setEuser(user.getId());
-		// entity2.setEusername(user.getName());
-		// entity2.setEtime(TimeTool.getTimeDate14());
 		entity2.setCounttype(entity.getCounttype());
 		entity2.setRoomnote(entity.getRoomnote());
 		entity2.setTimelen(entity.getTimelen());
@@ -112,7 +118,12 @@ public class RoomServiceImpl implements RoomServiceInter {
 		entity2.setEtime(TimeTool.getTimeDate14());
 		entity2.setEusername(user.getName());
 		entity2.setEuser(user.getId());
-		entity2.setPstate(entity.getPstate());
+		if (StringUtils.isNotBlank(entity.getPstate())) {
+			entity2.setPstate(entity.getPstate());
+		}
+		entity2.setPshowtype(entity.getPshowtype());
+		entity2.setSsorttype(entity.getSsorttype());
+		entity2.setOsorttype(entity.getOsorttype());
 		entity2.setDusername(entity.getDusername());
 		entity2.setImgid(entity.getImgid());
 		entity2.setPcontent(entity.getPcontent());
@@ -130,19 +141,6 @@ public class RoomServiceImpl implements RoomServiceInter {
 
 	@Override
 	@Transactional
-	public void deleteRoomEntity(String id, LoginUser user) {
-		// 删除参考人员和考场试卷
-		roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
-		roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
-		cardServiceImpl.deleteCardsByRoom(id, user);
-		roomDaoImpl.deleteEntity(roomDaoImpl.getEntity(id));
-		farmFileManagerImpl.cancelFilesByApp(id);
-	}
-	
-	
-
-	@Override
-	@Transactional
 	public Room getRoomEntity(String id) {
 		// TODO 自动生成代码,修改后请去除本注释
 		if (id == null) {
@@ -156,7 +154,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public DataQuery createRoomSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_ROOM a left join WTS_EXAM_TYPE b on a.EXAMTYPEID=b.id left join (select COUNT(*) NUM,ROOMID from WTS_ROOM_USER GROUP BY ROOMID )  ROOMUSERNUM on ROOMUSERNUM.ROOMID=a.ID",
-				"a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
+				"a.SSORTTYPE as SSORTTYPE,a.OSORTTYPE as OSORTTYPE,a.PSHOWTYPE as PSHOWTYPE,a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
 		return dbQuery;
 	}
 
@@ -175,30 +173,43 @@ public class RoomServiceImpl implements RoomServiceInter {
 
 	@Override
 	@Transactional
-	public void editState(String id, String state, LoginUser currentUser) {
-		Room entity2 = roomDaoImpl.getEntity(id);
-		entity2.setPstate(state);
-		entity2.setEtime(TimeTool.getTimeDate14());
-		entity2.setEuser(currentUser.getId());
-		entity2.setEusername(currentUser.getName());
-		roomDaoImpl.editEntity(entity2);
-	}
-
-	@Override
-	@Transactional
-	public RoomUnit getRoomUnit(String roomid, LoginUser currentUser) {
+	public RoomUnit getRoomUnit(String roomid, LoginUser currentUser, boolean isShuffle) {
 		Room entity = roomDaoImpl.getEntity(roomid);
 		RoomUnit roomunit = new RoomUnit();
 		roomunit.setRoom(entity);
 		ExamType examtype = examtypeDaoImpl.getEntity(entity.getExamtypeid());
 		roomunit.setType(examtype);
-
 		List<RoomPaper> papers = roompaperDaoImpl
 				.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
-
 		List<PaperUnit> paperUnits = new ArrayList<>();
+
+		// 如果是随机抽卷则该ID不为空
+		String onlyPaperId = null;
+		if (entity.getPshowtype().equals("2") && isShuffle) {
+			// 随机抽卷
+			// 获取用户在房间内做过的答卷id
+			List<String> paperids = cardServiceImpl.getUserPaperidsByRoom(roomid, currentUser.getId());
+			if (paperids == null || paperids.size() <= 0) {
+				paperids = new ArrayList<>();
+				for (RoomPaper paper : papers) {
+					paperids.add(paper.getPaperid());
+				}
+			}
+			{
+				// 用用户id获得一个数字
+				Integer orderId = currentUser.getId().hashCode();
+				orderId = orderId < 0 ? -orderId : orderId;
+				orderId = orderId == 0 ? 1 : orderId;
+				// 用卷数量取余
+				int index = orderId % paperids.size();
+				if (paperids.size() > 0) {
+					onlyPaperId = paperids.get(index);
+				}
+			}
+		}
 		for (RoomPaper paper : papers) {
 			PaperUnit paperUnit = paperServiceImpl.getPaperUnit(paper.getPaperid());
+			paperUnit.setRoomPaper(paper);
 			if (currentUser != null) {
 				Card card = cardServiceImpl.loadCard(paper.getPaperid(), roomid, currentUser.getId());
 				if (card != null) {
@@ -206,7 +217,15 @@ public class RoomServiceImpl implements RoomServiceInter {
 				}
 			}
 			paperUnit.setRoom(entity);
-			paperUnits.add(paperUnit);
+			if (entity.getPshowtype().equals("2") && isShuffle) {
+				// 随机抽题，只取一套卷
+				if (onlyPaperId != null && onlyPaperId.equals(paper.getPaperid())) {
+					paperUnits.add(paperUnit);
+				}
+			} else {
+				// 普通考场，展示全部卷
+				paperUnits.add(paperUnit);
+			}
 		}
 		roomunit.setPapers(paperUnits);
 		return roomunit;
@@ -312,5 +331,152 @@ public class RoomServiceImpl implements RoomServiceInter {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	@Transactional
+	public void disorganizePaper(PaperUnit paper, String roomId) {
+		Room room = getRoomEntity(roomId);
+		if (room.getSsorttype().equals("2")) {
+			// 打乱题得顺序
+			disorganizeSubjects(paper.getChapters());
+		}
+		if (room.getOsorttype().equals("2")) {
+			// 打乱选项顺序
+			disorganizeOptions(paper.getChapters());
+		}
+	}
+
+	/**
+	 * 打乱题顺序
+	 * 
+	 * @param chapters
+	 */
+	private void disorganizeSubjects(List<ChapterUnit> chapters) {
+		for (ChapterUnit chapter : chapters) {
+			if (chapter.getSubjects() != null && chapter.getSubjects().size() > 0) {
+				Collections.shuffle(chapter.getSubjects());
+			}
+			if (chapter.getChapters() != null && chapter.getChapters().size() > 0) {
+				disorganizeSubjects(chapter.getChapters());
+			}
+		}
+	}
+
+	/**
+	 * 打乱选项顺序
+	 * 
+	 * @param chapters
+	 */
+	private void disorganizeOptions(List<ChapterUnit> chapters) {
+		for (ChapterUnit chapter : chapters) {
+			for (SubjectUnit subject : chapter.getSubjects()) {
+				if (subject.getAnswers() != null && subject.getAnswers().size() > 0) {
+					// 1.填空，2.单选，3.多选，4判断，5问答,6附件
+					if (subject.getVersion().getTiptype().equals("2")
+							|| subject.getVersion().getTiptype().equals("3")) {
+						Collections.shuffle(subject.getAnswers());
+					}
+				}
+			}
+			if (chapter.getChapters() != null && chapter.getChapters().size() > 0) {
+				disorganizeSubjects(chapter.getChapters());
+			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteRoomEntity(String id, LoginUser user) {
+		Room room = roomDaoImpl.getEntity(id);
+		// 1新建，0停用，2发布，3结束，4归档
+		if (room.getPstate().equals("1") || room.getPstate().equals("4") || room.getPstate().equals("0")) {
+			// 删除参考人员和考场试卷
+			roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
+			roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
+			cardServiceImpl.deleteCardsByRoom(id, user);
+			roomDaoImpl.deleteEntity(roomDaoImpl.getEntity(id));
+			farmFileManagerImpl.cancelFilesByApp(id);
+		} else {
+			throw new RuntimeException("只有新建、归档、停用状态的答题室可删除!");
+		}
+	}
+
+	@Override
+	@Transactional
+	public void editState(String id, String state, LoginUser currentUser) {
+		Room entity2 = roomDaoImpl.getEntity(id);
+		// 1新建，0停用，2发布，3结束，4归档
+		if (state.equals("1")) {
+			// 不存在修改为新建的情况
+		}
+		if (state.equals("0")) {
+			// 0停用（发布和结束可停用）
+			if (!entity2.getPstate().equals("2") && !entity2.getPstate().equals("3")) {
+				throw new RuntimeException("只有发布和结束状态可停用!");
+			}
+		}
+		if (state.equals("2")) {
+			// 2发布(新建，停用,歸檔可发布)
+			if (!entity2.getPstate().equals("1") && !entity2.getPstate().equals("4")
+					&& !entity2.getPstate().equals("0")) {
+				throw new RuntimeException("只有新建和停用状态可发布!");
+			}
+		}
+		if (state.equals("3")) {
+			// 3结束(发布可结束)
+			if (!entity2.getPstate().equals("2")) {
+				throw new RuntimeException("只有发布状态可结束!");
+			}
+		}
+		if (state.equals("4")) {
+			// 4归档(结束和停用可归档)
+			if (!entity2.getPstate().equals("0") && !entity2.getPstate().equals("3")) {
+				throw new RuntimeException("只有结束和停用状态可归档!");
+			}
+		}
+		entity2.setPstate(state);
+		entity2.setEtime(TimeTool.getTimeDate14());
+		entity2.setEuser(currentUser.getId());
+		entity2.setEusername(currentUser.getName());
+		roomDaoImpl.editEntity(entity2);
+	}
+
+	// 结束答题
+	@Override
+	@Transactional
+	public void finishRoom(String roomid, LoginUser currentUser) {
+		editState(roomid, "3", currentUser);
+		for (Card card : cardServiceImpl.getRoomCards(roomid)) {
+			// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
+			if (card.getPstate().equals("1") || card.getPstate().equals("3")) {
+				// 自动提交试卷
+				cardServiceImpl.finishExamNoPop(card.getId(), currentUser);
+			}
+		}
+	}
+
+	// 归档数据（）
+	@Override
+	@Transactional
+	public void backupRoom(String roomid, LoginUser currentUser) throws Exception {
+		// 归档状态
+		editState(roomid, "4", currentUser);
+		// 归档用户成绩
+		cardHisServiceImpl.backup(roomid, currentUser);
+		// 清理用户答题卡
+		cardServiceImpl.clearRoomCard(roomid, currentUser);
+	}
+
+	@Override
+	@Transactional
+	public List<String> getPapers(String roomid) {
+		List<String> ids = new ArrayList<>();
+		List<RoomPaper> papers = roompaperDaoImpl
+				.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
+		for (RoomPaper paper : papers) {
+			ids.add(paper.getPaperid());
+		}
+		return ids;
 	}
 }

@@ -2,17 +2,23 @@ package com.wts.exam.controller;
 
 import com.wts.exam.domain.ExamType;
 import com.wts.exam.domain.Paper;
+import com.wts.exam.domain.RandomStep;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
+import com.wts.exam.service.RandomItemServiceInter;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +32,9 @@ import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.time.TimeTool;
+import com.farm.doc.server.utils.FileDownloadUtils;
+import com.farm.parameter.service.AloneApplogServiceInter;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -46,6 +55,10 @@ public class PaperController extends WebUtils {
 	private PaperServiceInter paperServiceImpl;
 	@Resource
 	private ExamTypeServiceInter examTypeServiceImpl;
+	@Resource
+	private AloneApplogServiceInter aloneApplogServiceImpl;
+	@Resource
+	private RandomItemServiceInter randomItemServiceImpl;
 
 	/**
 	 * 查询结果集合
@@ -131,6 +144,22 @@ public class PaperController extends WebUtils {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
 		}
+	}
+
+	/**
+	 * 下载word答卷
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/exportWord")
+	public void loadimg(String paperid, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
+		WcpLog.info("导出答卷" + paperid + "/" + paper.getInfo().getName(), getCurrentUser(session).getName(),
+				getCurrentUser(session).getId());
+		log.info(getCurrentUser(session).getLoginname() + "/" + getCurrentUser(session).getName() + "导出答卷" + paperid);
+		File file = paperServiceImpl.exprotWord(paper, getCurrentUser(session));
+		FileDownloadUtils.simpleDownloadFile(file, "paper" + TimeTool.getTimeDate12() + ".docx",
+				"application/octet-stream", response);
 	}
 
 	/**
@@ -235,8 +264,7 @@ public class PaperController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-	
-	
+
 	@RequestMapping("/doClearSubjects")
 	@ResponseBody
 	public Map<String, Object> doClearSubjects(String ids, HttpSession session) {
@@ -252,7 +280,71 @@ public class PaperController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-	
+
+	/**
+	 * 进入 批量创建随机卷表单
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/addRandomsPage")
+	public ModelAndView addRandomsPage(String typeid, HttpSession session) {
+		try {
+			if (typeid == null || typeid.trim().equals("")) {
+				throw new RuntimeException("业务分类不能为空!");
+			}
+			ExamType type = examTypeServiceImpl.getExamtypeEntity(typeid);
+			// 獲取隨機規則項
+			List<Map<String, Object>> items = randomItemServiceImpl
+					.createRandomitemSimpleQuery(
+							(new DataQuery()).setPagesize(100).addRule(new DBRule("PSTATE", "1", "=")))
+					.search().getResultList();
+			return ViewMode.getInstance().putAttr("type", type).putAttr("items", items)
+					.returnModelAndView("exam/PaperRandomsForm");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e + e.getMessage(), e).returnModelAndView("exam/PaperRandomsForm");
+		}
+	}
+
+	/**
+	 * 執行批量随机卷生成
+	 * 
+	 * @param ids
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/runRandomPapers")
+	@ResponseBody
+	public Map<String, Object> runRandomPapers(Paper entity, int num, String itemid, HttpSession session) {
+		try {
+			List<RandomStep> steps = randomItemServiceImpl.getSteps(itemid);
+			if (StringUtils.isBlank(entity.getExamtypeid())) {
+				throw new RuntimeException("业务分类ID不能为空!");
+			}
+			String name = entity.getName();
+			for (int n = 0; n < num; n++) {
+				try {
+					entity.setPstate("1");
+					entity.setName(name + "-" + (n + 1));
+					entity = paperServiceImpl.insertPaperEntity(entity, getCurrentUser(session));
+					for (RandomStep step : steps) {
+						String warnMessage = paperServiceImpl.addRandomSubjects(entity.getId(), step.getTypeid(),
+								step.getTiptype(), step.getSubnum(), step.getSubpoint(), getCurrentUser(session));
+						if (StringUtils.isNotBlank(warnMessage)) {
+							throw new RuntimeException(warnMessage);
+						}
+					}
+					paperServiceImpl.refreshSubjectNum(entity.getId());
+				} catch (Exception e) {
+					paperServiceImpl.deletePaperEntity(entity.getId(), getCurrentUser(session));
+					throw new RuntimeException(e);
+				}
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
 
 	@RequestMapping("/list")
 	public ModelAndView index(HttpSession session) {

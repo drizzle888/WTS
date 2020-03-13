@@ -18,6 +18,7 @@ import com.wts.exam.dao.ExamPopDaoInter;
 import com.wts.exam.dao.RoomDaoInter;
 import com.wts.exam.domain.ExamPop;
 import com.wts.exam.domain.ExamType;
+import com.wts.exam.domain.Room;
 import com.wts.exam.service.ExamPopsServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
 
@@ -40,6 +41,18 @@ public class ExamPopsServiceImpl implements ExamPopsServiceInter {
 	@Transactional
 	public boolean isJudger(String roomId, LoginUser currentUser) {
 		Set<String> typeids = examTypeServiceImpl.getUserPopTypeids(currentUser.getId(), "2");
+		Room room = roomDaoImpl.getEntity(roomId);
+		if (room == null) {
+			throw new RuntimeException("the room[" + roomId + "] is not exist!");
+		}
+		String typeid = room.getExamtypeid();
+		return typeids.contains(typeid);
+	}
+
+	@Override
+	@Transactional
+	public boolean isManager(String roomId, LoginUser currentUser) {
+		Set<String> typeids = examTypeServiceImpl.getUserPopTypeids(currentUser.getId(), "1");
 		String typeid = roomDaoImpl.getEntity(roomId).getExamtypeid();
 		return typeids.contains(typeid);
 	}
@@ -166,4 +179,5 @@ public class ExamPopsServiceImpl implements ExamPopsServiceInter {
 			}
 		}
 	}
+
 }

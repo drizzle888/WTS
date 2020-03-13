@@ -129,7 +129,7 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 			if (rooms.size() > 0) {
 				throw new RuntimeException("分类下还有答题室，请先删除或移动答题室！");
 			}
-		} 
+		}
 		exampopDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("TYPEID", id, "=")).toList());
 		examtypeDaoImpl.deleteEntity(examtypeDaoImpl.getEntity(id));
 	}
@@ -204,10 +204,11 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 			ExamTypeUnit unit = new ExamTypeUnit();
 			unit.setType(type);
 			DataQuery query = DataQuery.getInstance("1",
-					"b.EXAMTYPEID AS EXAMTYPEID,B.IMGID AS IMGID, b.TIMETYPE AS TIMETYPE, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.WRITETYPE AS WRITETYPE, b.ROOMNOTE AS ROOMNOTE, b.TIMELEN AS TIMELEN, b. NAME AS NAME, b.COUNTTYPE AS COUNTTYPE, B.ID AS ID",
+					"b.EXAMTYPEID AS EXAMTYPEID,b.SSORTTYPE AS SSORTTYPE,b.PSTATE AS PSTATE,b.OSORTTYPE AS OSORTTYPE,b.PSHOWTYPE AS PSHOWTYPE,B.IMGID AS IMGID, b.TIMETYPE AS TIMETYPE, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.WRITETYPE AS WRITETYPE, b.ROOMNOTE AS ROOMNOTE, b.TIMELEN AS TIMELEN, b. NAME AS NAME, b.COUNTTYPE AS COUNTTYPE, B.ID AS ID",
 					"WTS_ROOM b left join WTS_EXAM_TYPE a on a.ID=b.EXAMTYPEID");
 			query.addRule(new DBRule("a.TREECODE", type.getId(), "like"));
-			query.addRule(new DBRule("PSTATE", "2", "="));
+			//发布和结束状态的答题室可以在前台显示
+			query.addSqlRule(" and (PSTATE='2' or PSTATE='3' )");
 			query.setPagesize(100);
 			try {
 				List<Room> rooms = query.search().getObjectList(Room.class);
