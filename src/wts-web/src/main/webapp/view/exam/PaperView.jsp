@@ -1,6 +1,8 @@
 <%@ page language="java" pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%>
+<%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%><%@ taglib
+	uri="/view/conf/tip.tld" prefix="TIP"%>
 <link rel="stylesheet" type="text/css"
 	href="<PF:basePath/>view/exam/subject/subject.css">
 <style>
@@ -33,7 +35,9 @@
 					<c:forEach items="${chapter1.materials}" var="material">
 						<div class="chapter-material">
 							<div class="chapter-material-title">${material.title}</div>
-							<div class="ke-content ke-content-borderbox">${material.text}</div>
+							<div class="ke-content ke-content-borderbox">
+								<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+							</div>
 						</div>
 					</c:forEach>
 				</c:if>
@@ -51,7 +55,9 @@
 						<c:forEach items="${chapter2.materials}" var="material">
 							<div class="chapter-material">
 								<div class="chapter-material-title">${material.title}</div>
-								<div class="ke-content ke-content-borderbox">${material.text}</div>
+								<div class="ke-content ke-content-borderbox">
+									<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+								</div>
 							</div>
 						</c:forEach>
 					</c:if>
@@ -69,7 +75,9 @@
 							<c:forEach items="${chapter3.materials}" var="material">
 								<div class="chapter-material">
 									<div class="chapter-material-title">${material.title}</div>
-									<div class="ke-content ke-content-borderbox">${material.text}</div>
+									<div class="ke-content ke-content-borderbox">
+										<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+									</div>
 								</div>
 							</c:forEach>
 						</c:if>

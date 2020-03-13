@@ -59,7 +59,7 @@
 							</div>
 						</div>
 						<c:if test="${!empty room.room.roomnote }">
-							<div class="ke-content ke-content-borderbox" >
+							<div class="ke-content ke-content-borderbox">
 								${room.room.roomnote}</div>
 						</c:if>
 					</div>
@@ -67,6 +67,19 @@
 			</div>
 		</div>
 		<div class="container" style="padding-top: 20px;">
+			<c:if test="${room.room.pshowtype=='2'}">
+				<!-- 如果是抽卷答题室则允许统一查看房间全部用户答卷 -->
+				<div class="col-md-12"
+					style="padding-left: 8px; padding-right: 8px;">
+					<div class="panel panel-default">
+						<div class="panel-body" style="text-align: center; padding: 40px;">
+							<a href="adjudge/roomUser.do?roomId=${room.room.id}"
+								type="button" class="btn btn-default">~~~~~~查看答题室全部人员答卷信息~~~~~~
+							</a>
+						</div>
+					</div>
+				</div>
+			</c:if>
 			<c:forEach items="${room.papers}" var="paper">
 				<%@ include file="commons/includeInnerPaper.jsp"%>
 			</c:forEach>
@@ -75,4 +88,26 @@
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>
 	<jsp:include page="../commons/foot.jsp"></jsp:include>
 </body>
+<script type="text/javascript">
+	function exportWordPaper(papaerid) {
+		swal(
+				{
+					title : "答卷导出后需人工检查",
+					text : "即将导出答卷为word文档，请注意答卷中部分内容格式有可能无法正确展示，使用前必须对答卷进行检查并手动调整，是否继续导出？",
+					icon : "warning",
+					buttons : true,
+					dangerMode : true,
+				}).then(
+				function(willDelete) {
+					if (willDelete) {
+						window.location.href = basePath
+								+ "paperExport/exportWord.do?paperid="
+								+ papaerid + "&roomid=${room.room.id}";
+						pAlert("答卷生成中，等待浏览器下载... (完成后请手动关闭此对话框)", 10000);
+					} else {
+						//取消
+					}
+				});
+	}
+</script>
 </html>

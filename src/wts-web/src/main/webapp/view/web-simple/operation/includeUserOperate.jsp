@@ -33,15 +33,15 @@
 	<!-- 答题记录-->
 	<c:if test="${type!='AllSubject'}">
 		<a href="webuser/Home.do?type=AllSubject&userid=${userid}"
-			class="btn btn-default"><span
-			class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
-	</c:if> 
+			class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
+	</c:if>
 	<!-- 错题记录-->
 	<c:if test="${type=='ErrorSubject'}">
 		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
-			class="btn btn-info"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
+			class="btn btn-info"><span
+			class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
 	</c:if>
-	<!-- 错题记录--> 
+	<!-- 错题记录-->
 	<c:if test="${type!='ErrorSubject'}">
 		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
 			class="btn btn-default"><span
@@ -66,9 +66,9 @@
 	</c:if>
 	<c:if test="${type!='usermessage'}">
 		<c:if test="${self}">
-			<!-- 	<a href="webuser/Home.do?type=usermessage&userid=${userid}"
+			<a href="webuser/Home.do?type=usermessage&userid=${userid}"
 				class="btn btn-default"><span
-				class="glyphicon glyphicon-envelope"></span> 我的消息</a> -->
+				class="glyphicon glyphicon-envelope"></span> 我的消息</a>
 		</c:if>
 	</c:if>
 </div>
@@ -82,9 +82,8 @@
 	<!-- 答卷记录-->
 	<c:if test="${type!='AllPaper'}">
 		<a href="webuser/Home.do?type=AllPaper&userid=${userid}"
-			class="btn btn-default"><span
-			class="glyphicon glyphicon-file"></span>&nbsp;答卷记录</a>
-	</c:if> 
+			class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;答卷记录</a>
+	</c:if>
 	<!-- 收藏答卷-->
 	<c:if test="${type=='BookPaper'}">
 		<a href="webuser/Home.do?type=BookPaper&userid=${userid}"

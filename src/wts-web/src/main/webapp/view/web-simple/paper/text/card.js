@@ -239,7 +239,7 @@ function enCodeFormInput(docObj) {
 function submitSubject(jsonStr, versionId) {
 	var timeout_post = setTimeout(function() {
 		alert("数据提交异常,请及时检查网络或联系管理员[p1]!");
-	}, 20000);
+	}, 60000);
 	$.post('webpaper/PubsaveSubjectVal.do', {
 		'paperid' : $('#paperId-Input').val(),
 		'roomid' : $('#roomId-Input').val(),
@@ -278,7 +278,7 @@ function submitSavePaper(jsonStr, fun) {
 	// 设置超时提醒用户检查网络
 	var timeout_post = setTimeout(function() {
 		alert("数据提交异常,请及时检查网络或联系管理员[p2]!");
-	}, 20000);
+	}, 60000);
 	$('#sideCardSaveButton').attr('disabled', 'disabled');
 	$('#savePaper-win').modal({
 		backdrop : true,

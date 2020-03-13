@@ -45,17 +45,22 @@
 								test="${paper.info.modeltype=='1'||paper.info.modeltype=='2' }">
 								<a
 									href="adjudge/paperUser.do?paperid=${paper.info.id}&roomId=${room.room.id}"
-									type="button" class="btn btn-default">阅卷管理 (阅卷<span
-									class="wts-red"><b> ${paper.adjudgeUserNum} </b></span>人/参答<span
-									class="wts-red"><b> ${paper.currentUserNum} </b></span>人<c:if
-										test="${paper.allUserNum>0}">/共<span class="wts-red"><b>
-												${paper.allUserNum} </b></span>人</c:if>)
+									type="button" class="btn btn-default">阅卷管理 (阅<span
+									class="wts-red"><b>${paper.adjudgeUserNum}</b></span>人/答<span
+									class="wts-red"><b>${paper.currentUserNum}</b></span>人<c:if
+										test="${paper.allUserNum>0}">/共<span class="wts-red"><b>${paper.allUserNum}</b></span>人</c:if>)
 								</a>
 							</c:if>
 							<c:if test="${paper.info.modeltype=='3'}">
 								<a type="button" class="btn btn-default" disabled="disabled">练习题无需阅卷
 								</a>
 							</c:if>
+						</div>
+						<div class="btn-group" role="group">
+							<button onclick="exportWordPaper('${paper.info.id}')"
+								type="button" class="btn btn-info">
+								<i class="glyphicon glyphicon-download-alt"></i>&nbsp;导出答卷
+							</button>
 						</div>
 					</div>
 				</div>

@@ -107,6 +107,9 @@
 						<th field="COMMENTS" data-options="sortable:true" width="50">
 							备注
 						</th>
+						<th field="UTIME" data-options="sortable:true" width="20">
+							编辑时间
+						</th>
 						<th field="STATE" data-options="sortable:true" width="20">
 							状态
 						</th>

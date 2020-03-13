@@ -42,6 +42,14 @@
 							<div class="side_unit_info">答题人：匿名</div>
 						</c:if>
 						<div class="side_unit_info">业务分类：${room.type.name}</div>
+						<c:if
+							test="${room.room.pshowtype!='1'||room.room.ssorttype!='1'||room.room.osorttype!='1'}">
+							<div class="side_unit_info"><b>随机</b>
+								<c:if test="${room.room.pshowtype=='2'}"><code>/答卷</code></c:if>
+								<c:if test="${room.room.ssorttype=='2'}"><code>/选项</code></c:if>
+								<c:if test="${room.room.osorttype=='2'}"><code>/题序</code></c:if>
+							</div>
+						</c:if>
 					</div>
 				</div>
 				<div>

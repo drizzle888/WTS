@@ -92,7 +92,7 @@ public class adjudgeWebController extends WebUtils {
 			if (!examPopsServiceImpl.isJudger(roomid, getCurrentUser(session))) {
 				throw new RuntimeException("当前非判卷用户!");
 			}
-			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session));
+			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session), false);
 			cardServiceImpl.loadPaperUserNum(roomunit);
 			return view.putAttr("room", roomunit).returnModelAndView(getThemePath() + "/adjudge/roomPaper");
 		} catch (Exception e) {
@@ -167,6 +167,40 @@ public class adjudgeWebController extends WebUtils {
 		}
 	}
 
+	/***
+	 * 答题室所有答题人页面(只查看不判卷)
+	 * 
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/roomUser")
+	public ModelAndView roomUser(String roomId, DataQuery query, HttpServletRequest request, HttpSession session) {
+		try {
+			ViewMode view = ViewMode.getInstance();
+			// 用户名称，得分，判卷人，判卷时间，答题开始时间，答题交卷时间，状态
+			Room room = roomServiceImpl.getRoomEntity(roomId);
+			query.setPagesize(1000);
+			DataResult result = cardServiceImpl.getRoomUsers(roomId, query);
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					if (row.get("COMPLETENUM") != null && row.get("ALLNUM") != null && ((int) row.get("ALLNUM") != 0)) {
+						int percent = (int) row.get("COMPLETENUM") * 100 / (int) row.get("ALLNUM");
+						row.put("COMPLETEPERCENT", percent);
+					}
+				}
+			});
+			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm:ss");
+			result.runformatTime("ENDTIME", "HH:mm:ss");
+			result.runformatTime("ADJUDGETIME", "yyyy-MM-dd HH:mm:ss");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATETITLE");
+			return view.putAttr("room", room).putAttr("result", result)
+					.returnModelAndView(getThemePath() + "/adjudge/roomUser");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
+		}
+	}
+
 	/**
 	 * 判卷页面
 	 * 
@@ -236,7 +270,15 @@ public class adjudgeWebController extends WebUtils {
 			Card card = cardServiceImpl.getCardEntity(cardid);
 			if (!card.getPstate().equals("2") && !card.getPstate().equals("3") && !card.getPstate().equals("4")) {
 				// 1.开始答题 2.手动交卷3.超时未交卷,4.超时自动交卷 ,5完成阅卷6.发布成绩,7历史存档
-				throw new RuntimeException("考卷状态异常，无法计算分数!");
+				Map<String, String> stateMpa = new HashMap<>();
+				stateMpa.put("1", "开始答题");
+				stateMpa.put("2", "手动交卷");
+				stateMpa.put("3", "超时未交卷");
+				stateMpa.put("4", "超时自动交卷");
+				stateMpa.put("5", "完成阅卷");
+				stateMpa.put("6", "发布成绩");
+				stateMpa.put("7", "历史存档");
+				throw new RuntimeException("答题卡状态：(" + stateMpa.get(card.getPstate()) + ")，当前无法计算分数!");
 			}
 			cardServiceImpl.autoCountCardPoint(cardid, getCurrentUser(session));
 			return page.returnObjMode();

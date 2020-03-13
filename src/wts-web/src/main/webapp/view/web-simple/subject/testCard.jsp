@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="/view/conf/tip.tld" prefix="TIP"%>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -112,7 +113,7 @@
 								<img alt="" src="text/img/analysis.png">
 								材料:${test.MATERIAL.title}
 							</div>
-							<div class="ke-content innerbox">${test.MATERIAL.text}</div>
+							<div class="ke-content innerbox"><TIP:InitHtmlContentTag html="${test.MATERIAL.text}"></TIP:InitHtmlContentTag></div>
 						</div>
 					</c:if>
 					<!-- 题目展示区 -->

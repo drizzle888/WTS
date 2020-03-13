@@ -49,13 +49,16 @@
 						<th data-options="field:'ck',checkbox:true"></th>
 						<th field="NAME" data-options="sortable:true" width="40">答题室名称</th>
 						<th field="COUNTTYPE" data-options="sortable:true" width="20">阅卷类型</th>
-						<th field="TIMELEN" data-options="sortable:true" width="40">答题时长</th>
+						<th field="TIMELEN" data-options="sortable:true" width="15">时长</th>
 						<th field="WRITETYPETITLE" data-options="sortable:true" width="20">答题类型</th>
-						<th field="USERNUM" data-options="sortable:true" width="40">指定人数</th>
+						<th field="USERNUM" data-options="sortable:true" width="15">人数</th>
 						<!-- WRITETYPE -->
 						<th field="STARTTIME" data-options="sortable:true" width="40">开始时间</th>
 						<th field="TIMETYPE" data-options="sortable:true" width="20">时间类型</th>
 						<th field="TYPENAME" data-options="sortable:true" width="40">业务分类</th>
+						<th field="SSORTTYPE" data-options="sortable:true" width="20">题序类型</th>
+						<th field="OSORTTYPE" data-options="sortable:true" width="20">选项类型</th>
+						<th field="PSHOWTYPE" data-options="sortable:true" width="20">抽卷类型</th>
 						<th field="PSTATETITLE" data-options="sortable:true" width="20">状态</th>
 						<!-- PSTATE -->
 					</tr>
@@ -74,26 +77,29 @@
 			</a> <a class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit',plain:true,onClick:editDataRoom">修改
 			</a> <a class="easyui-linkbutton"
-				data-options="iconCls:'icon-remove',plain:true,onClick:delDataRoom">删除
-			</a><a class="easyui-linkbutton"
 				data-options="iconCls:'icon-communication',plain:true,onClick:moveTypetree">设置分类
 			</a> <a href="javascript:void(0)" id="mb" class="easyui-menubutton"
 				data-options="menu:'#mm6',iconCls:'icon-group_green_edit'">人员设置</a>
 			<div id="mm6" style="width: 150px;">
 				<div onclick="examuserMng()">答题人</div>
-				<!--<div class="menu-sep"></div><div onclick="setCountPop()">阅卷人</div>
-				 <div onclick="setAdminPop()">管理员</div> 
-				<div onclick="setLeadPop()">评审人</div>-->
 			</div>
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-administrative-docs',plain:true,onClick:paperListMng">答卷管理
-			</a> <a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
+			</a> <a href="javascript:void(0)" id="mb8" class="easyui-menubutton"
+				data-options="menu:'#mm8',iconCls:'icon-archives'">状态变更</a>
+			<div id="mm8" style="width: 150px;">
+				<div onclick="finishDataRoom()">结束停止答题</div>
+				<div onclick="backupDataRoom()">归档并初始化</div>
+				<div class="menu-sep"></div>
+				<div onclick="examPrivate()">停用/暂停</div>
+				<div class="menu-sep"></div>
+				<div onclick="delDataRoom()">删除</div>
+			</div>
+			<a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
 				data-options="menu:'#mm7',iconCls:'icon-networking'">发布</a>
 			<div id="mm7" style="width: 150px;">
 				<div onclick="examPublic()">发布</div>
 				<div onclick="examValidate()">校验</div>
-				<div class="menu-sep"></div>
-				<div onclick="examPrivate()">禁用</div>
 			</div>
 			<!-- <a class="easyui-linkbutton"
 				data-options="iconCls:'icon-move_to_folder',plain:true,onClick:delDataRoom">添加答卷
@@ -195,7 +201,7 @@
 		$.farm.openWindow({
 			id : 'winRoom',
 			width : 600,
-			height : 400,
+			height : 450,
 			modal : true,
 			url : url,
 			title : '新增'
@@ -215,7 +221,7 @@
 			$.farm.openWindow({
 				id : 'winRoom',
 				width : 600,
-				height : 400,
+				height : 450,
 				modal : true,
 				url : url,
 				title : '修改'
@@ -229,13 +235,16 @@
 	function delDataRoom() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length > 0) {
-			if (selectedArray[0].PSTATE == '2'){
-				$.messager.alert(MESSAGE_PLAT.PROMPT, "答卷已经发布，请取消发布后进行修改!",
+			if (selectedArray[0].PSTATE != '1'
+					&& selectedArray[0].PSTATE != '4'
+					&& selectedArray[0].PSTATE != '0') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "只有新建/停用/归档状态可刪除!",
 						'info');
 				return;
 			}
 			// 有数据执行操作
-			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS+"（删除答题室将清除相关全部答题数据包括人员答题得分）";
+			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS
+					+ "（删除答题室将清除相关全部答题数据包括人员答题得分）";
 			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
 				if (flag) {
 					$(gridRoom).datagrid('loading');
@@ -260,7 +269,111 @@
 					'info');
 		}
 	}
-
+	//結束考試
+	function finishDataRoom() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE != '2') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "只有发布状态可结束!", 'info');
+				return;
+			}
+			// 有数据执行操作
+			var str = "结束答题后前台用户将无法继续答题,确定结束答题么？";
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
+				if (flag) {
+					$(gridRoom).datagrid('loading');
+					$.post('room/finish.do?ids='
+							+ $.farm.getCheckedIds(gridRoom, 'ID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridRoom).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridRoom).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+	//归档考試
+	function backupDataRoom() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE != '0'
+					&& selectedArray[0].PSTATE != '3') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "结束和停用状态可归档!", 'info');
+				return;
+			}
+			// 有数据执行操作
+			var str = "即将归档和清理用户答题卡(将答题卡转为历史数据，该操作不可恢复),是否继续？";
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
+				if (flag) {
+					$(gridRoom).datagrid('loading');
+					$.post('room/backup.do?ids='
+							+ $.farm.getCheckedIds(gridRoom, 'ID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridRoom).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridRoom).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+	//结束答题
+	function finishDataRoom() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE == '3'
+					|| selectedArray[0].PSTATE == '4') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "已经结束和归档的项目无法再次结束!",
+						'info');
+				return;
+			}
+			// 有数据执行操作
+			var str = "结束答题后前台用户将无法继续答题,确定结束答题么？";
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
+				if (flag) {
+					$(gridRoom).datagrid('loading');
+					$.post('room/finish.do?ids='
+							+ $.farm.getCheckedIds(gridRoom, 'ID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridRoom).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridRoom).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
 	//发布校验
 	function examValidate(funcHandle) {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
@@ -331,12 +444,12 @@
 		});
 	}
 
-	//禁用
+	//停用
 	function examPrivate() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length > 0) {
 			// 有数据执行操作
-			var str = selectedArray.length + "条数据将被禁用，是否继续?";
+			var str = selectedArray.length + "条数据将被停用，是否继续?";
 			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
 				if (flag) {
 					$(gridRoom).datagrid('loading');
@@ -366,7 +479,7 @@
 	function moveTypetree() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length > 0) {
-			if (selectedArray[0].PSTATE == '2'){
+			if (selectedArray[0].PSTATE == '2') {
 				$.messager.alert(MESSAGE_PLAT.PROMPT, "答卷已经发布，请取消发布后进行修改!",
 						'info');
 				return;
@@ -413,7 +526,7 @@
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length == 1) {
 			var userType = selectedArray[0].WRITETYPE;
-			if (userType != '1'){
+			if (userType != '1') {
 				$.messager.alert(MESSAGE_PLAT.PROMPT, "答题类型为任何人员，无须设置人员!",
 						'info');
 				return;
@@ -451,40 +564,6 @@
 			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-					'info');
-		}
-	}
-
-	//设置阅卷人权限
-	function setCountPop() {
-		var selectedArray = $(gridRoom).datagrid('getSelections');
-		if (selectedArray.length > 0) {
-			var ids = $.farm.getCheckedIds(gridRoom, 'ID');
-			openPopWindow(ids, 'ROOM_COUNT', '设置阅卷人');
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
-					'info');
-		}
-	}
-	//设置管理员权限
-	function setAdminPop() {
-		var selectedArray = $(gridRoom).datagrid('getSelections');
-		if (selectedArray.length > 0) {
-			var ids = $.farm.getCheckedIds(gridRoom, 'ID');
-			openPopWindow(ids, 'ROOM_ADMIN', '设置管理员');
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
-					'info');
-		}
-	}
-	//设置评审人权限
-	function setLeadPop() {
-		var selectedArray = $(gridRoom).datagrid('getSelections');
-		if (selectedArray.length > 0) {
-			var ids = $.farm.getCheckedIds(gridRoom, 'ID');
-			openPopWindow(ids, 'ROOM_LEAD', '设置评审人');
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
 					'info');
 		}
 	}

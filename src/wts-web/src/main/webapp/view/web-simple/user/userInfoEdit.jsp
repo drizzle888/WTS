@@ -31,8 +31,10 @@
 				<div class="col-sm-6">
 					<div class="row">
 						<div class="col-sm-12" style="margin-bottom: 8px;">
-							<span style="color: #D9534F;" class="glyphicon glyphicon-user  ">个人信息修改</span>
-							<hr />
+							<h4>
+								<span style="color: #D9534F;"
+									class="glyphicon glyphicon-user   ">用户注册</span>
+							</h4>
 						</div>
 					</div>
 					<div class="row">
@@ -78,7 +80,7 @@
 															src="<PF:basePath/>text/img/none.png" alt="头像"
 															class="img-thumbnail" style="width: 64px; height: 64px;" />
 													</c:if>
-													<div style="padding: 20px; padding-left: 60px;">  
+													<div style="padding: 20px; padding-left: 60px;">
 														<input type="text" name="photoid" id="photoid"
 															value="${photoid}" style="width: 0px; border: 0px;"
 															readonly="readonly" /> <input type="button"
@@ -107,6 +109,47 @@
 										</div>
 									</div>
 								</PF:IfParameterEquals>
+								<!--  因为没有引入个人简历，所以无法保存用户邮箱
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label for="exampleInputEmail1"> email <span
+												class="alertMsgClass">*</span>
+											</label>
+											<div class="row">
+												<div class="col-md-9">
+													<div class="input-group">
+														<div class="input-group-btn">
+															<button type="button"
+																class="btn btn-default dropdown-toggle"
+																data-toggle="dropdown" aria-haspopup="true"
+																aria-expanded="false">
+																邮箱类型<span class="caret"></span>
+															</button>
+															<ul id="emailTypeId"
+																class="dropdown-menu dropdown-menu-right">
+																<  ! -- 数据字典中配置 USERINFO_EMAILTAG，value将作为此处展示内容--   >
+																<PF:DictionaryHandle var="node" key="USERINFO_EMAILTAG">
+																	<li><a>${node.value}</a></li>
+																</PF:DictionaryHandle>
+																<li><a>@126.com</a></li>
+																<li><a>@163.com</a></li>
+																<li><a>@qq.com</a></li>
+																<li><a>@hotmail.com</a></li>
+																<li><a>@gmail.com</a></li>
+															</ul>
+														</div>
+														<input type="text" class="form-control" name="email"
+															id="emailid" placeholder="输入email"
+															value="${resumebase.emailcode}" />
+													</div>
+													<div id="emailid_lableId"></div>
+												</div>
+												<div class="col-md-3"></div>
+											</div>
+										</div>
+									</div>
+								</div> -->
 								<PF:IfParameterEquals key="config.useredit.showOrg" val="true">
 									<div class="row">
 										<div class="col-md-12">

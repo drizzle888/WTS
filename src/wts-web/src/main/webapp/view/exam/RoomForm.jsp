@@ -101,8 +101,9 @@
 				<tr>
 					<td class="title">时间类型:</td>
 					<td><select name="timetype" id="entity_timetype"
-						val="${entity.timetype}"><option value="2">限时</option>
-							<option value="1">永久</option></select></td>
+						val="${entity.timetype}"><option value="1">永久</option>
+							<option value="2">限时</option>
+					</select></td>
 					<td class="title">答题时长:</td>
 					<td><input type="text" style="width: 120px;"
 						class="easyui-validatebox"
@@ -110,7 +111,7 @@
 						id="entity_timelen" name="timelen" value="${entity.timelen}">
 					</td>
 				</tr>
-				<tr id="tr_time">
+				<tr id="tr_time" style="display: none;">
 					<td class="title">开始时间:</td>
 					<td><input id="entity_starttime" name="starttime"
 						style="width: 140px;" value="${entity.starttime}" type="text"
@@ -132,16 +133,36 @@
 						value="${entity.examtypeid}"><span id="lable_examtypeid">${examType.name}</span></td>
 				</tr>
 				<tr>
-					<td class="title">状态:</td>
+					<!--  <td class="title">状态:</td>
 					<td><select name="pstate" id="entity_pstate"
 						val="${entity.pstate}"><option value="1">新建</option>
 							<option value="2">发布</option>
-							<option value="0">禁用</option></select></td>
-					<td class="title">重复类型:</td>
+							<option value="0">禁用</option></select></td> -->
+					<td class="title">答题次数:</td>
 					<td><select name="restarttype" id="entity_restarttype"
 						val="${entity.restarttype}">
-							<option value="1">每人一次答题</option>
-							<option value="2">可重复答题</option>
+							<option value="1">每人一次</option>
+							<option value="2">重复答题</option>
+					</select></td>
+					<td class="title">抽卷类型:</td>
+					<td><select name="pshowtype" id="entity_pshowtype"
+						val="${entity.pshowtype}">
+							<option value="1">全部</option>
+							<option value="2">随机一套</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td class="title">题排序类型:</td>
+					<td><select name="ssorttype" id="entity_ssorttype"
+						val="${entity.ssorttype}">
+							<option value="1">固定</option>
+							<option value="2">随机</option>
+					</select></td>
+					<td class="title">选项排序类型:</td>
+					<td><select name="osorttype" id="entity_osorttype"
+						val="${entity.osorttype}">
+							<option value="1">固定</option>
+							<option value="2">随机</option>
 					</select></td>
 				</tr>
 				<tr>

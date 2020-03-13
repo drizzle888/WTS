@@ -73,14 +73,23 @@ public class PaperWebController extends WebUtils {
 	/***
 	 * 答题卡(开始答题，继续答题)
 	 * 
+	 * @param paperid
+	 * @param roomId
+	 * @param request
 	 * @param session
 	 * @return
 	 */
 	@RequestMapping("/card")
 	public ModelAndView index(String paperid, String roomId, HttpServletRequest request, HttpSession session) {
 		try {
+			if (StringUtils.isBlank(paperid) || StringUtils.isBlank(roomId)) {
+				throw new RuntimeException("参数错误paperid(" + paperid + ")/roomId(" + roomId + ")");
+			}
 			LoginUser user = getCurrentUser(session);
 			Room room = roomServiceImpl.getRoomEntity(roomId);
+			if (!room.getPstate().equals("2")) {
+				throw new RuntimeException("该房间非发布状态!");
+			}
 			if (room.getWritetype().equals("2")) {
 				// 匿名考场
 				user = roomServiceImpl.getAnonymous(session);
@@ -97,6 +106,11 @@ public class PaperWebController extends WebUtils {
 				throw new RuntimeException("当前用户无进入权限!");
 			}
 			PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
+
+			// 按照答题室配置打乱题得顺序
+			if (room.getSsorttype().equals("2") || room.getOsorttype().equals("2")) {
+				roomServiceImpl.disorganizePaper(paper, roomId);
+			}
 			// 创建答题卡
 			Card card = cardServiceImpl.creatOrGetCard(paperid, roomId, user);
 			// 从答题卡中加载用户答案

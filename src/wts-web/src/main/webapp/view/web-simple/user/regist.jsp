@@ -24,18 +24,22 @@
 </head>
 <body>
 	<jsp:include page="../commons/head.jsp"></jsp:include>
+	<jsp:include page="../commons/superContent.jsp"></jsp:include>
 	<div class="containerbox">
 		<div class="container ">
-			<div class="row">
+			<div class="row" >
 				<div class="col-sm-3  visible-lg visible-md"></div>
-				<div class="col-sm-9">
+				<div class="col-sm-9" 
+					style=" padding: 20px;"> 
 					<div class="row">
 						<div class="col-sm-12" style="margin-bottom: 8px;">
-							<span style="color: #D9534F;" class="glyphicon glyphicon-user   ">用户注册</span>
-							<hr />
+							<h4>
+								<span style="color: #D9534F;"
+									class="glyphicon glyphicon-user   ">用户注册</span>
+							</h4>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row" style="margin-top: 20px;">
 						<div class="col-sm-12">
 							<c:if test="${pageset.commitType=='1'}">
 								<div class="alert alert-danger">${pageset.message}</div>
@@ -122,6 +126,7 @@
 										</div>
 									</div>
 								</div>
+								<!--  因为没有引入个人简历，所以无法保存用户邮箱
 								<div class="row">
 									<div class="col-xs-11">
 										<div class="form-group">
@@ -145,7 +150,7 @@
 																<li><a>@qq.com</a></li>
 																<li><a>@hotmail.com</a></li>
 																<li><a>@gmail.com</a></li>
-																<!-- 数据字典中配置 USERINFO_EMAILTAG，value将作为此处展示内容-->
+																<! -- 数据字典中配置 USERINFO_EMAILTAG，value将作为此处展示内容--    >
 																<PF:DictionaryHandle var="node" key="USERINFO_EMAILTAG">
 																	<li><a>${node.value}</a></li>
 																</PF:DictionaryHandle>
@@ -160,7 +165,7 @@
 											</div>
 										</div>
 									</div>
-								</div>
+								</div>-->
 								<c:if test="${showOrg}">
 									<div class="row">
 										<div class="col-md-12">
@@ -199,7 +204,8 @@
 						</div>
 					</div>
 				</div>
-			</div><br/><br/><br/><br/>
+			</div>
+			<br /> <br /> <br /> <br />
 		</div>
 	</div>
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>
@@ -231,7 +237,7 @@
 				if (!validate('registSubmitFormId')) {
 					$('#errormessageShowboxId').text('信息录入有误，请检查！');
 				} else {
-					if (confirm("是否提交注册信息?")==true){ 
+					if (confirm("是否提交注册信息?") == true) {
 						$('#registSubmitFormId').submit();
 					}
 				}
@@ -366,15 +372,16 @@
 						msg : '不能大于32个字符'
 					};
 				}
-				try{
-					var regex = new RegExp(/${config_sys_password_update_regex}/);
-					if (!regex.test(val)){
+				try {
+					var regex = new RegExp(
+							/${config_sys_password_update_regex}/);
+					if (!regex.test(val)) {
 						return {
 							valid : false,
 							msg : '${config_sys_password_update_tip}'
 						};
 					}
-				}catch(e){
+				} catch (e) {
 					//正则表达式验证失败
 					alert(e);
 				}

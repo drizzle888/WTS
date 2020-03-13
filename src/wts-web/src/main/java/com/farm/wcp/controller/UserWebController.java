@@ -224,11 +224,19 @@ public class UserWebController extends WebUtils {
 			if (type == null) {
 				type = "AllSubject";
 			}
+			if (type.equals("usermessage")) {
+				// 用户消息
+				result = usermessageServiceImpl.getMyMessageByUser(getCurrentUserOrThrowException(session).getId(), 10,
+						num);
+				result.runformatTime("USERMESSAGECTIME", "yyyy-MM-dd HH:mm");
+				result.runDictionary("0:未读,1:已读", "READSTATE");
+			}
 		} catch (Exception e) {
 			return mode.setError(e.getMessage(), e).returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
 		return mode.putAttr("userid", user.getId()).putAttr("username", user.getName()).putAttr("type", type)
-				.putAttr("num", num).returnModelAndView(ThemesUtil.getThemePage("user-homePage", request));
+				.putAttr("num", num).putAttr("docs", result)
+				.returnModelAndView(ThemesUtil.getThemePage("user-homePage", request));
 	}
 
 	/**
@@ -523,8 +531,6 @@ public class UserWebController extends WebUtils {
 		}
 	}
 
-	
-	
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/loadOwnBookPapers")
 	public ModelAndView loadOwnBookPapers(String pagenum, HttpSession session) {
@@ -543,9 +549,7 @@ public class UserWebController extends WebUtils {
 					.returnModelAndView(ThemesUtil.getThemePath() + "/error");
 		}
 	}
-	
-	
-	
+
 	/**
 	 * 拼接DataResult中的字段为逗号分隔的字符串
 	 * 

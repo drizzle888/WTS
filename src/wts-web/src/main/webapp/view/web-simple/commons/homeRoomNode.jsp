@@ -8,7 +8,7 @@
 			<div class="media" style="height: 185px; overflow: hidden;">
 				<div
 					style="text-align: center; border-bottom: 1px dashed #ccc; margin-bottom: 8px; padding-bottom: 0px;">
-					<c:if test="${room.room.timetype=='1'}"> 
+					<c:if test="${room.room.timetype=='1'}">
 						<div class="side_unit_info">永久有效</div>
 					</c:if>
 					<c:if test="${room.room.timetype=='2'}">
@@ -32,14 +32,20 @@
 				<div class="media-body">
 					<div style="margin-left: 4px;" class="pull-left">
 						<div class="side_unit_info">答题时长：${room.room.timelen}分</div>
-						<c:if test="${room.room.writetype=='0'}">
-							<div class="side_unit_info">答题人：任何人</div>
-						</c:if>
-						<c:if test="${room.room.writetype=='1'}">
-							<div class="side_unit_info">答题人：指定人</div>
-						</c:if>
-						<c:if test="${room.room.writetype=='2'}">
-							<div class="side_unit_info">答题人：匿名</div>
+						<div class="side_unit_info">
+							答题人：
+							<c:if test="${room.room.writetype=='0'}">任何人</c:if>
+							<c:if test="${room.room.writetype=='1'}">指定人</c:if>
+							<c:if test="${room.room.writetype=='2'}">匿名</c:if>
+						</div>
+						<c:if
+							test="${room.room.pshowtype!='1'||room.room.ssorttype!='1'||room.room.osorttype!='1'}">
+							<div class="side_unit_info">
+								随机类型:
+								<c:if test="${room.room.pshowtype=='2'}"><code>答卷</code></c:if>
+								<c:if test="${room.room.ssorttype=='2'}"><code>选项</code></c:if>
+								<c:if test="${room.room.osorttype=='2'}"><code>题序</code></c:if>
+							</div>
 						</c:if>
 						<div class="side_unit_info">业务分类：${room.type.name}</div>
 					</div>
@@ -47,7 +53,7 @@
 				<div style="padding-top: 20px;">
 					<div class="btn-group btn-group-justified" role="group"
 						aria-label="...">
-						<c:if test="${room.currentUserAble&&room.currentTimeAble}">
+						<c:if test="${room.currentUserAble&&room.currentTimeAble&&room.room.pstate=='2'}">
 							<div class="btn-group  btn-group-xs" role="group">
 								<c:if test="${room.room.writetype=='2'}">
 									<a href="exam/Pubroompage.do?roomid=${room.room.id}"
@@ -57,6 +63,11 @@
 									<a href="exam/roompage.do?roomid=${room.room.id}" type="button"
 										class="btn btn-success">进入答题室</a>
 								</c:if>
+							</div>
+						</c:if>
+						<c:if test="${room.room.pstate=='3'}">
+							<div class="btn-group  btn-group-xs" role="group"  title="结束状态">
+								<a type="button" class="btn btn-warning" disabled="disabled">答题室已关闭</a>
 							</div>
 						</c:if>
 						<c:if test="${room.currentUserAble&&!room.currentTimeAble}">

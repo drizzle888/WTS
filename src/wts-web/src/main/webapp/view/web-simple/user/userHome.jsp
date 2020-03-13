@@ -74,6 +74,16 @@
 							<div class="panel-body" id="userBookPapersId">loading...</div>
 						</div>
 					</c:if>
+					<c:if test="${type=='usermessage'}">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title"
+									style="margin-left: 0; padding-left: 0px;">用户消息</h3>
+							</div>
+							<div class="panel-body"><jsp:include
+									page="commons/includeUserMessage.jsp"></jsp:include></div>
+						</div>
+					</c:if>
 				</div>
 			</div>
 		</div>
@@ -104,7 +114,7 @@
 			loadBookPapers(1);
 		}
 	});
-	
+
 	//加载答卷收藏
 	function loadBookPapers(page) {
 		$('#userBookPapersId').text('loading...');
@@ -112,7 +122,7 @@
 			pagenum : page
 		});
 	}
-	
+
 	//加载答卷记录
 	function loadAllPapers(page) {
 		$('#userAllPapersId').text('loading...');

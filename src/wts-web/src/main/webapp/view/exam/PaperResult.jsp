@@ -62,9 +62,16 @@
 		<div id="PaperToolbar">
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-tip',plain:true,onClick:viewDataPaper">预览答卷
-			</a> <a class="easyui-linkbutton"
-				data-options="iconCls:'icon-add',plain:true,onClick:addDataPaper">新增
 			</a> <a href="javascript:void(0)" id="mb8" class="easyui-menubutton"
+				data-options="menu:'#mm1',iconCls:'icon-add'">创建答卷</a>
+			<div id="mm1" style="width: 150px;">
+				<div data-options="iconCls:'icon-old-versions'"
+					onclick="addDataPaper()">创建空白卷</div>
+				<div class="menu-sep"></div>
+				<div data-options="iconCls:'icon-archives'"
+					onclick="addRandomPapers()">批量创建随机卷</div>
+			</div>
+			<a href="javascript:void(0)" id="mb8" class="easyui-menubutton"
 				data-options="menu:'#mm8',iconCls:'icon-edit'">编辑</a>
 			<div id="mm8" style="width: 150px;">
 				<div data-options="iconCls:'icon-edit'" onclick="editDataPaper()">修改</div>
@@ -87,6 +94,8 @@
 				<div onclick="examPublic()">发布</div>
 				<div class="menu-sep"></div>
 				<div onclick="examPrivate()">禁用</div>
+				<div class="menu-sep"></div>
+				<div onclick="examWord()">导出word答卷</div>
 			</div>
 		</div>
 	</div>
@@ -151,7 +160,7 @@
 					'info');
 		}
 	}
-	//新增
+	//新增空白卷
 	function addDataPaper() {
 		if (!$('#PARENTID_RULE').val() || $('#PARENTID_RULE').val() == 'NONE') {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, "请选中一个左侧的分类后再添加答卷!", 'info');
@@ -164,7 +173,23 @@
 			height : 300,
 			modal : true,
 			url : url,
-			title : '新增'
+			title : '新增空白卷'
+		});
+	}
+	//新增批量随机卷
+	function addRandomPapers() {
+		if (!$('#PARENTID_RULE').val() || $('#PARENTID_RULE').val() == 'NONE') {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, "请选中一个左侧的分类后再添加答卷!", 'info');
+			return;
+		}
+		var url = 'paper/addRandomsPage.do?typeid=' + $('#PARENTID_RULE').val();
+		$.farm.openWindow({
+			id : 'winRandom',
+			width : 600,
+			height : 300,
+			modal : true,
+			url : url,
+			title : '新增批量随机卷'
 		});
 	}
 
@@ -303,6 +328,25 @@
 			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//导出答卷为word
+	function examWord() {
+		var selectedArray = $(gridPaper).datagrid('getSelections');
+		if (selectedArray.length == 1) {
+			$.messager.confirm('确认', '答卷导出为word后有可能会有部分题无法正常显示,请检查和手动调整后再使用!',
+					function(r) {
+						if (r) {
+							$.messager.alert('导出答卷',
+									'答卷生成中，等待浏览器下载... (完成后请手动关闭此对话框)', 'info');
+							window.location.href = basePath
+									+ "paper/exportWord.do?paperid="
+									+ selectedArray[0].ID;
+						}
+					});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
 					'info');
 		}
 	}

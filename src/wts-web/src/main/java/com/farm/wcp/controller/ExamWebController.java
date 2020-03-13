@@ -51,7 +51,7 @@ public class ExamWebController extends WebUtils {
 			if (roomServiceImpl.getRoomEntity(roomid) == null) {
 				throw new RuntimeException("该房间不存在!");
 			}
-			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session));
+			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session), true);
 			// 进入答题室：1.判断时间，判断人员
 			if (!roomServiceImpl.isLiveTimeRoom(roomunit.getRoom())) {
 				throw new RuntimeException("该房间不可用，未到答题时间!");
@@ -85,7 +85,7 @@ public class ExamWebController extends WebUtils {
 				user = roomServiceImpl.getAnonymous(session);
 			}
 			ViewMode view = ViewMode.getInstance();
-			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, user);
+			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, user, true);
 			// 进入答题室：1.判断时间，判断人员
 			if (!roomServiceImpl.isLiveTimeRoom(roomunit.getRoom())) {
 				throw new RuntimeException("该房间不可用，未到答题时间!");
@@ -93,7 +93,8 @@ public class ExamWebController extends WebUtils {
 			if (!roomServiceImpl.isUserAbleRoom(roomid, user)) {
 				throw new RuntimeException("当前用户无进入权限!");
 			}
-			return view.putAttr("room", roomunit).returnModelAndView(ThemesUtil.getThemePage("room-indexPage", request));
+			return view.putAttr("room", roomunit)
+					.returnModelAndView(ThemesUtil.getThemePage("room-indexPage", request));
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}

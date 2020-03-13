@@ -57,6 +57,18 @@
 											<b>答题人:</b>匿名人,
 										</c:if>
 										<b>业务分类:</b>${room.type.name}
+										<c:if
+											test="${room.room.pshowtype!='1'||room.room.ssorttype!='1'||room.room.osorttype!='1'}">
+											<c:if test="${room.room.pshowtype=='2'}">
+												<code>随机答卷</code>
+											</c:if>
+											<c:if test="${room.room.ssorttype=='2'}">
+												<code>随机选项</code>
+											</c:if>
+											<c:if test="${room.room.osorttype=='2'}">
+												<code>随机题序</code>
+											</c:if>
+										</c:if>
 									</div>
 								</div>
 							</div>
