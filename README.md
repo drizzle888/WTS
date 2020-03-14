@@ -92,3 +92,12 @@
 > PLOGS是我们的自用软件，同时可下载供大家使用，通过完成日程任务和写日报的形式记录项目信息和资料，可以方便的查询项目过程信息弥补某些传统项目管理软件使用成本高和丢失项目细节的缺陷
 1.  [WCP知识管理系统-开源版](https://gitee.com/macplus/WCP)
 2.  [PLOGS项目日报管理系统](http://www.wcpdoc.com/webspecial/home/Pub2c909b2b6eb4fe9e016f9495d1fb5ad7.html)
+
+
+### 开源项目推荐
+	
+> WCP:知识管理系统 [https://gitee.com/macplus/WCP](https://gitee.com/macplus/WCP)
+
+> WDA:文件转换组件（附件在线预览）[https://gitee.com/macplus/WDA](https://gitee.com/macplus/WDA)
+
+> WTS:在线答题系统 [https://gitee.com/macplus/WTS](https://gitee.com/macplus/WTS)
