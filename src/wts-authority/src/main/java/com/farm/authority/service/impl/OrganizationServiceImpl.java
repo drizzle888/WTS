@@ -129,7 +129,7 @@ public class OrganizationServiceImpl implements OrganizationServiceInter {
 	@Transactional
 	public DataQuery createOrganizationSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query, "ALONE_AUTH_ORGANIZATION",
-				"ID,TYPE,SORT,PARENTID,MUSER,CUSER,STATE,UTIME,CTIME,COMMENTS,NAME,TREECODE");
+				"ID,TYPE,SORT,PARENTID,MUSER,CUSER,STATE,UTIME,CTIME,COMMENTS,NAME,TREECODE,APPID");
 		return dbQuery;
 	}
 
@@ -529,32 +529,49 @@ public class OrganizationServiceImpl implements OrganizationServiceInter {
 	@Override
 	@Transactional
 	public void syncRemotOrgs(List<Organization> remoteOrgs) {
-		Set<String> orgids = new HashSet<>();
+		Set<String> orgAppids = new HashSet<>();
 		// 插入新的组织机构，或更新组织机构，最后删除组织机构
 		Collections.sort(remoteOrgs, new Comparator<Organization>() {
 			@Override
 			public int compare(Organization o1, Organization o2) {
-				return o1.getTreecode().length() - o2.getTreecode().length();
+				return o2.getParentid().equals(o1.getId()) ? -1 : 1;
 			}
 		});
 		for (Organization org : remoteOrgs) {
-			orgids.add(org.getId());
-			Organization localOrg = organizationDao.getEntity(org.getId());
+			orgAppids.add(org.getId());
+			Organization localOrg = getOrganizationByAppid(org.getId());
+			Organization parentOrg = getOrganizationByAppid(org.getParentid());
 			if (localOrg != null) {
 				// 更新
-				try {
-					BeanUtils.copyProperties(localOrg, org);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException(e);
+				localOrg.setName(org.getName());
+				if (parentOrg == null) {
+					localOrg.setParentid("NONE");
+				} else {
+					localOrg.setParentid(parentOrg.getId());
 				}
+				localOrg.setSort(org.getSort());
+				localOrg.setState(org.getState());
+				localOrg.setTreecode("NONE");
+				// localOrg.setType(org.getType());
 				organizationDao.editEntity(localOrg);
 			} else {
 				// 插入
-				organizationDao.insertSqlEntity(org);
+				if (org.getType() == null) {
+					org.setType("0");
+				}
+				org.setAppid(org.getId());
+				if (parentOrg == null) {
+					org.setParentid("NONE");
+				} else {
+					org.setParentid(parentOrg.getId());
+				}
+				localOrg = organizationDao.insertEntity(org);
 			}
+			// 格式化treecode
+			initTreeCode(localOrg.getId());
 		}
 		for (Organization org : getList()) {
-			if (!orgids.contains(org.getId())) {
+			if (org.getAppid() != null && !orgAppids.contains(org.getAppid())) {
 				org.setState("0");
 				organizationDao.editEntity(org);
 			}

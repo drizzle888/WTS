@@ -81,4 +81,12 @@ public interface OutuserServiceInter {
 	 * @return
 	 */
 	public Outuser getOutuserByUserid(String readUserId, String contentLimitlike);
+
+	/**
+	 * 绑定用户
+	 * 
+	 * @param outuserId
+	 * @param userId
+	 */
+	public void bindUser(String outuserId, String userId);
 }

@@ -364,5 +364,5 @@ public interface UserServiceInter {
 	 * @param remoteUser
 	 * @return 如果用户之前没有，被新增则返回true
 	 */
-	public boolean syncRemoteUser(User remoteUser);
+	public User syncRemoteUser(User remoteUser);
 }

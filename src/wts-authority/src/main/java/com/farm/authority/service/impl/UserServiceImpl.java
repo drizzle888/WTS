@@ -34,6 +34,7 @@ import com.farm.authority.domain.Userorg;
 import com.farm.authority.domain.Userpost;
 import com.farm.authority.exception.LicenceException;
 import com.farm.authority.service.OrganizationServiceInter;
+import com.farm.authority.service.OutuserServiceInter;
 import com.farm.authority.service.UserServiceInter;
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.auth.domain.WebMenu;
@@ -77,6 +78,9 @@ public class UserServiceImpl implements UserServiceInter {
 	private OrganizationServiceInter organizationServiceImpl;
 	@Resource
 	private UserorgDaoInter userorgDaoImpl;
+	@Resource
+	private OutuserServiceInter outUserServiceImpl;
+
 	private AuthenticateInter authUtil = AuthenticateProvider.getInstance();
 	private final static Logger log = Logger.getLogger(UserServiceImpl.class);
 
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserServiceInter {
 	private void checkUserLimit() {
 		int num = userDaoImpl.countEntitys(DBRuleList.getInstance().add(new DBRule("STATE", "2", "!=")).toList());
 		if (num > FarmAuthorityService.getPLOGS_USERNUM()) {
-			//默认5000人
+			// 默认5000人
 			throw new LicenceException("用户数量超出授权限制" + FarmAuthorityService.getPLOGS_USERNUM() + "人,已删除用户不计入限制人数!");
 		}
 	}
@@ -867,25 +871,36 @@ public class UserServiceImpl implements UserServiceInter {
 
 	@Override
 	@Transactional
-	public boolean syncRemoteUser(User remoteUser) {
-		User localUser = userDaoImpl.getEntity(remoteUser.getId());
-		if (localUser == null) {
-			List<User> users = userDaoImpl.findUserByLoginName(remoteUser.getLoginname());
-			for (User node : users) {
-				deleteUserEntity(node.getId(), node);
-			}
-			// 新增
-			userDaoImpl.insertSqlEntity(remoteUser);
-			return true;
+	public User syncRemoteUser(User remoteUser) {
+		LoginUser localuser = outUserServiceImpl.getUserByAccountId(remoteUser.getLoginname(), remoteUser.getName(),
+				"来自SSO");
+		if (localuser == null) {
+			User user = new User();
+			// user.setComments(comments);
+			user.setCtime(TimeTool.getTimeDate14());
+			user.setCuser("NONE");
+			// user.setImgid(imgid);
+			// user.setIp(ip);
+			user.setLoginname(remoteUser.getId());
+			// user.setLogintime("");
+			user.setMuser("NONE");
+			user.setName(remoteUser.getName());
+			user.setPassword("NONE");
+			user.setState("1");
+			user.setType(remoteUser.getType());
+			user.setUtime(TimeTool.getTimeDate14());
+			user = userDaoImpl.insertEntity(user);
+			outUserServiceImpl.bindUser(outUserServiceImpl.getOutuserByAccountId(remoteUser.getLoginname()).getId(),
+					user.getId());
+			return user;
 		} else {
+			User user = getUserEntity(localuser.getId());
 			// 修改
-			try {
-				BeanUtils.copyProperties(localUser, remoteUser);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
-			userDaoImpl.editEntity(localUser);
-			return false;
+			user.setName(remoteUser.getName());
+			user.setState(remoteUser.getState());
+			user.setType(remoteUser.getType());
+			userDaoImpl.editEntity(user);
+			return user;
 		}
 	}
 

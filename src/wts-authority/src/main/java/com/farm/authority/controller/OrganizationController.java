@@ -71,7 +71,7 @@ public class OrganizationController extends WebUtils {
 			}
 			DataResult result = organizationServiceImpl.createOrganizationSimpleQuery(query).search();
 			result.runDictionary("1:可用,0:禁用", "STATE");
-			result.runDictionary("1:标准", "TYPE");
+			result.runDictionary("1:标准,0:同步", "TYPE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());

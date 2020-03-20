@@ -158,4 +158,12 @@ public class OutuserServiceImpl implements OutuserServiceInter {
 		return null;
 	}
 
+	@Override
+	@Transactional
+	public void bindUser(String outuserId, String userId) {
+		Outuser user = outuserDaoImpl.getEntity(outuserId);
+		user.setUserid(userId);
+		outuserDaoImpl.editEntity(user);
+	}
+
 }
