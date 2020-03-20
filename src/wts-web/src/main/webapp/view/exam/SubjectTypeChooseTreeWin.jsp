@@ -22,7 +22,7 @@
 	});
 	function loadChooseTree(domain) {
 		$('#SubjectTreeNodeDomTree').tree( {
-			url : 'subjecttype/subjecttypeTree.do?funtype=${funtype}',
+			url : 'subjectTypeTree/subjecttypeTree.do?funtype=${funtype}',
 			onSelect : SubjectTreeNodetreeNodeClick
 		});
 	}

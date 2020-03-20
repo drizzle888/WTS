@@ -2,6 +2,7 @@
 <%@page import="com.farm.web.constant.FarmConstant"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%>
+<%@ taglib uri="/view/conf/tip.tld" prefix="TIP"%>
 <!-- 判卷时通过点击正确答案弹出 题解析 -->
 <c:if test="${!empty material}">
 	<!-- 如果有引用材料的话 -->
@@ -9,7 +10,7 @@
 		class="ke-content ke-content-borderbox">
 		<div style="text-align: center; font-size: 18px; font-weight: 700;">
 			<code>引用材料:</code>${material.title}</div>
-		<div>${material.text}</div>
+		<div><TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag></div>
 	</div>
 </c:if>
 <div id="subject_view_load_id"
@@ -30,7 +31,7 @@
 </c:if>
 <script type="text/javascript">
 	$(function() {
-		$('#subject_view_load_id').load('subject/view.do', {
+		$('#subject_view_load_id').load('adjudge/view.do', {
 			versionid : '${subjectu.version.id}'
 		}, function() {
 			$('#subject_view_load_id .subjectOrder').remove();

@@ -38,7 +38,9 @@
 									class="pull-left">
 									<div class="side_unit_info"
 										style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">
-										${room.room.name}</div>
+										${room.room.name}&nbsp;
+										<code>ID:${room.room.id}</code>
+									</div>
 									<div class="side_unit_info">
 										<c:if test="${room.room.timetype=='1'}">
 											<b>答题日期:</b>永久有效,
@@ -83,14 +85,19 @@
 		</div>
 		<div class="container" style="padding-top: 20px;">
 			<c:forEach items="${room.papers}" var="paper">
-				<c:if
-					test="${paper.info.modeltype=='1'||paper.info.modeltype=='2' }">
+				<c:if test="${room.room.pshowtype=='1'||room.room.pshowtype=='2' }">
 					<%@ include file="commons/includeRoomPaper.jsp"%>
 				</c:if>
-				<c:if test="${paper.info.modeltype=='3'}">
+				<c:if test="${room.room.pshowtype=='3'}">
 					<%@ include file="commons/includeRoomPaper3.jsp"%>
 				</c:if>
 			</c:forEach>
+			<div style="text-align: right;">
+				<img alt="访问二维码"
+					style="width: 128px; height: 128px; opacity: 0.3; filter: alpha(opacity = 30);"
+					src="<PF:basePath/>home/PubQRCode.do">
+				<div style="margin: 10px; color: #cccccc;">可扫码访问本考场</div>
+			</div>
 		</div>
 	</div>
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>

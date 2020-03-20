@@ -22,7 +22,7 @@
 	});
 	function loadChooseTree(domain) {
 		$('#ExamTreeNodeDomTree').tree( {
-			url : 'examtype/examtypeTree.do?funtype=${funtype}',
+			url : 'examTypeTree/examtypeTree.do?funtype=${funtype}',
 			onSelect : ExamTreeNodetreeNodeClick
 		});
 	}

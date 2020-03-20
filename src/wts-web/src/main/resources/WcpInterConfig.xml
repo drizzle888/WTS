@@ -3,12 +3,32 @@
 	<!-- 单点登陆-只能对接wcp -->
 	<group describe="单点登陆" name="sso">
 		<parameter name="config.sso.state">
-			<val>false</val>
+			<val>true</val>
 			<describe>是否启用单点登陆</describe>
 		</parameter>
 		<parameter name="config.sso.url">
 			<val>http://127.0.0.1:8080/wcp</val>
 			<describe>单点登系统的url，如：http://127.0.0.1:8080/wcp</describe>
+		</parameter>
+		<parameter name="config.sso.home.url">
+			<val>http://127.0.0.1:8080/wcp/home/Pubindex.html</val>
+			<describe>服务器首页</describe>
+		</parameter>
+		<parameter name="config.sso.title">
+			<val>WCP知识库</val>
+			<describe>服务端展示名称</describe>
+		</parameter>
+		<parameter name="config.sso.secret">
+			<val>F59BD65F7EDAFB087A81D4DCA06C4910</val>
+			<describe>单点登系统的安全码</describe>
+		</parameter>
+		<parameter name="config.sso.ologinname">
+			<val>sysadmin</val>
+			<describe>遠程用户登陆名</describe>
+		</parameter>
+		<parameter name="config.sso.opassword">
+			<val>111111</val>
+			<describe>远程用户登陆密码</describe>
 		</parameter>
 	</group>
 	<!-- restful接口 -->

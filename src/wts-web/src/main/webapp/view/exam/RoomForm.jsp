@@ -19,6 +19,13 @@
 		<form id="dom_formRoom">
 			<input type="hidden" id="entity_id" name="id" value="${entity.id}">
 			<table class="editTable">
+				<c:if test="${pageset.operateType==0}">
+					<tr>
+						<td class="title">答题室ID:</td>
+						<td colspan="3" ><code>
+								${entity.id}</code></td>
+					</tr>
+				</c:if>
 				<tr>
 					<td class="title">名称:</td>
 					<td colspan="2"><input type="text" style="width: 240px;"
@@ -36,16 +43,16 @@
 						</c:if></td>
 				</tr>
 				<tr>
-					<td class="title">阅卷类型:</td>
-					<td colspan="2"><select name="counttype" id="entity_counttype"
-						val="${entity.counttype}">
-							<option value="2">自动</option>
-							<option value="1">自动/人工</option>
-							<!-- <option value="3">人工</option> -->
+					<td class="title">答卷模式:</td>
+					<td colspan="2"><select name="pshowtype" id="entity_pshowtype"
+						style="width: 120px;" val="${entity.pshowtype}">
+							<option value="1">标准答题模式</option>
+							<option value="2">抽取单套答题</option>
+							<option value="3">习题练习模式</option>
 					</select></td>
 				</tr>
 				<tr>
-					<td class="title">考场图标：</td>
+					<td class="title">考场图标:</td>
 					<td colspan="2"><c:if test="${pageset.operateType!=0}">
 							<input type="hidden" id="entity_imgid" name="imgid"
 								value="${entity.imgid}">
@@ -99,9 +106,10 @@
 						</c:if></td>
 				</tr>
 				<tr>
-					<td class="title">时间类型:</td>
+					<td class="title">有效时间:</td>
 					<td><select name="timetype" id="entity_timetype"
-						val="${entity.timetype}"><option value="1">永久</option>
+						style="width: 120px;" val="${entity.timetype}"><option
+								value="1">永久</option>
 							<option value="2">限时</option>
 					</select></td>
 					<td class="title">答题时长:</td>
@@ -122,9 +130,10 @@
 						class="easyui-datetimebox"></input></td>
 				</tr>
 				<tr>
-					<td class="title">答题人类型:</td>
+					<td class="title">答题人员:</td>
 					<td><select name="writetype" id="entity_writetype"
-						val="${entity.writetype}"><option value="1">指定人员</option>
+						style="width: 120px;" val="${entity.writetype}"><option
+								value="1">指定人员</option>
 							<option value="0">任何人员</option>
 							<option value="2">匿名答题</option></select></td>
 					<td class="title">业务分类:</td>
@@ -140,27 +149,28 @@
 							<option value="0">禁用</option></select></td> -->
 					<td class="title">答题次数:</td>
 					<td><select name="restarttype" id="entity_restarttype"
-						val="${entity.restarttype}">
+						style="width: 120px;" val="${entity.restarttype}">
 							<option value="1">每人一次</option>
 							<option value="2">重复答题</option>
 					</select></td>
-					<td class="title">抽卷类型:</td>
-					<td><select name="pshowtype" id="entity_pshowtype"
-						val="${entity.pshowtype}">
-							<option value="1">全部</option>
-							<option value="2">随机一套</option>
+					<td class="title">阅卷类型:</td>
+					<td><select name="counttype" id="entity_counttype"
+						style="width: 120px;" val="${entity.counttype}">
+							<option value="2">自动</option>
+							<option value="1">自动/人工</option>
+							<!-- <option value="3">人工</option> -->
 					</select></td>
 				</tr>
 				<tr>
-					<td class="title">题排序类型:</td>
+					<td class="title">题目排序:</td>
 					<td><select name="ssorttype" id="entity_ssorttype"
-						val="${entity.ssorttype}">
+						style="width: 120px;" val="${entity.ssorttype}">
 							<option value="1">固定</option>
 							<option value="2">随机</option>
 					</select></td>
-					<td class="title">选项排序类型:</td>
+					<td class="title">选项排序:</td>
 					<td><select name="osorttype" id="entity_osorttype"
-						val="${entity.osorttype}">
+						style="width: 120px;" val="${entity.osorttype}">
 							<option value="1">固定</option>
 							<option value="2">随机</option>
 					</select></td>

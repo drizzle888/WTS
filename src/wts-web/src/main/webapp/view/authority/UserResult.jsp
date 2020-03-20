@@ -93,21 +93,22 @@
 				<a class="easyui-linkbutton"
 					data-options="iconCls:'icon-add',plain:true,onClick:addDataUser">新增
 				</a>
-				<a class="easyui-linkbutton"
-					data-options="iconCls:'icon-edit',plain:true,onClick:editDataUser">修改
-				</a>
-				<a href="javascript:void(0)" id="mb" class="easyui-menubutton"
-					data-options="menu:'#mm6',iconCls:'icon-edit'">批量设置</a>
-				<div id="mm6" style="width: 150px;">
-					<div onclick="sysUser()">设置为系统用户</div>
-					<div class="menu-sep"></div>
-					<div onclick="setState('0')">设置为禁用</div>
-					<div onclick="setState('1')">设置为启用</div>
-					<div onclick="setState('3')">设置为待审核</div>
-				</div>
-				<a class="easyui-linkbutton"
-					data-options="iconCls:'icon-remove',plain:true,onClick:delDataUser">删除
-				</a>
+			</PF:IfParameterNoEquals>
+			<a class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit',plain:true,onClick:editDataUser">修改
+			</a> <a href="javascript:void(0)" id="mb" class="easyui-menubutton"
+				data-options="menu:'#mm6',iconCls:'icon-edit'">批量设置</a>
+			<div id="mm6" style="width: 150px;">
+				<div onclick="sysUser()">设置为系统用户</div>
+				<div class="menu-sep"></div>
+				<div onclick="setState('0')">设置为禁用</div>
+				<div onclick="setState('1')">设置为启用</div>
+				<div onclick="setState('3')">设置为待审核</div>
+			</div>
+			<a class="easyui-linkbutton"
+				data-options="iconCls:'icon-remove',plain:true,onClick:delDataUser">删除
+			</a>
+			<PF:IfParameterNoEquals key="config.sso.state" val="true">
 				<a href="javascript:void(0)" id="passwordmng"
 					class="easyui-menubutton"
 					data-options="menu:'#passwords',iconCls:'icon-lock'">密码管理</a>
@@ -115,16 +116,17 @@
 					<div onclick="initPasswd()">初始化为默认密码</div>
 					<div onclick="setingPassWd()">初始化为指定密码</div>
 				</div>
-				<a href="javascript:void(0)" id="mb" class="easyui-menubutton"
-					data-options="menu:'#mm5',iconCls:'icon-edit'">人员导入</a>
-				<div id="mm5" style="width: 150px;">
-					<div data-options="iconCls:'icon-cash_register_2'"
-						onclick="toUserImport()">人员导入</div>
-					<div data-options="iconCls:'icon-blogs'" onclick="userExport()">人员导出</div>
-					<div class="menu-sep"></div>
-					<div data-options="iconCls:'icon-cv'" onclick="userTempletDown()">模板下载</div>
-				</div>
 			</PF:IfParameterNoEquals>
+			<a href="javascript:void(0)" id="mb" class="easyui-menubutton"
+				data-options="menu:'#mm5',iconCls:'icon-edit'">人员导入</a>
+			<div id="mm5" style="width: 150px;">
+				<div data-options="iconCls:'icon-cash_register_2'"
+					onclick="toUserImport()">人员导入</div>
+				<div data-options="iconCls:'icon-blogs'" onclick="userExport()">人员导出</div>
+				<div class="menu-sep"></div>
+				<div data-options="iconCls:'icon-cv'" onclick="userTempletDown()">模板下载</div>
+			</div>
+
 			<form method="post" action="user/loadUsers.do" id="reportForm">
 				<input type="hidden" name="ruleText" id="ruleTextId" />
 			</form>

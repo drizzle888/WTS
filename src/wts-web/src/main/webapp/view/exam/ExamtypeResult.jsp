@@ -120,7 +120,7 @@
 			gridObj : gridExamtype
 		});
 		$('#examTypeTree').tree({
-			url : 'examtype/examtypeTree.do?funtype=0',
+			url : 'examTypeTree/examtypeTree.do?funtype=0',
 			onSelect : function(node) {
 				$('#PARENTID_RULE').val(node.id);
 				$('#PARENTTITLE_RULE').val(node.text);
@@ -244,7 +244,7 @@
 				width : 250,
 				height : 300,
 				modal : true,
-				url : "examtype/examTypeTreeView.do?funtype=0&ids="
+				url : "examTypeTree/examTypeTreeView.do?funtype=0&ids="
 						+ $.farm.getCheckedIds(gridExamtype, 'ID'),
 				title : '移动分类'
 			});

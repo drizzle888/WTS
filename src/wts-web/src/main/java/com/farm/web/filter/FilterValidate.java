@@ -156,7 +156,12 @@ public class FilterValidate implements Filter {
 						session.setAttribute(parameterService.getParameter("farm.constant.session.key.go.url"),
 								requestUrl + "?" + Urls.getUrlParameters(request));
 					}
-					response.sendRedirect(basePath + parameterService.getParameter("config.url.login"));
+					if (FilterSso.isSsoAble()) {
+						// 是否進行單點登錄
+						response.sendRedirect(FilterSso.getRemoteLoginUrl(request));
+					} else {
+						response.sendRedirect(basePath + parameterService.getParameter("config.url.login"));
+					}
 					return;
 				}
 			}

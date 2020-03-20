@@ -89,6 +89,10 @@ public class LoginWebController extends WebUtils {
 	 */
 	@RequestMapping("/webPage")
 	public ModelAndView login(HttpSession session, HttpServletRequest request) {
+		if (FilterSso.isSsoAble()) {
+			// 如果启用单点登陆
+			return ViewMode.getInstance().returnRedirectUrl(FilterSso.getRemoteLoginUrl(request));
+		}
 		// 将登录前的页面地址存入session中，为了登录后回到该页面中
 		String url = request.getHeader("Referer");
 		session.setAttribute(FarmParameterService.getInstance().getParameter("farm.constant.session.key.from.url"),
@@ -334,7 +338,8 @@ public class LoginWebController extends WebUtils {
 	}
 
 	@RequestMapping("/webout")
-	public ModelAndView weblogOut(String name, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
+	public ModelAndView weblogOut(String name, HttpServletRequest request, HttpSession session)
+			throws UnsupportedEncodingException {
 		clearCurrentUser(session);
 		if (FilterSso.isSsoAble()) {
 			return ViewMode.getInstance().returnRedirectUrl(FilterSso.getSsoLogoutURL(request));
@@ -350,7 +355,8 @@ public class LoginWebController extends WebUtils {
 	}
 
 	@RequestMapping("/out")
-	public ModelAndView logOut(String name,HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
+	public ModelAndView logOut(String name, HttpServletRequest request, HttpSession session)
+			throws UnsupportedEncodingException {
 		clearCurrentUser(session);
 		// return ViewMode.getInstance().returnRedirectUrl("/login/page.do");
 		if (FilterSso.isSsoAble()) {

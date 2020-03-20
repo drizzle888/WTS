@@ -12,26 +12,21 @@
 						style="font-size: 16px; white-space: nowrap;">${paper.info.name}</div>
 				</div>
 				<div class="pull-right">
-					<img alt="答题室" style="width: 64px; height: 64px;"
-						src="text/img/paper.png">
+					<img alt="练习室" style="width: 64px; height: 64px;"
+						src="text/img/random.png">
 				</div>
 				<div class="media-body">
 					<div style="margin-left: 4px;" class="pull-left">
-						<div class="side_unit_info">答题时长：${room.room.timelen}分</div>
-						<div class="side_unit_info">题量：共${paper.rootChapterNum}道大题,${paper.subjectNum}道小题</div>
-						<div class="side_unit_info">总分：${paper.allPoint}</div>
+						<div class="side_unit_info">题量：共${paper.subjectNum}道题</div>
+						<div class="side_unit_info">随机答题,不计得分</div>
+						<div class="side_unit_info">错题记录可在用户空间中查看</div>
 					</div>
 				</div>
 				<div style="padding-top: 20px;">
 					<div class="btn-group btn-group-justified" role="group"
 						aria-label="...">
 						<div class="btn-group" role="group">
-							<a
-								href="adjudge/paperUser.do?paperid=${paper.info.id}&roomId=${room.room.id}"
-								type="button" class="btn btn-default">阅卷管理 (阅<span
-								class="wts-red"><b>${paper.adjudgeUserNum}</b></span>人/答<span
-								class="wts-red"><b>${paper.currentUserNum}</b></span>人<c:if
-									test="${paper.allUserNum>0}">/共<span class="wts-red"><b>${paper.allUserNum}</b></span>人</c:if>)
+							<a type="button" class="btn btn-default" disabled="disabled">练习题无需阅卷
 							</a>
 						</div>
 						<div class="btn-group" role="group">

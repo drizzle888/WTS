@@ -8,7 +8,6 @@
 			<tr>
 				<th style="width: 70%;">题目</th>
 				<th>答题时间</th>
-				<th>状态</th>
 				<th>操作</th>
 			</tr>
 		</thead>
@@ -18,13 +17,6 @@
 					<td>${node.TITLE }</td>
 					<td><PF:FormatTime date="${node.CTIME }"
 							yyyyMMddHHmmss="yyyy-MM-dd HH:mm" /></td>
-					<td><c:if
-							test="${node.CARDSTATE=='6'||node.CARDSTATE=='7'||empty node.CARDSTATE}">
-							<span style="color: green;">公开</span>
-						</c:if> <c:if
-							test="${node.CARDSTATE!='6'&&node.CARDSTATE!='7'&& not empty node.CARDSTATE}">
-							<span style="color: red;" title="答卷未完成阅卷期间，禁止查看答案"> 密封</span>
-						</c:if></td>
 					<td>
 						<!--  --> <a href="javascript:delSubjectByAll('${node.ID}')">刪除</a>
 						<!--  --> <c:if

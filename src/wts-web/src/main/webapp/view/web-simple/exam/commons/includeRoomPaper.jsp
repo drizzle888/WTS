@@ -12,7 +12,9 @@
 					<div class="doc_node_title_box"
 						style="font-size: 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
 						<code style="float: left;">考卷</code>
-						&nbsp;${paper.info.name}
+						&nbsp;
+						<c:if test="${empty paper.roomPaper.name}">${paper.info.name}</c:if>
+						<c:if test="${not empty paper.roomPaper.name}">${paper.roomPaper.name}</c:if>
 					</div>
 				</div>
 				<div class="pull-right">

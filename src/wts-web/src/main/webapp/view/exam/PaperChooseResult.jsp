@@ -43,7 +43,6 @@
 					<tr>
 						<th data-options="field:'ck',checkbox:true"></th>
 						<th field="NAME" data-options="sortable:true" width="60">考卷名称</th>
-						<th field="MODELTYPE" data-options="sortable:true" width="30">答卷类型</th>
 						<th field="ADVICETIME" data-options="sortable:true" width="30">答题时间(分)</th>
 						<th field="SUBJECTNUM" data-options="sortable:true" width="20">题量</th>
 					</tr>
@@ -84,7 +83,7 @@
 			gridObj : gridChoosePaper
 		});
 		$('#examTypePaperTree').tree({
-			url : 'examtype/examtypeTree.do?funtype=1',
+			url : 'examTypeTree/examtypeTree.do?funtype=1',
 			onSelect : function(node) {
 				$('#PARENTID_CHOOSEPAPER_RULE').val(node.id);
 				$('#PARENTTITLE_CHOOSEPAPER_RULE').val(node.text);

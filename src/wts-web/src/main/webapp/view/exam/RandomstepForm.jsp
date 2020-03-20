@@ -101,7 +101,7 @@
 		});
 		//加载题库分类
 		$('#entity_typeid').combotree({
-			url : 'subjecttype/subjecttypeTree.do?funtype=1',
+			url : 'subjectTypeTree/subjecttypeTree.do?funtype=1',
 			required : true,
 			textFiled : 'name',
 			parentField : 'parentid',

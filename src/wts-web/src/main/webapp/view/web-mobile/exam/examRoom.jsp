@@ -75,11 +75,11 @@
 		<div class="container" style="padding-top: 20px;">
 			<c:forEach items="${room.papers}" var="paper">
 				<c:if
-					test="${paper.info.modeltype=='1'||paper.info.modeltype=='2' }">
+					test="${room.room.pshowtype=='1'||paper.info.pshowtype=='2' }">
 					<%@ include
 						file="/view/web-simple/exam/commons/includeRoomPaper.jsp"%>
 				</c:if>
-				<c:if test="${paper.info.modeltype=='3'}">
+				<c:if test="${room.room.pshowtype=='3'}">
 					<%@ include
 						file="/view/web-simple/exam/commons/includeRoomPaper3.jsp"%>
 				</c:if>

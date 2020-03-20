@@ -36,9 +36,15 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="home/Pubindex.html"><span 
-						class="glyphicon glyphicon-home"></span>&nbsp;答题室</a></li>
-				<li><a href="search/pointSearch.html"><span 
+				<PF:IfParameterEquals key="config.sso.state" val="true">
+					<li><a href="<PF:ParameterValue
+								key="config.sso.home.url" />"><span
+							class="glyphicon glyphicon-home"></span>&nbsp;<PF:ParameterValue
+								key="config.sso.title" /></a></li>
+				</PF:IfParameterEquals>
+				<li><a href="home/Pubindex.html"><span
+						class="glyphicon glyphicon-pencil"></span>&nbsp;答题室</a></li>
+				<li><a href="search/pointSearch.html"><span
 						class="glyphicon glyphicon-search"></span>&nbsp;成绩查询</a></li>
 			</ul>
 			<jsp:include page="includeToolmenu.jsp"></jsp:include>

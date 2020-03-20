@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wts.exam.domain.Card;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.RoomPaper;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
@@ -106,7 +107,11 @@ public class PaperWebController extends WebUtils {
 				throw new RuntimeException("当前用户无进入权限!");
 			}
 			PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
-
+			if (StringUtils.isNotBlank(paperid) && StringUtils.isNotBlank(roomId)) {
+				// 加载别名
+				RoomPaper rpaper = roomServiceImpl.getRoomPaper(roomId, paperid);
+				paper.setRoomPaper(rpaper);
+			}
 			// 按照答题室配置打乱题得顺序
 			if (room.getSsorttype().equals("2") || room.getOsorttype().equals("2")) {
 				roomServiceImpl.disorganizePaper(paper, roomId);

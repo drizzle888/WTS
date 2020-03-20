@@ -40,7 +40,9 @@
 						<td><input name="NAME:like" type="text"></td>
 						<td class="title">组织类型:</td>
 						<td colspan="3"><select name="TYPE:=" style="width: 120px;">
-								<option value="1">标准</option>
+								<option value="">全部</option>
+								<option value="1">本地</option>
+								<option value="0">同步</option>
 						</select></td>
 					</tr>
 					<tr style="text-align: center;">
@@ -63,21 +65,25 @@
 							组织类型</th>
 						<th field="COMMENTS" data-options="sortable:true" width="40">
 							备注</th>
+						<th field="APPID" data-options="sortable:true" width="40">
+							APPID</th>
 					</tr>
 				</thead>
 			</table>
 		</div>
 		<div id="orgToolbar">
+			<a class="easyui-linkbutton"
+				data-options="iconCls:'icon-tip',plain:true,onClick:viewDataOrganization">查看
+			</a>
 			<PF:IfParameterNoEquals key="config.sso.state" val="true">
-				<a class="easyui-linkbutton"
-					data-options="iconCls:'icon-tip',plain:true,onClick:viewDataOrganization">查看
-				</a>
 				<a class="easyui-linkbutton"
 					data-options="iconCls:'icon-add',plain:true,onClick:addDataOrganization">新增
 				</a>
-				<a class="easyui-linkbutton"
-					data-options="iconCls:'icon-edit',plain:true,onClick:editDataOrganization">修改/岗位设置
-				</a>
+			</PF:IfParameterNoEquals>
+			<a class="easyui-linkbutton"
+				data-options="iconCls:'icon-edit',plain:true,onClick:editDataOrganization">修改/岗位设置
+			</a>
+			<PF:IfParameterNoEquals key="config.sso.state" val="true">
 				<a class="easyui-linkbutton"
 					data-options="iconCls:'icon-remove',plain:true,onClick:delDataOrganization">删除
 				</a>
@@ -85,6 +91,11 @@
 					data-options="iconCls:'icon-communication',plain:true,onClick:moveOrgtree">移动
 				</a>
 			</PF:IfParameterNoEquals>
+			<PF:IfParameterEquals key="config.sso.state" val="true">
+				<a class="easyui-linkbutton"
+					data-options="iconCls:'icon-limited-edition',plain:true,onClick:sycnOrg">同步服务器
+				</a>
+			</PF:IfParameterEquals>
 		</div>
 	</div>
 </body>
@@ -186,6 +197,31 @@
 					'info');
 		}
 	}
+
+	//从服务器同步组织机构
+	function sycnOrg() {
+		$.messager.confirm(MESSAGE_PLAT.PROMPT, "同步机构可能需要执行较长时间，确定现在要同步么？",
+				function(flag) {
+					if (flag) {
+						$(gridOrganization).datagrid('loading');
+						$.post('ssosycn/sycnorgs.do?ids='
+								+ $.farm.getCheckedIds(gridOrganization, 'ID'),
+								{}, function(flag) {
+									$(gridOrganization).datagrid('loaded');
+									if (flag.STATE == 0) {
+										$(gridOrganization).datagrid('reload');
+										$('#OrganizationTree').tree('reload');
+									} else {
+										var str = MESSAGE_PLAT.ERROR_SUBMIT
+												+ flag.MESSAGE;
+										$.messager.alert(MESSAGE_PLAT.ERROR,
+												str, 'error');
+									}
+								}, 'json');
+					}
+				});
+	}
+
 	//删除
 	function delDataOrganization() {
 		var selectedArray = $(gridOrganization).datagrid('getSelections');

@@ -57,7 +57,7 @@ public class HomeWebController extends WebUtils {
 	 * @return
 	 */
 	@RequestMapping("/Pubindex")
-	public ModelAndView index(HttpServletRequest request, HttpSession session) {
+	public ModelAndView pubindex(HttpServletRequest request, HttpSession session) {
 		ViewMode view = ViewMode.getInstance();
 		// 查询所有的root分类
 		List<ExamTypeUnit> types = examTypeServiceImpl.getRootTypeUnits(getCurrentUser(session));
@@ -82,6 +82,17 @@ public class HomeWebController extends WebUtils {
 		}
 		return view.putAttr("types", types).putAttr("isHaveRoome", isHaveRoome).putAttr("ctype", ctype)
 				.returnModelAndView(ThemesUtil.getThemePage("home-indexPage", request));
+	}
+
+	/***
+	 * 首页
+	 * 
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/index")
+	public ModelAndView index(HttpServletRequest request, HttpSession session) {
+		return pubindex(request, session);
 	}
 
 	/**

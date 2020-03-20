@@ -130,7 +130,17 @@ public class adjudgeWebController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
 	}
-
+	/**
+	 * 试题预览页面
+	 *
+	 * @return
+	 */
+	@RequestMapping("/view")
+	public ModelAndView viewLoad(String versionid, HttpSession session) {
+		ViewMode view = ViewMode.getInstance();
+		SubjectUnit subjectUnit = subjectServiceImpl.getSubjectUnit(versionid);
+		return view.putAttr("subjectu", subjectUnit).returnModelAndView(subjectUnit.getTipType().getVeiwPage());
+	}
 	/***
 	 * 考卷答题人页面(判卷)
 	 * 

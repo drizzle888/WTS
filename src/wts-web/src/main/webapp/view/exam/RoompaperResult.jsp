@@ -7,12 +7,11 @@
 			<thead>
 				<tr>
 					<th data-options="field:'ck',checkbox:true"></th>
-					<th field="PAPERNAME" data-options="sortable:true" width="70">考卷名称</th>
-					<th field="PAPERSTATE" data-options="sortable:true" width="40">考卷状态</th>
-					<th field="MODELTYPE" data-options="sortable:true" width="40">考卷类型</th>
-					<th field="PAPERTIME" data-options="sortable:true" width="60">创建时间</th>
-					<th field="CURRENTUSERNUM" data-options="sortable:true" width="40">参加考试</th>
-					<th field="ADJUDGEUSERNUM" data-options="sortable:true" width="40">完成阅卷</th>
+					<th field="PAPERNAME" data-options="sortable:true" width="60">考卷名称</th>
+					<th field="NAME" data-options="sortable:true" width="90">别名</th>
+					<th field="PAPERSTATE" data-options="sortable:true" width="30">考卷状态</th>
+					<th field="CURRENTUSERNUM" data-options="sortable:true" width="30">参加考试</th>
+					<th field="ADJUDGEUSERNUM" data-options="sortable:true" width="30">完成阅卷</th>
 				</tr>
 			</thead>
 		</table>
@@ -33,18 +32,28 @@
 		iconCls : 'icon-add',
 		handler : addDataRoompaper
 	}, {
+		id : 'setoname',
+		text : '设置别名',
+		iconCls : 'icon-invoice',
+		handler : setOtherName
+	}, {
+		id : 'setoname',
+		text : '清除别名',
+		iconCls : 'icon-order',
+		handler : clearOtherName
+	}, {
 		id : 'del',
 		text : '移除答卷',
 		iconCls : 'icon-remove',
 		handler : delDataRoompaper
 	}, {
 		id : 'clearCard',
-		text : '清空用户答题卡',
+		text : '清空答题卡',
 		iconCls : 'icon-exclamation-red-frame',
 		handler : clearUsercard
 	}, {
 		id : 'userCards',
-		text : '用户答题卡管理',
+		text : '答题卡管理',
 		iconCls : 'icon-client_account_template',
 		handler : UsercardMng
 	} ];
@@ -76,12 +85,58 @@
 			title : '添加答卷'
 		});
 	}
+
+	//设置答卷在答题室中的别名
+	function setOtherName() {
+		var selectedArray = $(gridRoompaper).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			$.messager.prompt('设置别名', '输入别名：', function(r) {
+				if (r) {
+					$.post('roompaper/editOtherName.do', {
+						ids : $.farm.getCheckedIds(gridRoompaper, 'ID'),
+						name : r
+					}, function(flag) {
+						if (flag.STATE == 0) {
+							$(gridRoompaper).datagrid('reload');
+						} else {
+							$.messager.alert(MESSAGE_PLAT.ERROR, flag.MESSAGE,
+									'error');
+						}
+					}, 'json');
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//清除別名
+	function clearOtherName() {
+		var selectedArray = $(gridRoompaper).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			$.post('roompaper/clearOtherName.do', {
+				ids : $.farm.getCheckedIds(gridRoompaper, 'ID')
+			},
+					function(flag) {
+						if (flag.STATE == 0) {
+							$(gridRoompaper).datagrid('reload');
+						} else {
+							$.messager.alert(MESSAGE_PLAT.ERROR, flag.MESSAGE,
+									'error');
+						}
+					}, 'json');
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+
 	//用户答题卡管理
 	function UsercardMng() {
 		var selectedArray = $(gridRoompaper).datagrid('getSelections');
 		if (selectedArray.length == 1) {
-			var url = url_CardMng + '?operateType='
-					+ PAGETYPE.EDIT + '&roompaperId=' + selectedArray[0].ID;
+			var url = url_CardMng + '?operateType=' + PAGETYPE.EDIT
+					+ '&roompaperId=' + selectedArray[0].ID;
 			$.farm.openWindow({
 				id : 'winUsercardMng',
 				width : 750,

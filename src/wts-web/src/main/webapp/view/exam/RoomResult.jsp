@@ -48,17 +48,17 @@
 					<tr>
 						<th data-options="field:'ck',checkbox:true"></th>
 						<th field="NAME" data-options="sortable:true" width="40">答题室名称</th>
-						<th field="COUNTTYPE" data-options="sortable:true" width="20">阅卷类型</th>
-						<th field="TIMELEN" data-options="sortable:true" width="15">时长</th>
-						<th field="WRITETYPETITLE" data-options="sortable:true" width="20">答题类型</th>
-						<th field="USERNUM" data-options="sortable:true" width="15">人数</th>
-						<!-- WRITETYPE -->
-						<th field="STARTTIME" data-options="sortable:true" width="40">开始时间</th>
-						<th field="TIMETYPE" data-options="sortable:true" width="20">时间类型</th>
 						<th field="TYPENAME" data-options="sortable:true" width="40">业务分类</th>
-						<th field="SSORTTYPE" data-options="sortable:true" width="20">题序类型</th>
-						<th field="OSORTTYPE" data-options="sortable:true" width="20">选项类型</th>
-						<th field="PSHOWTYPE" data-options="sortable:true" width="20">抽卷类型</th>
+						<th field="PSHOWTYPE" data-options="sortable:true" width="20">答卷模式</th>
+						<th field="TIMELEN" data-options="sortable:true" width="20">答题时长</th>
+						<th field="WRITETYPETITLE" data-options="sortable:true" width="20">答题人员</th>
+						<th field="USERNUM" data-options="sortable:true" width="20">答题人数</th>
+						<!-- WRITETYPE -->
+						<th field="TIMETYPE" data-options="sortable:true" width="20">时间类型</th>
+						<th field="STARTTIME" data-options="sortable:true" width="35">开始时间</th>
+						<th field="SSORTTYPE" data-options="sortable:true" width="20">题目顺序</th>
+						<th field="OSORTTYPE" data-options="sortable:true" width="20">选项顺序</th>
+						<th field="COUNTTYPE" data-options="sortable:true" width="20">阅卷类型</th>
 						<th field="PSTATETITLE" data-options="sortable:true" width="20">状态</th>
 						<!-- PSTATE -->
 					</tr>
@@ -135,7 +135,7 @@
 			gridObj : gridRoom
 		});
 		$('#examTypeTree').tree({
-			url : 'examtype/examtypeTree.do?funtype=1',
+			url : 'examTypeTree/examtypeTree.do?funtype=1',
 			onSelect : function(node) {
 				$('#PARENTID_RULE').val(node.id);
 				$('#PARENTTITLE_RULE').val(node.text);
@@ -489,7 +489,7 @@
 				width : 250,
 				height : 300,
 				modal : true,
-				url : "examtype/examTypeTreeView.do?funtype=1&ids="
+				url : "examTypeTree/examTypeTreeView.do?funtype=1&ids="
 						+ $.farm.getCheckedIds(gridRoom, 'ID'),
 				title : '设置分类'
 			});

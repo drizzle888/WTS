@@ -41,4 +41,8 @@
 	<parameter versions='0.0.1'>config.doc.downloadfile.safecode.valid</parameter>
 	<parameter versions='0.0.1'>config.logic.remove.img.able</parameter>
 	<parameter versions='0.0.1'>config.limit.cut.png.length</parameter>
+	<parameter versions='0.7.0'>config.sso.secret</parameter>
+	<parameter versions='0.7.0'>config.sso.ologinname</parameter>
+	<parameter versions='0.7.0'>config.sso.opassword</parameter>
+	<parameter versions='0.7.0'>config.sso.title</parameter>
 </conf>

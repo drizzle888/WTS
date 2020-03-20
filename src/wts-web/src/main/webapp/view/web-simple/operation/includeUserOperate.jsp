@@ -28,34 +28,34 @@
 	<!-- 答题记录-->
 	<c:if test="${type=='AllSubject'}">
 		<a href="webuser/Home.do?type=AllSubject&userid=${userid}"
-			class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
+			class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span>&nbsp;练习题记录</a>
 	</c:if>
 	<!-- 答题记录-->
 	<c:if test="${type!='AllSubject'}">
 		<a href="webuser/Home.do?type=AllSubject&userid=${userid}"
-			class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;答题记录</a>
+			class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span>&nbsp;练习题记录</a>
 	</c:if>
 	<!-- 错题记录-->
 	<c:if test="${type=='ErrorSubject'}">
 		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
 			class="btn btn-info"><span
-			class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
+			class="glyphicon glyphicon-remove-sign"></span>&nbsp;练习错题集</a>
 	</c:if>
 	<!-- 错题记录-->
 	<c:if test="${type!='ErrorSubject'}">
 		<a href="webuser/Home.do?type=ErrorSubject&userid=${userid}"
 			class="btn btn-default"><span
-			class="glyphicon glyphicon-remove-sign"></span>&nbsp;错题记录</a>
+			class="glyphicon glyphicon-remove-sign"></span>&nbsp;练习错题集</a>
 	</c:if>
 	<!-- 收藏-->
 	<c:if test="${type=='BookSubject'}">
 		<a href="webuser/Home.do?type=BookSubject&userid=${userid}"
-			class="btn btn-info"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏题目</a>
+			class="btn btn-info"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏练习题</a>
 	</c:if>
 	<!-- 收藏-->
 	<c:if test="${type!='BookSubject'}">
 		<a href="webuser/Home.do?type=BookSubject&userid=${userid}"
-			class="btn btn-default"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏题目</a>
+			class="btn btn-default"><span class="glyphicon glyphicon-star"></span>&nbsp;收藏练习题</a>
 	</c:if>
 	<c:if test="${type=='usermessage'}">
 		<c:if test="${self}">

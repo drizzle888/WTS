@@ -81,7 +81,10 @@
 				</div>
 			</c:if>
 			<c:forEach items="${room.papers}" var="paper">
-				<%@ include file="commons/includeInnerPaper.jsp"%>
+				<c:if test="${room.room.pshowtype!='3'}">
+					<%@ include file="commons/includeInnerPaper.jsp"%></c:if>
+				<c:if test="${room.room.pshowtype=='3'}">
+					<%@ include file="commons/includeInnerPaper3.jsp"%></c:if>
 			</c:forEach>
 		</div>
 	</div>

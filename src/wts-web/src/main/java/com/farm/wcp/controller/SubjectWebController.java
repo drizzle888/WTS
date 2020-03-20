@@ -23,6 +23,8 @@ import com.farm.wcp.util.SubjectTestUtils;
 import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
 import com.wts.exam.domain.Card;
+import com.wts.exam.domain.RoomPaper;
+import com.wts.exam.domain.Subject;
 import com.wts.exam.domain.SubjectAnalysis;
 import com.wts.exam.domain.SubjectComment;
 import com.wts.exam.domain.SubjectUserOwn;
@@ -86,15 +88,24 @@ public class SubjectWebController extends WebUtils {
 	 * @return
 	 */
 	@RequestMapping("/PubRandomSubject")
-	public ModelAndView PubRandomSubject(String testid, Integer index, String paperid, HttpServletRequest request,
-			HttpSession session) {
+	public ModelAndView PubRandomSubject(String testid, String roomid, Integer index, String paperid,
+			HttpServletRequest request, HttpSession session) {
 		try {
 			Map<String, Object> test = null;
 			if (StringUtils.isBlank(testid)) {
+				if (!roomServiceImpl.testAble(roomid, paperid)) {
+					throw new RuntimeException("当前答卷不支持在线练习!");
+				}
 				// 首次創建test
 				PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
 				List<SubjectUnit> subjects = paperServiceImpl.getPaperSubjects(paper.getChapters());
-				testid = SubjectTestUtils.creatTest(subjects, paper.getInfo().getName(), session);
+				String testTitle = paper.getInfo().getName();
+				RoomPaper roompaper = roomServiceImpl.getRoomPaper(roomid, paperid);
+				if (roompaper != null && StringUtils.isNotBlank(roompaper.getName())) {
+					// 使用别名
+					testTitle = roompaper.getName();
+				}
+				testid = SubjectTestUtils.creatTest(subjects, testTitle, session);
 				if (StringUtils.isNotBlank(paperid)) {
 					// 把paperid存入测试参数中
 					SubjectTestUtils.putAttribute(testid, "paperid", paperid, session);
@@ -154,8 +165,10 @@ public class SubjectWebController extends WebUtils {
 				// 首次創建test
 				List<SubjectUnit> subjects = new ArrayList<>();
 				for (String subjectId : parseIds(subjectids)) {
-					subjects.add(subjectServiceImpl
-							.getSubjectUnit(subjectServiceImpl.getSubjectEntity(subjectId).getVersionid()));
+					Subject subject = subjectServiceImpl.getSubjectEntity(subjectId);
+					if (subject != null) {
+						subjects.add(subjectServiceImpl.getSubjectUnit(subject.getVersionid()));
+					}
 				}
 				testid = SubjectTestUtils.creatTest(subjects, "", session);
 				index = 1;
@@ -202,7 +215,7 @@ public class SubjectWebController extends WebUtils {
 					} else {
 						Card card = cardServiceImpl.getCardEntity(ownEntity.getCardid());
 						// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
-						if (card.getPstate().equals("6") || card.getPstate().equals("7")) {
+						if (card == null || card.getPstate().equals("6") || card.getPstate().equals("7")) {
 							// 不是来源答卷的直接可见
 							subjectIds = subjectIds + "," + ownEntity.getSubjectid();
 						}
@@ -245,7 +258,7 @@ public class SubjectWebController extends WebUtils {
 			}
 			if (user != null && unit != null && unit.getSubject() != null) {
 				// 2.把错题加入错题集合// 3.用户答题历史存入，答题历史记录
-				subjectUserOwnServiceImpl.addFinishSubject(unit.getSubject().getId(), pointWeight == 100, null, user);
+				subjectUserOwnServiceImpl.addFinishTestSubject(unit.getSubject().getId(), pointWeight == 100, user);
 			}
 			return page.putAttr("point", pointWeight).returnObjMode();
 		} catch (Exception e) {

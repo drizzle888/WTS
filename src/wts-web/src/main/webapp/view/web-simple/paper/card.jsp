@@ -20,7 +20,7 @@
 <jsp:include page="../atext/include-web.jsp"></jsp:include>
 <link href="view/web-simple/paper/text/card.css" rel="stylesheet">
 </head>
-<body oncontextmenu="return false"  onselectstart="return false">
+<body oncontextmenu="return false" onselectstart="return false">
 	<jsp:include page="../commons/head.jsp"></jsp:include>
 	<jsp:include page="../commons/superContent.jsp"></jsp:include>
 	<!-- /.carousel -->
@@ -31,7 +31,10 @@
 				<div class="col-md-9" style="padding: 4px;">
 					<div style="text-align: center;">
 						<!-- 卷头部 -->
-						<h1>${paper.info.name}</h1>
+						<h1>
+							<c:if test="${empty paper.roomPaper.name}">${paper.info.name}</c:if>
+							<c:if test="${not empty paper.roomPaper.name}">${paper.roomPaper.name}</c:if>
+						</h1>
 						<span style="font-weight: 700;">共${paper.rootChapterNum}道大题，${paper.subjectNum}道小题，满分${paper.allPoint}分</span>
 						<span style="font-weight: 700;"><br />答题时间<span
 							class="wts-red">${room.timelen}分钟</span>,答题人: <c:if
@@ -62,7 +65,9 @@
 									<c:forEach items="${chapter1.materials}" var="material">
 										<div class="chapter-material">
 											<div class="chapter-material-title">${material.title}</div>
-											<div class="ke-content ke-content-borderbox"><TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag></div>
+											<div class="ke-content ke-content-borderbox">
+												<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+											</div>
 										</div>
 									</c:forEach>
 								</c:if>
@@ -81,7 +86,9 @@
 										<c:forEach items="${chapter2.materials}" var="material">
 											<div class="chapter-material">
 												<div class="chapter-material-title">${material.title}</div>
-												<div class="ke-content ke-content-borderbox"><TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag></div>
+												<div class="ke-content ke-content-borderbox">
+													<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+												</div>
 											</div>
 										</c:forEach>
 									</c:if>
@@ -100,7 +107,9 @@
 											<c:forEach items="${chapter3.materials}" var="material">
 												<div class="chapter-material">
 													<div class="chapter-material-title">${material.title}</div>
-													<div class="ke-content ke-content-borderbox"><TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag></div>
+													<div class="ke-content ke-content-borderbox">
+														<TIP:InitHtmlContentTag html="${material.text}"></TIP:InitHtmlContentTag>
+													</div>
 												</div>
 											</c:forEach>
 										</c:if>

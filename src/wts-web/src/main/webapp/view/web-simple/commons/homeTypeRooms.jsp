@@ -5,6 +5,7 @@
 <div>
 	<div class="row">
 		<div class="wts-hometype-box col-md-12">
+			<jsp:include page="gotoRoomInput.jsp"></jsp:include>
 			<ul class="wts-hometype-ul">
 				<c:forEach items="${types}" var="node">
 					<c:if test="${ctype!=node.type.id}">

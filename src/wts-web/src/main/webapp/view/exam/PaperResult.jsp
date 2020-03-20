@@ -49,7 +49,6 @@
 						<th data-options="field:'ck',checkbox:true"></th>
 						<th field="NAME" data-options="sortable:true" width="40">考卷名称</th>
 						<th field="TYPENAME" data-options="sortable:true" width="40">业务分类</th>
-						<th field="MODELTYPE" data-options="sortable:true" width="20">考卷类型</th>
 						<th field="USERNAME" data-options="sortable:true" width="20">创建人</th>
 						<th field="CTIME" data-options="sortable:true" width="20">创建时间</th>
 						<th field="ADVICETIME" data-options="sortable:true" width="40">建议答题时间(分)</th>
@@ -127,7 +126,7 @@
 			gridObj : gridPaper
 		});
 		$('#examTypeTree').tree({
-			url : 'examtype/examtypeTree.do?funtype=1',
+			url : 'examTypeTree/examtypeTree.do?funtype=1',
 			onSelect : function(node) {
 				$('#PARENTID_RULE').val(node.id);
 				$('#PARENTTITLE_RULE').val(node.text);
@@ -269,7 +268,7 @@
 				width : 250,
 				height : 300,
 				modal : true,
-				url : "examtype/examTypeTreeView.do?funtype=1&ids="
+				url : "examTypeTree/examTypeTreeView.do?funtype=1&ids="
 						+ $.farm.getCheckedIds(gridPaper, 'ID'),
 				title : '设置分类'
 			});

@@ -26,7 +26,7 @@ $(function() {
 	});
 	// funtype需要在引用界面定義（0分类管理展示全部分类1使用权、2维护权）
 	$('#subjectTypeTree').tree({
-		url : 'subjecttype/subjecttypeTree.do?funtype=' + funtype,
+		url : 'subjectTypeTree/subjecttypeTree.do?funtype=' + funtype,
 		onSelect : function(node) {
 			$('#PARENTIDSUB_RULE').val(node.id);
 			$('#PARENTTITLESUB_RULE').val(node.text);
@@ -225,7 +225,7 @@ function moveSubjectTypetree() {
 			width : 250,
 			height : 300,
 			modal : true,
-			url : "subjecttype/subjectTypeTreeView.do?funtype=2&ids="
+			url : "subjectTypeTree/subjectTypeTreeView.do?funtype=2&ids="
 					+ $.farm.getCheckedIds(gridSubject, 'ID'),
 			title : '移动分类'
 		});

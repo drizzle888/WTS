@@ -44,8 +44,6 @@
 									<a type="button" href="<PF:basePath/>webuser/Home.do"
 										class="btn btn-default btn-xs">我的信息</a>&nbsp;&nbsp;
 								</c:if>
-								<a type="button" id="queryErrorId"
-									class="btn btn-warning btn-xs">查询错误</a>
 							</div>
 						</div>
 					</div>

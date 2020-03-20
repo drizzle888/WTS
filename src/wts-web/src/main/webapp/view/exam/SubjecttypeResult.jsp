@@ -108,7 +108,7 @@
 			gridObj : gridSubjecttype
 		});
 		$('#subjectTypeTree').tree({
-			url : 'subjecttype/subjecttypeTree.do?funtype=0',
+			url : 'subjectTypeTree/subjecttypeTree.do?funtype=0',
 			onSelect : function(node) {
 				$('#PARENTID_RULE').val(node.id);
 				$('#PARENTTITLE_RULE').val(node.text);
@@ -236,7 +236,7 @@
 				width : 250,
 				height : 300,
 				modal : true,
-				url : "subjecttype/subjectTypeTreeView.do?funtype=0&ids="
+				url : "subjectTypeTree/subjectTypeTreeView.do?funtype=0&ids="
 						+ $.farm.getCheckedIds(gridSubjecttype, 'ID'),
 				title : '移动分类'
 			});

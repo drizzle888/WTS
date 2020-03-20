@@ -32,18 +32,25 @@
 						class="easyui-validatebox"
 						data-options="required:true,validType:['minLength[4]','maxLength[32]']"
 						id="entity_loginname" name="loginname" value="${entity.loginname}">
-					</td>
+						<c:if test="${pageset.operateType==2}">
+							<script type="text/javascript">
+								$(function() {
+									$('#entity_loginname').attr('readonly',
+											'readonly');
+									$('#entity_loginname').css(
+											'background-color', '#cccccc');
+								});
+							</script>
+						</c:if></td>
 				</tr>
 				<tr>
 					<td class="title">类型:</td>
-					<td>
-						<select name="type" id="entity_type" val="${entity.type}"
-							style="width: 120px;">
+					<td><select name="type" id="entity_type" val="${entity.type}"
+						style="width: 120px;">
 							<option value="1">系统用户</option>
 							<!-- <option value="2">其他</option> -->
 							<option value="3">超级用户</option>
-						</select>
-					</td>
+					</select></td>
 					<td class="title">状态:</td>
 					<td><select name="state" id="entity_state"
 						val="${entity.state}" style="width: 120px;">
@@ -68,7 +75,7 @@
 				<tr>
 					<td class="title">所属岗位</td>
 					<td colspan="3"><c:if test="${pageset.operateType==0}">
-						<c:forEach items="${posts}" var="node">
+							<c:forEach items="${posts}" var="node">
 						${node.name}&nbsp;|&nbsp;
 						</c:forEach>
 						</c:if> <input type="hidden" id="entity_postIds" name="postIds" /> <input

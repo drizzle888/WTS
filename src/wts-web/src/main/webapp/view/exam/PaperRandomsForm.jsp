@@ -19,12 +19,8 @@
 						id="entity_name" name="name"></td>
 				</tr>
 				<tr>
-					<td class="title">考卷类型:</td>
-					<td><select name="modeltype" id="entity_modeltype"><option
-								value="1">答卷模式</option>
-							<option value="3">练习模式</option></select></td>
 					<td class="title">答卷分类:</td>
-					<td>${type.name}</td>
+					<td colspan="3">${type.name}</td>
 				</tr>
 				<tr>
 					<td class="title">生成数量:</td>

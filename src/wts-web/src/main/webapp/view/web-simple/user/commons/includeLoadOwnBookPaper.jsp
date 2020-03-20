@@ -9,7 +9,6 @@
 				<th style="width: 40%;">答卷名称</th>
 				<th style="width: 20%;">答題室</th>
 				<th>收藏时间</th>
-				<th>答卷类型</th>
 				<th>操作</th>
 			</tr>
 		</thead>
@@ -20,7 +19,6 @@
 					<td>${node.ROOMNAME}</td>
 					<td><PF:FormatTime date="${node.CTIME }"
 							yyyyMMddHHmmss="yyyy-MM-dd HH:mm" /></td>
-					<td>${node.PAPERMODELTITLE}</td>
 					<td><a href="javascript:delPaperByAll('${node.ID}',true)">刪除</a>
 						<a href="exam/roompage.do?roomid=${node.ROOMID}">进入答题室</a></td>
 				</tr>
