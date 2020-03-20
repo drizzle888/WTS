@@ -202,18 +202,13 @@ public class InitHtmlContentTag extends TagSupport {
 				node.attr("src", "actionImg/PubPlayMedia.do?id=" + id);
 			}
 			if (exname.equals("MP3")) {
-				// <audio src="AUDIO_SWF_PATH" width="100%" controls
-				// preload></audio>
-				node.tagName("audio");
-				node.attr("controls", "true");
-				node.attr("preload", "true");
-				node.removeAttr("type");
-				if ("true".equals(node.attr("autostart"))) {
-					node.attr("autoplay", "true");
-				}
-				// node.attr("autoplay", "autoplay");
-				node.attr("class", "img-responsive");
-				node.attr("src", "actionImg/PubPlayMedia.do?id=" + id);
+				String src = "actionImg/PubPlayMedia.do?id=" + id;
+				String audit_html = "<audio controls>";
+				audit_html = audit_html + "<source src=\"" + src + "\" type=\"audio/mpeg\">";
+				audit_html = audit_html + "您的浏览器不支持 audio 元素。";
+				audit_html = audit_html + "</audio>";
+				node.after(audit_html);
+				node.remove();
 			}
 		}
 		return doc;
@@ -240,7 +235,6 @@ public class InitHtmlContentTag extends TagSupport {
 	public void setIsFormatHtml(String isFormatHtml) {
 		this.isFormatHtml = isFormatHtml;
 	}
-
 
 	public String getIsOnlyBodyTag() {
 		return isOnlyBodyTag;
