@@ -30,8 +30,16 @@ public class RoomPaper implements java.io.Serializable {
         private String paperid;
         @Column(name = "ROOMID", length = 32, nullable = false)
         private String roomid;
-
-        public String  getPaperid() {
+        @Column(name = "NAME", length = 512)
+        private String name;
+        
+        public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String  getPaperid() {
           return this.paperid;
         }
         public void setPaperid(String paperid) {

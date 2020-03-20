@@ -26,6 +26,7 @@ import com.wts.exam.dao.CardAnswerDaoInter;
 import com.wts.exam.dao.CardDaoInter;
 import com.wts.exam.dao.CardPointDaoInter;
 import com.wts.exam.dao.PaperSubjectDaoInter;
+import com.wts.exam.dao.PaperUserOwnDaoInter;
 import com.wts.exam.dao.RoomDaoInter;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.dao.RoomUserDaoInter;
@@ -103,6 +104,8 @@ public class CardServiceImpl implements CardServiceInter {
 	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
 	@Resource
 	private ExamStatServiceInter examStatServiceImpl;
+	@Resource
+	private PaperUserOwnDaoInter paperuserownDaoImpl;
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(CardServiceImpl.class);
 
@@ -151,6 +154,8 @@ public class CardServiceImpl implements CardServiceInter {
 		cardAnswerDaoImpl.deleteEntitys(cardrules);
 		// WTS_CARD_POINT
 		cardPointDaoImpl.deleteEntitys(cardrules);
+		//删除用户答卷记录
+		paperuserownDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", id, "=")).toList());
 		cardDaoImpl.deleteEntity(cardDaoImpl.getEntity(id));
 	}
 
@@ -329,14 +334,6 @@ public class CardServiceImpl implements CardServiceInter {
 		for (SubjectUnit unit : userSubjects) {
 			// 题的得分权重，可以得分得百分比（填空题和问答题都是返回百分比得）
 			int pointWeight = countSubjectPoint(unit);
-			if (card.getUserid() != null && unit != null && unit.getVersion() != null) {
-				// 2.把错题加入错题集合// 3.用户答题历史存入，答题历史记录
-				LoginUser user = FarmAuthorityService.getInstance().getUserById(card.getUserid());
-				if (user != null) {
-					subjectUserOwnServiceImpl.addFinishSubject(unit.getVersion().getSubjectid(), pointWeight == 100,
-							card.getId(), user);
-				}
-			}
 			Integer basePoint = points.get(unit.getVersion().getId());
 			int point = (basePoint == null ? 0 : basePoint) * pointWeight / 100;
 			List<CardPoint> cardPoints = cardPointDaoImpl.selectEntitys(

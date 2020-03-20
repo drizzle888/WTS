@@ -9,11 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 
-import com.farm.web.easyui.EasyUiTreeNode;
 import com.farm.web.easyui.EasyUiUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -70,45 +67,6 @@ public class SubjectTypeController extends WebUtils {
 	}
 
 	/**
-	 * 组织机构节点
-	 */
-	@RequestMapping("/subjecttypeTree")
-	@ResponseBody
-	public Object subjecttypeTree(String id, String funtype, HttpSession session) {
-		try {
-			if (id == null) {
-				// 如果是未传入id，就是根节点，就构造一个虚拟的上级节点
-				id = "NONE";
-				List<EasyUiTreeNode> list = new ArrayList<>();
-				EasyUiTreeNode nodes = new EasyUiTreeNode("NONE", "题库分类", "open", "icon-customers");
-				nodes.setChildren(
-						EasyUiTreeNode.formatAsyncAjaxTree(
-								EasyUiTreeNode.queryTreeNodeOne(id, "SORT", "WTS_SUBJECT_TYPE", "ID", "PARENTID",
-										"NAME", "CTIME").getResultList(),
-						EasyUiTreeNode
-								.queryTreeNodeTow(id, "SORT", "WTS_SUBJECT_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(), "PARENTID", "ID", "NAME", "CTIME"));
-				list.add(nodes);
-				list = subjectTypeServiceImpl.RunPopFilter(list, funtype, getCurrentUser(session));
-				return list;
-			} else {
-				List<EasyUiTreeNode> list = EasyUiTreeNode
-						.formatAsyncAjaxTree(
-								EasyUiTreeNode.queryTreeNodeOne(id, "SORT", "WTS_SUBJECT_TYPE", "ID", "PARENTID",
-										"NAME", "CTIME").getResultList(),
-						EasyUiTreeNode
-								.queryTreeNodeTow(id, "SORT", "WTS_SUBJECT_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(), "PARENTID", "ID", "NAME", "CTIME");
-				list = subjectTypeServiceImpl.RunPopFilter(list, funtype, getCurrentUser(session));
-				return list;
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
-		}
-	}
-
-	/**
 	 * 提交修改数据
 	 * 
 	 * @return
@@ -124,18 +82,6 @@ public class SubjectTypeController extends WebUtils {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
 		}
-	}
-
-	/**
-	 * 选择分类界面跳转
-	 * 
-	 * @param ids
-	 * @param funtype 权限类型
-	 * @return
-	 */
-	@RequestMapping("/subjectTypeTreeView")
-	public ModelAndView forSend(String ids,String funtype) {
-		return ViewMode.getInstance().putAttr("ids", ids).putAttr("funtype", funtype).returnModelAndView("exam/SubjectTypeChooseTreeWin");
 	}
 
 	/**

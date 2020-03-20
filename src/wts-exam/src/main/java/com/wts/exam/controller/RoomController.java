@@ -76,7 +76,7 @@ public class RoomController extends WebUtils {
 			DataResult result = roomServiceImpl.createRoomSimpleQuery(query).search();
 			result.runDictionary("1:固定,2:随机", "SSORTTYPE");
 			result.runDictionary("1:固定,2:随机", "OSORTTYPE");
-			result.runDictionary("1:全部,2:随机一套", "PSHOWTYPE");
+			result.runDictionary("1:标准答题,2:随机单套,3:习题练习", "PSHOWTYPE");
 			result.runDictionary("1:永久,2:限时", "TIMETYPE");
 			result.runDictionary("1:指定人员,0:任何人员,2:匿名答题", "WRITETYPETITLE");
 			result.runDictionary("1:自动/人工,2:自动,3:人工", "COUNTTYPE");

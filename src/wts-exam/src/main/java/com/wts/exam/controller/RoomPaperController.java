@@ -63,7 +63,6 @@ public class RoomPaperController extends WebUtils {
 					row.put("ALLUSERNUM", paper.getAllUserNum());
 				}
 			});
-			result.runDictionary("1:答卷模式,3:练习模式", "MODELTYPE");
 			result.runDictionary("1:新建,0:停用,2:发布", "PAPERSTATE");
 			result.runformatTime("PAPERTIME", "yyyy-MM-dd HH:mm");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
@@ -92,6 +91,39 @@ public class RoomPaperController extends WebUtils {
 		}
 	}
 
+	/**
+	 * 提交修改数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/editOtherName")
+	@ResponseBody
+	public Map<String, Object> editOtherName(String ids, String name, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				roomPaperServiceImpl.editOtherName(id, name, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().setOperate(OperateType.UPDATE).returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	@RequestMapping("/clearOtherName")
+	@ResponseBody
+	public Map<String, Object> clearOtherName(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				roomPaperServiceImpl.clearOtherName(id,getCurrentUser(session));
+			}
+			return ViewMode.getInstance().setOperate(OperateType.UPDATE).returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+	
 	/**
 	 * 提交新增数据
 	 * 
@@ -140,8 +172,7 @@ public class RoomPaperController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				RoomPaper roomPaper = roomPaperServiceImpl.getRoompaperEntity(id);
-				cardServiceImpl.clearRoomCard(roomPaper.getRoomid(), roomPaper.getPaperid(),
-						getCurrentUser(session));
+				cardServiceImpl.clearRoomCard(roomPaper.getRoomid(), roomPaper.getPaperid(), getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {

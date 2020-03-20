@@ -1,8 +1,6 @@
 package com.wts.exam.service.impl;
 
 import com.wts.exam.domain.RoomPaper;
-import com.wts.exam.domain.RoomUser;
-import com.farm.core.time.TimeTool;
 import org.apache.log4j.Logger;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.service.RoomPaperServiceInter;
@@ -80,7 +78,7 @@ public class RoomPaperServiceImpl implements RoomPaperServiceInter {
 	@Transactional
 	public DataQuery createRoompaperSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query, "WTS_ROOM_PAPER A LEFT JOIN WTS_PAPER B ON A.PAPERID=B.ID",
-				"A.ID AS ID,A.PAPERID AS PAPERID,A.ROOMID AS ROOMID,B.MODELTYPE as MODELTYPE,B.NAME AS PAPERNAME,B.PSTATE AS PAPERSTATE,B.CTIME as PAPERTIME");
+				"A.ID AS ID,A.PAPERID AS PAPERID,A.NAME as NAME,A.ROOMID AS ROOMID,B.NAME AS PAPERNAME,B.PSTATE AS PAPERSTATE,B.CTIME as PAPERTIME");
 		return dbQuery;
 	}
 
@@ -97,4 +95,19 @@ public class RoomPaperServiceImpl implements RoomPaperServiceInter {
 		roompaperDaoImpl.insertEntity(entity);
 	}
 
+	@Override
+	@Transactional
+	public void editOtherName(String roompaperid, String name, LoginUser currentUser) {
+		RoomPaper entity = getRoompaperEntity(roompaperid);
+		entity.setName(name);
+		roompaperDaoImpl.editEntity(entity);
+	}
+
+	@Override
+	@Transactional
+	public void clearOtherName(String roompaperid, LoginUser currentUser) {
+		RoomPaper entity = getRoompaperEntity(roompaperid);
+		entity.setName(null);
+		roompaperDaoImpl.editEntity(entity);
+	}
 }

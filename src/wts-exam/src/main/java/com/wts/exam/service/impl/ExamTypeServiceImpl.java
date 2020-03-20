@@ -19,6 +19,7 @@ import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.RoomServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
+import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -209,7 +210,9 @@ public class ExamTypeServiceImpl implements ExamTypeServiceInter {
 			query.addRule(new DBRule("a.TREECODE", type.getId(), "like"));
 			//发布和结束状态的答题室可以在前台显示
 			query.addSqlRule(" and (PSTATE='2' or PSTATE='3' )");
-			query.setPagesize(100);
+			query.setPagesize(6);
+			query.setNoCount();
+			query.addSort(new DBSort("b.CTIME", "DESC"));
 			try {
 				List<Room> rooms = query.search().getObjectList(Room.class);
 				List<RoomUnit> roomUnits = new ArrayList<>();

@@ -41,14 +41,14 @@ public class SubjectUserOwnServiceImpl implements SubjectUserOwnServiceInter {
 
 	@Override
 	@Transactional
-	public void addFinishSubject(String subjectid, Boolean isRight, String cardId, LoginUser user) {
-		if (isRight != null && !isRight&&StringUtils.isBlank(cardId)) {
+	public void addFinishTestSubject(String subjectid, Boolean isRight,  LoginUser user) {
+		if (isRight != null && !isRight) {
 			// 记录错题[如果答题卡为空，表示不是从考卷而来的题才记录错题]
-			insertSubjectuserownEntity(subjectid, "3", cardId, user);
+			insertSubjectuserownEntity(subjectid, "3", null, user);
 		}
 		{
 			// 记录答题记录
-			insertSubjectuserownEntity(subjectid, "1", cardId, user);
+			insertSubjectuserownEntity(subjectid, "1", null, user);
 		}
 		if (user != null) {
 			// 統計用戶答題

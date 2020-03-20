@@ -84,7 +84,6 @@ public class PaperController extends WebUtils {
 				}
 			}
 			DataResult result = paperServiceImpl.createPaperSimpleQuery(query).search();
-			result.runDictionary("1:答卷模式,3:练习模式", "MODELTYPE");
 			result.runDictionary("1:新建,0:停用,2:发布", "PSTATE");
 			result.runformatTime("CTIME", "yyyy-MM-dd HH:mm");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
@@ -117,7 +116,6 @@ public class PaperController extends WebUtils {
 				}
 			}
 			DataResult result = paperServiceImpl.createPaperSimpleQuery(query).search();
-			result.runDictionary("1:答卷模式,3:练习模式", "MODELTYPE");
 			result.runDictionary("1:新建,0:停用,2:发布", "PSTATE");
 			result.runformatTime("CTIME", "yyyy-MM-dd HH:mm");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();

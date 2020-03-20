@@ -15,15 +15,13 @@ import com.farm.core.auth.domain.LoginUser;
  */
 public interface SubjectUserOwnServiceInter {
 	/**
-	 * 添加一道用戶完成的題
+	 * 添加一道用戶完成的題(只记录练习题)
 	 * 
 	 * @param subjectid
 	 * @param isRight
-	 * @param cardId
-	 *            可以爲空（因为随机练习的题没有答题卡）
 	 * @param user
 	 */
-	public void addFinishSubject(String subjectid, Boolean isRight, String cardId, LoginUser user);
+	public void addFinishTestSubject(String subjectid, Boolean isRight, LoginUser user);
 
 	/**
 	 * 删除实体管理实体

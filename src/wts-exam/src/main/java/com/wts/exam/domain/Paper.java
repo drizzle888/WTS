@@ -65,8 +65,6 @@ public class Paper implements java.io.Serializable {
 	private String ctime;
 	@Column(name = "EXAMTYPEID", length = 32)
 	private String examtypeid;
-	@Column(name = "MODELTYPE", length = 2, nullable = false)
-	private String modeltype;
 
 	public Integer getBooknum() {
 		return booknum;
@@ -74,14 +72,6 @@ public class Paper implements java.io.Serializable {
 
 	public void setBooknum(Integer booknum) {
 		this.booknum = booknum;
-	}
-
-	public String getModeltype() {
-		return modeltype;
-	}
-
-	public void setModeltype(String modeltype) {
-		this.modeltype = modeltype;
 	}
 
 	public String getPapernote() {

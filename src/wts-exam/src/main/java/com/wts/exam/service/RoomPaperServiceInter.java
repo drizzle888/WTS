@@ -60,4 +60,21 @@ public interface RoomPaperServiceInter {
 	 * @param currentUser
 	 */
 	public void addRoomPaper(String roomid, String paperid, LoginUser currentUser);
+
+	/**
+	 * 修改答卷在答题室中的别名
+	 * 
+	 * @param id
+	 * @param name
+	 * @param currentUser
+	 */
+	public void editOtherName(String roompaperid, String name, LoginUser currentUser);
+
+	/**
+	 * 删除答题室中答卷别名
+	 * 
+	 * @param id
+	 * @param currentUser
+	 */
+	public void clearOtherName(String roompaperid, LoginUser currentUser);
 }

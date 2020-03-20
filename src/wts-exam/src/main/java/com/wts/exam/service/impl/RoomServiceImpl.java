@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.wts.exam.dao.ExamTypeDaoInter;
 import com.wts.exam.dao.PaperDaoInter;
+import com.wts.exam.dao.PaperUserOwnDaoInter;
 import com.wts.exam.dao.RoomDaoInter;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.dao.RoomUserDaoInter;
@@ -79,6 +80,8 @@ public class RoomServiceImpl implements RoomServiceInter {
 	private ExamTypeServiceInter examTypeServiceImpl;
 	@Resource
 	private CardHisServiceInter cardHisServiceImpl;
+	@Resource
+	private PaperUserOwnDaoInter paperuserownDaoImpl;
 	private static final Logger log = Logger.getLogger(RoomServiceImpl.class);
 
 	@Override
@@ -395,6 +398,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 			roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 			roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 			cardServiceImpl.deleteCardsByRoom(id, user);
+			paperuserownDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 			roomDaoImpl.deleteEntity(roomDaoImpl.getEntity(id));
 			farmFileManagerImpl.cancelFilesByApp(id);
 		} else {
@@ -478,5 +482,38 @@ public class RoomServiceImpl implements RoomServiceInter {
 			ids.add(paper.getPaperid());
 		}
 		return ids;
+	}
+
+	@Override
+	@Transactional
+	public boolean testAble(String roomid, String paperid) {
+		// 房间id和答卷id是否为空
+		if (StringUtils.isBlank(roomid) || StringUtils.isBlank(paperid)) {
+			return false;
+		}
+		// 房间是否练习间
+		Room entity = roomDaoImpl.getEntity(roomid);
+		if (!entity.getPshowtype().equals("3")) {
+			return false;
+		}
+		// 答卷是否在房间中
+		List<Paper> papers = getLivePapers(roomid);
+		for (Paper paper : papers) {
+			if (paper.getId().equals(paperid.trim())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public RoomPaper getRoomPaper(String roomId, String paperid) {
+		List<RoomPaper> roompapers = roompaperDaoImpl.selectEntitys(DBRuleList.getInstance()
+				.add(new DBRule("PAPERID", paperid, "=")).add(new DBRule("ROOMID", roomId, "=")).toList());
+		if (roompapers.size() > 0) {
+			return roompapers.get(0);
+		}
+		return null;
 	}
 }

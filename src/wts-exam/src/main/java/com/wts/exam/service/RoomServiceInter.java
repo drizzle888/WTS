@@ -2,6 +2,7 @@ package com.wts.exam.service;
 
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.Room;
+import com.wts.exam.domain.RoomPaper;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.RoomUnit;
 import com.farm.core.sql.query.DataQuery;
@@ -201,4 +202,22 @@ public interface RoomServiceInter {
 	 * @return
 	 */
 	public List<String> getPapers(String roomid);
+
+	/**
+	 * 答卷是否支持在线练习(防止为发布为练习题的答卷被练习)
+	 * 
+	 * @param roomid
+	 * @param paperid
+	 * @return
+	 */
+	public boolean testAble(String roomid, String paperid);
+
+	/**
+	 * 通过roomid和paperid获得保存别名的roompaper对象
+	 * 
+	 * @param roomId
+	 * @param paperid
+	 * @return
+	 */
+	public RoomPaper getRoomPaper(String roomId, String paperid);
 }

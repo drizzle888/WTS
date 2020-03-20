@@ -22,6 +22,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import com.wts.exam.dao.PaperDaoInter;
 import com.wts.exam.dao.PaperChapterDaoInter;
 import com.wts.exam.dao.PaperSubjectDaoInter;
+import com.wts.exam.dao.PaperUserOwnDaoInter;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.dao.SubjectAnswerDaoInter;
 import com.wts.exam.dao.SubjectTypeDaoInter;
@@ -107,6 +108,8 @@ public class PaperServiceImpl implements PaperServiceInter {
 	private ExamTypeServiceInter examTypeServiceImpl;
 	@Resource
 	private SubjectTypeServiceInter subjectTypeServiceImpl;
+	@Resource
+	private PaperUserOwnDaoInter paperuserownDaoImpl;
 	private static final Logger log = Logger.getLogger(PaperServiceImpl.class);
 
 	@Override
@@ -145,7 +148,6 @@ public class PaperServiceImpl implements PaperServiceInter {
 		entity2.setAdvicetime(entity.getAdvicetime());
 		entity2.setPstate(entity.getPstate());
 		entity2.setPcontent(entity.getPcontent());
-		entity2.setModeltype(entity.getModeltype());
 		entity2.setName(entity.getName());
 		entity2.setExamtypeid(entity.getExamtypeid());
 		if (StringUtils.isBlank(entity2.getExamtypeid())) {
@@ -165,6 +167,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 		paperchapterDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", id, "=")).toList());
 		roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", id, "=")).toList());
 		paperDaoImpl.deleteEntity(paperDaoImpl.getEntity(id));
+		paperuserownDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", id, "=")).toList());
 		farmFileManagerImpl.cancelFilesByApp(id);
 	}
 
@@ -183,7 +186,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 	public DataQuery createPaperSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_PAPER a LEFT JOIN WTS_EXAM_TYPE b ON a.EXAMTYPEID = b.id left join alone_auth_user c on a.CUSER=c.ID",
-				"a.ID as ID,a.MODELTYPE as MODELTYPE,c.name as USERNAME,a.PAPERNOTE as PAPERNOTE,a.ADVICETIME as ADVICETIME,a.LOWPOINT as LOWPOINT,a.TOPPOINT as TOPPOINT,a.AVGPOINT as AVGPOINT,a.COMPLETETNUM as COMPLETETNUM,a.POINTNUM as POINTNUM,a.SUBJECTNUM as SUBJECTNUM,a.PSTATE as PSTATE,a.PCONTENT as PCONTENT,a.NAME as NAME,a.EUSER as EUSER,a.EUSERNAME as EUSERNAME,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EXAMTYPEID as EXAMTYPEID,b.name as TYPENAME");
+				"a.ID as ID,c.name as USERNAME,a.PAPERNOTE as PAPERNOTE,a.ADVICETIME as ADVICETIME,a.LOWPOINT as LOWPOINT,a.TOPPOINT as TOPPOINT,a.AVGPOINT as AVGPOINT,a.COMPLETETNUM as COMPLETETNUM,a.POINTNUM as POINTNUM,a.SUBJECTNUM as SUBJECTNUM,a.PSTATE as PSTATE,a.PCONTENT as PCONTENT,a.NAME as NAME,a.EUSER as EUSER,a.EUSERNAME as EUSERNAME,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EXAMTYPEID as EXAMTYPEID,b.name as TYPENAME");
 		return dbQuery;
 	}
 

@@ -127,7 +127,7 @@ public class PaperUserOwnServiceImpl implements PaperUserOwnServiceInter {
 	public DataQuery createPaperuserownSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_PAPER_USEROWN a left join WTS_PAPER b on a.paperid=b.id left join WTS_CARD c on a.cardid=c.id",
-				"a.ID as ID,a.ROOMNAME as ROOMNAME,a.PAPERNAME as PAPERNAME,b.MODELTYPE as PAPERTYPE,c.PSTATE as CARDSTATE,b.MODELTYPE as PAPERMODELTITLE,a.ROOMID as ROOMID,a.PAPERID as PAPERID,a.MODELTYPE as MODELTYPE,a.PCONTENT as PCONTENT,a.PSTATE as PSTATE,a.CUSERNAME as CUSERNAME,a.CUSER as CUSER,a.CTIME as CTIME,a.SCORE as SCORE,a.RPCENT as RPCENT");
+				"a.ID as ID,a.ROOMNAME as ROOMNAME,a.PAPERNAME as PAPERNAME,c.PSTATE as CARDSTATE,a.ROOMID as ROOMID,a.PAPERID as PAPERID,a.MODELTYPE as MODELTYPE,a.PCONTENT as PCONTENT,a.PSTATE as PSTATE,a.CUSERNAME as CUSERNAME,a.CUSER as CUSER,a.CTIME as CTIME,a.SCORE as SCORE,a.RPCENT as RPCENT");
 		return dbQuery;
 	}
 

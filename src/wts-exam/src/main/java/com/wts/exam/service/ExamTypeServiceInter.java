@@ -68,7 +68,7 @@ public interface ExamTypeServiceInter {
 	public void moveTreeNode(String orgId, String targetOrgId, LoginUser currentUser);
 
 	/**
-	 * 获得一级分类和房间
+	 * 获得一级分类和房间(迭代所有一级分类，取出每个一级分类含其子分类的房间（最多取20个房间）)
 	 * 
 	 * @param loginUser
 	 * @return

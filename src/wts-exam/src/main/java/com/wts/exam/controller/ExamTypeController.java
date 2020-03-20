@@ -74,45 +74,6 @@ public class ExamTypeController extends WebUtils {
 	}
 
 	/**
-	 * 组织机构节点
-	 */
-	@RequestMapping("/examtypeTree")
-	@ResponseBody
-	public Object examtypeTree(String id, String funtype, HttpSession session) {
-		try {
-			if (id == null) {
-				// 如果是未传入id，就是根节点，就构造一个虚拟的上级节点
-				id = "NONE";
-				List<EasyUiTreeNode> list = new ArrayList<>();
-				EasyUiTreeNode nodes = new EasyUiTreeNode("NONE", "业务分类", "open", "icon-customers");
-				nodes.setChildren(EasyUiTreeNode.formatAsyncAjaxTree(
-						EasyUiTreeNode.queryTreeNodeOne(id, "SORT", "WTS_EXAM_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(),
-						EasyUiTreeNode.queryTreeNodeTow(id, "SORT", "WTS_EXAM_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(),
-						"PARENTID", "ID", "NAME", "CTIME"));
-				list.add(nodes);
-				list = examTypeServiceImpl.RunPopFilter(list, funtype, getCurrentUser(session));
-				return list;
-			} else {
-				List<EasyUiTreeNode> list = new ArrayList<>();
-				list = EasyUiTreeNode.formatAsyncAjaxTree(
-						EasyUiTreeNode.queryTreeNodeOne(id, "SORT", "WTS_EXAM_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(),
-						EasyUiTreeNode.queryTreeNodeTow(id, "SORT", "WTS_EXAM_TYPE", "ID", "PARENTID", "NAME", "CTIME")
-								.getResultList(),
-						"PARENTID", "ID", "NAME", "CTIME");
-				list = examTypeServiceImpl.RunPopFilter(list, funtype, getCurrentUser(session));
-				return list;
-			}
-
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
-		}
-	}
-
-	/**
 	 * 提交修改数据
 	 * 
 	 * @return
@@ -171,15 +132,6 @@ public class ExamTypeController extends WebUtils {
 		return ViewMode.getInstance().returnModelAndView("exam/ExamtypeResult");
 	}
 
-	/**
-	 * 跳转
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/examTypeTreeView")
-	public ModelAndView forSend(String ids,String funtype) {
-		return ViewMode.getInstance().putAttr("ids", ids).putAttr("funtype", funtype).returnModelAndView("exam/ExamTypeChooseTreeWin");
-	}
 
 	/**
 	 * 显示详细信息（修改或浏览时）
