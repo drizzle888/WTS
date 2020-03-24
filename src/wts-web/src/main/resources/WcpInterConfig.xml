@@ -3,7 +3,7 @@
 	<!-- 单点登陆-只能对接wcp -->
 	<group describe="单点登陆" name="sso">
 		<parameter name="config.sso.state">
-			<val>true</val>
+			<val>false</val>
 			<describe>是否启用单点登陆</describe>
 		</parameter>
 		<parameter name="config.sso.url">
