@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.farm.parameter.dao.DictionaryTypeDaoInter;
 import com.farm.parameter.domain.AloneDictionaryType;
+
 @Repository
 public class DictionaryTypeDao implements DictionaryTypeDaoInter {
 	@Resource(name = "sessionFactory")
@@ -22,10 +23,11 @@ public class DictionaryTypeDao implements DictionaryTypeDaoInter {
 		Session session = sessionFatory.getCurrentSession();
 		session.delete(entity);
 	}
+
 	@Override
 	public void deleteEntityByTreecode(String entityId) {
-		//String hql = "update AloneDictionaryType a set a.state = '2' "
-		//		+ "where a.treecode like ?";
+		// String hql = "update AloneDictionaryType a set a.state = '2' "
+		// + "where a.treecode like ?";
 		String hql = "delete from AloneDictionaryType a where a.treecode like ?";
 		Query query = sessionFatory.getCurrentSession().createQuery(hql);
 		query.setString(0, "%" + entityId + "%");
@@ -34,8 +36,7 @@ public class DictionaryTypeDao implements DictionaryTypeDaoInter {
 
 	public int getAllListNum() {
 		Session session = sessionFatory.getCurrentSession();
-		SQLQuery sqlquery = session
-				.createSQLQuery("select count(*) from alone_dictionary_type");
+		SQLQuery sqlquery = session.createSQLQuery("select count(*) from alone_dictionary_type");
 		BigInteger num = (BigInteger) sqlquery.list().get(0);
 		return num.intValue();
 	}
@@ -67,9 +68,17 @@ public class DictionaryTypeDao implements DictionaryTypeDaoInter {
 	@Override
 	public List<AloneDictionaryType> getListByEntityId(String entityId) {
 		Session session = sessionFatory.getCurrentSession();
-		Query query = session.createQuery("from AloneDictionaryType where entity=?")
-				.setString(0, entityId);
+		Query query = session.createQuery("from AloneDictionaryType where entity=?").setString(0, entityId);
 		List<AloneDictionaryType> list = query.list();
 		return list;
+	}
+
+	@Override
+	public void deleteByEntitytype(String entityid, String entitytype) {
+		String hql = "delete from AloneDictionaryType a where a.entity= ? and a.entitytype=?";
+		Query query = sessionFatory.getCurrentSession().createQuery(hql);
+		query.setString(0, entityid);
+		query.setString(1, entitytype);
+		query.executeUpdate();
 	}
 }

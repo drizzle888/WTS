@@ -83,4 +83,18 @@ public class DictionaryEntityDao implements DictionaryEntityDaoInter {
 		Query query = session.createQuery(hql);
 		return query.list();
 	}
+
+	@Override
+	public AloneDictionaryEntity getEntityByKey(String key) {
+		String hql = "from AloneDictionaryEntity a where a.entityindex = ? ";
+		Session session = sessionFatory.getCurrentSession();
+		Query query = session.createQuery(hql);
+		query.setString(0, key);
+		@SuppressWarnings("rawtypes")
+		List list = query.list();
+		if (list == null || list.size() <= 0) {
+			return null;
+		}
+		return (AloneDictionaryEntity)list.get(0);
+	}
 }

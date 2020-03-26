@@ -1,5 +1,6 @@
 package com.farm.parameter.service.impl;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +26,9 @@ import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
 import com.farm.core.time.TimeTool;
 import com.farm.parameter.service.DictionaryEntityServiceInter;
+
 @Service
-public class DictionaryEntityServiceImpl implements
-		DictionaryEntityServiceInter {
+public class DictionaryEntityServiceImpl implements DictionaryEntityServiceInter {
 	@Resource
 	private DictionaryEntityDaoInter dictionaryentityDao;
 	@Resource
@@ -37,12 +38,9 @@ public class DictionaryEntityServiceImpl implements
 	@Override
 	@Transactional
 	public void deleteEntity(String entity, LoginUser user) {
-		List<AloneDictionaryType> list = dictionarytypeDao
-				.getListByEntityId(entity);
-		for (Iterator<AloneDictionaryType> iterator = list.iterator(); iterator
-				.hasNext();) {
-			AloneDictionaryType aloneDictionaryType = (AloneDictionaryType) iterator
-					.next();
+		List<AloneDictionaryType> list = dictionarytypeDao.getListByEntityId(entity);
+		for (Iterator<AloneDictionaryType> iterator = list.iterator(); iterator.hasNext();) {
+			AloneDictionaryType aloneDictionaryType = (AloneDictionaryType) iterator.next();
 			dictionarytypeDao.deleteEntity(aloneDictionaryType);
 		}
 		dictionaryentityDao.deleteEntity(dictionaryentityDao.getEntity(entity));
@@ -50,8 +48,7 @@ public class DictionaryEntityServiceImpl implements
 
 	@Override
 	@Transactional
-	public AloneDictionaryEntity editEntity(AloneDictionaryEntity entity,
-			LoginUser user) {
+	public AloneDictionaryEntity editEntity(AloneDictionaryEntity entity, LoginUser user) {
 		dicCache.remove(entity.getEntityindex());
 		if (validateIsRepeatKey(entity.getEntityindex(), entity.getId())) {
 			throw new IllegalArgumentException("字典KEY已经存在");
@@ -82,10 +79,10 @@ public class DictionaryEntityServiceImpl implements
 			return null;
 		return dictionaryentityDao.getEntity(id);
 	}
+
 	@Override
 	@Transactional
-	public AloneDictionaryEntity insertEntity(AloneDictionaryEntity entity,
-			LoginUser user) {
+	public AloneDictionaryEntity insertEntity(AloneDictionaryEntity entity, LoginUser user) {
 		if (validateIsRepeatKey(entity.getEntityindex(), null)) {
 			throw new IllegalArgumentException("字典KEY已经存在");
 		}
@@ -126,8 +123,7 @@ public class DictionaryEntityServiceImpl implements
 		// return;
 		// }
 
-		List<AloneDictionaryType> dictypeList = dictionarytypeDao
-				.getListByEntityId(id);
+		List<AloneDictionaryType> dictypeList = dictionarytypeDao.getListByEntityId(id);
 		if (dictypeList.isEmpty()) {
 			return;
 		}
@@ -142,16 +138,14 @@ public class DictionaryEntityServiceImpl implements
 		sBuilder.delete(sBuilder.length() - 2, sBuilder.length());
 		sBuilder.append("}");
 		if (sBuilder.toString() != null && sBuilder.toString().length() > 100) {
-			dicEntity
-					.setComments(sBuilder.toString().substring(0, 100) + "...");
+			dicEntity.setComments(sBuilder.toString().substring(0, 100) + "...");
 		} else {
 			dicEntity.setComments(sBuilder.toString());
 		}
 		dictionaryentityDao.editEntity(dicEntity);
 	}
 
-	public void setdictionaryentityDao(
-			DictionaryEntityDaoInter dictionaryentityDao) {
+	public void setdictionaryentityDao(DictionaryEntityDaoInter dictionaryentityDao) {
 		this.dictionaryentityDao = dictionaryentityDao;
 	}
 
@@ -176,9 +170,8 @@ public class DictionaryEntityServiceImpl implements
 		List<AloneDictionaryType> types = dicCache.get(key);
 		if (types == null) {
 			types = new ArrayList<AloneDictionaryType>();
-			DataQuery query = DataQuery
-					.getInstance(1, "b.NAME,b.ENTITYTYPE",
-							"ALONE_DICTIONARY_ENTITY a LEFT JOIN  ALONE_DICTIONARY_TYPE b ON a.ID=b.ENTITY");
+			DataQuery query = DataQuery.getInstance(1, "b.NAME,b.ENTITYTYPE",
+					"ALONE_DICTIONARY_ENTITY a LEFT JOIN  ALONE_DICTIONARY_TYPE b ON a.ID=b.ENTITY");
 			query.addRule(new DBRule("b.STATE", "1", "="));
 			query.addRule(new DBRule("a.ENTITYINDEX", key, "="));
 			query.addSort(new DBSort("b.SORT", "asc"));
@@ -203,8 +196,7 @@ public class DictionaryEntityServiceImpl implements
 	public List<Entry<String, String>> getDictionaryList(String key) {
 		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>();
 		for (AloneDictionaryType node : loadDics(key)) {
-			Entry<String, String> entry = new SimpleEntry<String, String>(node
-					.getEntitytype(), node.getName());
+			Entry<String, String> entry = new SimpleEntry<String, String>(node.getEntitytype(), node.getName());
 			list.add(entry);
 		}
 		return list;
@@ -213,5 +205,44 @@ public class DictionaryEntityServiceImpl implements
 	@Override
 	public String getDicKey(String dicId) {
 		return getEntity(dicId).getEntityindex();
+	}
+
+	@Override
+	@Transactional
+	public AloneDictionaryEntity initEntity(String key, String name, String type, LoginUser user) {
+		AloneDictionaryEntity entity = dictionaryentityDao.getEntityByKey(key);
+		if (entity == null) {
+			entity = new AloneDictionaryEntity();
+			entity.setCtime(TimeTool.getTimeDate12());
+			entity.setCuser(user.getId());
+			entity.setEntityindex(key.trim());
+			entity.setMuser(user.getId());
+			entity.setName(name);
+			entity.setState("1");
+			entity.setType(type);
+			entity.setUtime(TimeTool.getTimeDate12());
+			entity = dictionaryentityDao.insertEntity(entity);
+		}
+		return entity;
+	}
+
+	@Override
+	@Transactional
+	public void addType(String entityId, String entitytype, String name, LoginUser user) {
+		dictionarytypeDao.deleteByEntitytype(entityId, entitytype);
+		AloneDictionaryType type = new AloneDictionaryType();
+		type.setCtime(TimeTool.getTimeDate12());
+		type.setCuser(user.getId());
+		type.setEntity(entityId);
+		type.setEntitytype(entitytype);
+		type.setMuser(user.getId());
+		type.setName(name);
+		type.setSort(BigDecimal.valueOf(1));
+		type.setState("1");
+		type.setUtime(TimeTool.getTimeDate12());
+		dictionarytypeDao.insertEntity(type);
+		type.setTreecode(type.getId());
+		dictionarytypeDao.editEntity(type);
+		DictionaryEntityServiceImpl.dicCache.remove(getDicKey(type.getEntity()));
 	}
 }

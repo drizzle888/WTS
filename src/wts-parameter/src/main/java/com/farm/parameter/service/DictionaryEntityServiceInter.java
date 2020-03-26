@@ -11,13 +11,11 @@ public interface DictionaryEntityServiceInter {
 
 	public void deleteEntity(String entity, LoginUser user);
 
-	public AloneDictionaryEntity editEntity(AloneDictionaryEntity entity,
-			LoginUser user);
+	public AloneDictionaryEntity editEntity(AloneDictionaryEntity entity, LoginUser user);
 
 	public AloneDictionaryEntity getEntity(String id);
 
-	public AloneDictionaryEntity insertEntity(AloneDictionaryEntity entity,
-			LoginUser user);
+	public AloneDictionaryEntity insertEntity(AloneDictionaryEntity entity, LoginUser user);
 
 	/**
 	 * 验证key是否重复
@@ -72,5 +70,23 @@ public interface DictionaryEntityServiceInter {
 	 * @return
 	 */
 	public String getDicKey(String dicId);
+
+	/**
+	 * 初始化一個字典（沒有就創建）
+	 * 
+	 * @param entitytype
+	 * @param name
+	 * @return
+	 */
+	public AloneDictionaryEntity initEntity(String key, String name, String type, LoginUser user);
+
+	/**
+	 * 添加一个类型項目
+	 * 
+	 * @param entityId
+	 * @param type
+	 * @param name
+	 */
+	public void addType(String entityId, String entitytype, String name, LoginUser user);
 
 }
