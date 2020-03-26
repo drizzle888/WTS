@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.sql.result.DataResult;
+import com.farm.util.limit.FarmDoLimits;
 import com.farm.web.constant.FarmConstant;
 
 /**
@@ -29,10 +30,9 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 	 */
 	private String ip;
 	private HttpSession httpSession;
-	private Map<String, Object> strutsSession;
 
 	@Override
-	public DataResult findOnlineUser() {
+	public DataResult findOnlineUser(boolean repetAble) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<String> removekeys = new ArrayList<>();
 		for (String key : OnlineUserOpInter.onlineUserTable.keySet()) {
@@ -85,7 +85,15 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 			map.put(OnlineUserOpInter.key_STARTTIME,
 					sdf.format(OnlineUserOpInter.onlineUserTable.get(key).get(OnlineUserOpInter.key_STARTTIME))
 							.replace(curentDayf.format(new Date()), "今天"));
-			list.add(map);
+			if (!repetAble && user != null && user.getLoginname() != null
+					&& onlineUserLiveTable.get(user.getLoginname()) != null
+					&& !onlineUserLiveTable.get(user.getLoginname()).equals(key)) {
+				continue;
+			} else {
+				// 填充ip资源请求数量
+				map.put("LASTCOUNT", FarmDoLimits.getVisiteCountBylast3Hours(key));
+				list.add(map);
+			}
 		}
 		for (String key : removekeys) {
 			// 超时用户从集合中删除
@@ -104,7 +112,7 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 	@Override
 	public void userVisitHandle() {
 		// 注册用户
-		if (!((httpSession == null && strutsSession == null) && ip != null)) {
+		if (httpSession != null && ip != null) {
 			Map<String, Object> userMap = null;
 			if (OnlineUserOpInter.onlineUserTable.get(ip) != null) {
 				// 已经访问过
@@ -116,8 +124,7 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 				userMap.put(OnlineUserOpInter.key_STARTTIME, new Date());
 			}
 			userMap.put(OnlineUserOpInter.key_TIME, new Date());
-			Object user = httpSession != null ? httpSession.getAttribute(FarmConstant.SESSION_USEROBJ)
-					: strutsSession.get(FarmConstant.SESSION_USEROBJ);
+			Object user = httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
 			if (user != null) {
 				userMap.put(OnlineUserOpInter.key_LNAME, ((LoginUser) user).getLoginname());
 				if (userMap.get(OnlineUserOpInter.key_USEROBJ) == null) {
@@ -154,14 +161,6 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 		this.httpSession = httpSession;
 	}
 
-	public Map<String, Object> getStrutsSession() {
-		return strutsSession;
-	}
-
-	public void setStrutsSession(Map<String, Object> strutsSession) {
-		this.strutsSession = strutsSession;
-	}
-
 	// --------------------------------------构造方法
 	public static OnlineUserOpInter getInstance(String ip, HttpSession httpSession) {
 		OnlineUserOpImpl obj = new OnlineUserOpImpl();
@@ -170,16 +169,36 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 		return obj;
 	}
 
-	public static OnlineUserOpInter getInstance(String ip, Map<String, Object> strutsSession) {
-		OnlineUserOpImpl obj = new OnlineUserOpImpl();
-		obj.setIp(ip);
-		obj.setStrutsSession(strutsSession);
-		return obj;
+	@Override
+	public void userlogin() {
+		if (OnlineUserOpInter.onlineUserLiveTable.size() > OnlineUserOpInter.usersMaxSize) {
+			OnlineUserOpInter.onlineUserLiveTable.clear();
+		}
+		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
+		onlineUserLiveTable.put(user.getLoginname(), ip);
 	}
 
-	public static OnlineUserOpInter getInstance() {
-		OnlineUserOpImpl obj = new OnlineUserOpImpl();
-		return obj;
+	@Override
+	public void userlogout() {
+		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
+		onlineUserLiveTable.remove(user.getLoginname());
 	}
 
+	@Override
+	public boolean isRepetLogin() {
+		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
+		if (user == null || user.getLoginname() == null) {
+			return false;
+		}
+		String liveip = onlineUserLiveTable.get(user.getLoginname());
+		if (liveip == null || ip == null) {
+			return false;
+		}
+		if (!liveip.equals(ip)) {
+			// 最新登錄的ip不是當前ip，説明重複登錄了
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

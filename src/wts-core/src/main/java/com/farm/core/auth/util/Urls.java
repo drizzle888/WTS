@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +17,19 @@ import org.apache.commons.lang.StringUtils;
  * 
  */
 public class Urls {
+
+	/**
+	 * 获得项目的根路径
+	 * 
+	 * @param arg0
+	 * @return
+	 */
+	public static String getBaseUrl(ServletRequest req) {
+		String path = ((HttpServletRequest) req).getContextPath();
+		String basePath = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + path + "/";
+		basePath = basePath.indexOf(":") < 8 ? basePath.replace(":80/", "/").replace(":443/", "/") : basePath;
+		return basePath;
+	}
 
 	/**
 	 * 验证权限是否符合系统验证
@@ -62,7 +76,7 @@ public class Urls {
 	 * @return transacted url * if(return is null )then(this url is error)
 	 */
 	public static String formatUrl(String requestUrl, String basePath) {
-		basePath=requestUrl.indexOf(":") < 8 ? basePath.replace(":80/", "/").replace(":443/", "/") : basePath;
+		basePath = requestUrl.indexOf(":") < 8 ? basePath.replace(":80/", "/").replace(":443/", "/") : basePath;
 		// 去掉basepath
 		requestUrl = requestUrl.replace(basePath, "");
 		// 截去url参数

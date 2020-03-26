@@ -17,6 +17,11 @@ public interface OnlineUserOpInter {
 	 * 在线用户注册表，勿调用、勿操作
 	 */
 	static final Map<String, Map<String, Object>> onlineUserTable = new HashMap<String, Map<String, Object>>();
+
+	/**
+	 * 用户登陆ip记录表（最新登陆的ip为用户的当前ip）
+	 */
+	static final Map<String, String> onlineUserLiveTable = new HashMap<String, String>();
 	/**
 	 * 最近访问时间
 	 */
@@ -57,7 +62,7 @@ public interface OnlineUserOpInter {
 	static final long usersMaxSize = 5000;
 
 	/**
-	 * 用户访问handle 判断当前用户是否在线，不在线就(从session中)注销掉用户
+	 * 处理在线IP：用户访问handle 判断当前用户是否在线，不在线就(从session中)注销掉用户
 	 * 
 	 * @param strutsSession
 	 *            STRUTS的session
@@ -69,8 +74,27 @@ public interface OnlineUserOpInter {
 	/**
 	 * 查看当前在线用户
 	 * 
+	 * @param repetAble
+	 *            是否显示重复登陆
 	 * @return
 	 */
-	public DataResult findOnlineUser();
+	public DataResult findOnlineUser(boolean repetAble);
+
+	/**
+	 * 执行用户登陆
+	 */
+	public void userlogin();
+
+	/**
+	 * 执行用户注销
+	 */
+	public void userlogout();
+
+	/**
+	 * 判断用户是否重复登陆（指用户ip是否最新用户名的登陆ip，如果不是就是重复登陆）
+	 * 
+	 * @return
+	 */
+	public boolean isRepetLogin();
 
 }

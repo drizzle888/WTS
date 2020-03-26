@@ -19,6 +19,7 @@ import com.farm.core.auth.exception.UserNoLoginException;
 import com.farm.core.time.TimeTool;
 import com.farm.util.spring.BeanFactory;
 import com.farm.web.constant.FarmConstant;
+import com.farm.web.online.OnlineUserOpImpl;
 
 public class WebUtils {
 
@@ -188,7 +189,8 @@ public class WebUtils {
 	 * @param user
 	 * @return
 	 */
-	public void clearCurrentUser(HttpSession session) {
+	public static void logoutUser(String ip, HttpSession session) {
+		OnlineUserOpImpl.getInstance(ip, session).userlogout();
 		session.setAttribute(FarmConstant.SESSION_USEROBJ, null);
 	}
 
