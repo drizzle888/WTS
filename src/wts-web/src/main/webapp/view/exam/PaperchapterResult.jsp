@@ -76,6 +76,7 @@
 		iconCls : 'icon-upcoming-work',
 		handler : PaperSubjectUpsort
 	} ];
+	
 	$(function() {
 		//初始化数据表格
 		gridPapersubject = $('#dataPapersubjectGrid').datagrid({
@@ -109,7 +110,27 @@
 		$('#addchapterFun').bind('click', chapterAdd);
 		$('#editchapterFun').bind('click', chapterEdit);
 		$('#delchapterFun').bind('click', chapterDel);
+		//处理选中行在刷新后的回显，方便排序操作
+		var chooseRow;
+		$(gridPapersubject).datagrid({
+			onLoadSuccess : function(index, field, value) {
+				var allrows = $(gridPapersubject).datagrid('getRows');
+				for (i = 0; i < allrows.length; i++) {
+					//所有行
+					for (m = 0; m < chooseRow.length; m++) {
+						//选中行
+						if (allrows[i].ID == chooseRow[m].ID) {
+							$(gridPapersubject).datagrid('selectRow', i);
+						}
+					}
+				}
+			},
+			onBeforeLoad : function(index, field, value) {
+				chooseRow = $(gridPapersubject).datagrid('getSelections');
+			}
+		});
 	});
+
 	//添加章节
 	function chapterAdd() {
 		var nodes = $('#chapterTypeTree').tree('getSelected');
@@ -243,21 +264,15 @@
 		var url = 'paperchapter/sortUp.do?' + 'paperSubjectIds='
 				+ $.farm.getCheckedIds(gridPapersubject, 'ID');
 		// 有数据执行操作
-		var str = selectedArray.length + "条数据的位置将要前移？";
-		$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
-			if (flag) {
-				$(gridPapersubject).datagrid('loading');
-				$.post(url, {}, function(flag) {
-					var jsonObject = JSON.parse(flag, null);
-					$(gridPapersubject).datagrid('loaded');
-					if (jsonObject.STATE == 0) {
-						$(gridPapersubject).datagrid('reload');
-					} else {
-						var str = MESSAGE_PLAT.ERROR_SUBMIT
-								+ jsonObject.MESSAGE;
-						$.messager.alert(MESSAGE_PLAT.ERROR, str, 'error');
-					}
-				});
+		$(gridPapersubject).datagrid('loading');
+		$.post(url, {}, function(flag) {
+			var jsonObject = JSON.parse(flag, null);
+			$(gridPapersubject).datagrid('loaded');
+			if (jsonObject.STATE == 0) {
+				$(gridPapersubject).datagrid('reload');
+			} else {
+				var str = MESSAGE_PLAT.ERROR_SUBMIT + jsonObject.MESSAGE;
+				$.messager.alert(MESSAGE_PLAT.ERROR, str, 'error');
 			}
 		});
 	}

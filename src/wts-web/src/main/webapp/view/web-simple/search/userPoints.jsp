@@ -24,8 +24,8 @@
 	<!-- /.carousel -->
 	<div class="containerbox">
 		<div class="row">
-			<div class="col-md-3"></div>
-			<div class="col-md-6"
+			<div class="col-md-2"></div>
+			<div class="col-md-8"
 				style="background-color: #ffffff; margin-top: 50px; margin-bottom: 50px;">
 				<div class="row" style="margin: 20px;">
 					<div class="col-md-3"></div>
@@ -63,6 +63,7 @@
 									<th>得分</th>
 									<th>答题时间</th>
 									<th>状态</th>
+									<th>来源</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -72,7 +73,8 @@
 										<td>${node.PAPERNAME }</td>
 										<td>${node.POINT }</td>
 										<td>${node.STARTTIME }</td>
-										<td>${node.PSTATE }</td>
+										<td>${node.PSTATE}</td>
+										<td>${node.SOURCE}</td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -103,7 +105,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-3"></div>
+			<div class="col-md-2"></div>
 		</div>
 	</div>
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>

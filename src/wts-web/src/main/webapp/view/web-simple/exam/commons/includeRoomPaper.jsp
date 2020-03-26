@@ -68,7 +68,7 @@
 									</a>
 								</div>
 							</c:if>
-							<c:if test="${paper.card.pstate=='2'||paper.card.pstate=='5'}">
+							<c:if test="${paper.card.pstate=='2'||paper.card.pstate=='5'||paper.card.pstate=='6'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-success" disabled="disabled">
 										已完成&nbsp;<span title="答题时间" class="exam-dotime"
@@ -79,7 +79,7 @@
 									</a>
 								</div>
 							</c:if>
-							<c:if test="${paper.card.pstate=='6'}">
+							<c:if test="${paper.card.pstate=='7'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-success" disabled="disabled">
 										得分：${paper.card.point}分&nbsp;<span title="判卷时间"

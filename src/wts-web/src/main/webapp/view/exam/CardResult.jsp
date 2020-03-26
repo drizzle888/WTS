@@ -15,9 +15,9 @@
 							<option value="2">手动交卷</option>
 							<option value="3">超时未交卷</option>
 							<option value="4">超时自动交卷</option>
-							<option value="5">完成阅卷</option>
-							<option value="6">发布成绩</option>
-							<option value="7">历史存档</option>
+							<option value="5">已自动阅卷</option>
+							<option value="6">已完成阅卷</option>
+							<option value="7">发布成绩</option>
 					</select></td>
 					<td><a id="a_search" href="javascript:void(0)"
 						class="easyui-linkbutton" iconCls="icon-search">查询</a> <a

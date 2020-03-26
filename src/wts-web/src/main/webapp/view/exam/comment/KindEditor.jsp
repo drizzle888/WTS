@@ -6,6 +6,7 @@
 	src="<PF:basePath/>text/lib/kindeditor/kindeditor-all-min.js"></script>
 <script type="text/javascript" src="<PF:basePath/>text/lib/kindeditor/zh-CN.js"></script>
 <script charset="utf-8" src="<PF:basePath/>text/lib/kindeditor/wcpplug/wcp-multiimage-kindeditor.js"></script>
+<script charset="utf-8" src="<PF:basePath/>text/lib/kindeditor/wcpplug/wcp-latex-kindeditor.js"></script>
 <link href="<PF:basePath/>text/lib/kindeditor/wcpplug/wcp-multiimage-kindeditor.css" rel="stylesheet"> 
 <link rel="stylesheet"
 	href="<PF:basePath/>text/lib/kindeditor/wcpplug/wcp-kindeditor.css" />
@@ -37,7 +38,7 @@
 					'insertorderedlist', 'insertunorderedlist', 'formatblock',
 					'quickformat', 'table', 'hr', 'link',
 					'media',
-					'code', 'wcpimgs', 'source' ],
+					'code', 'wcpimgs','wcplatex', 'source' ],
 			afterCreate : function() {
 				//粘贴的文件直接上传到后台
 				pasteImgHandle(this,basePath + 'actionImg/PubUpBase64File.do');

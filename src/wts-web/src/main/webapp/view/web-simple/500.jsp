@@ -33,7 +33,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="panel panel-default userbox"
-						style="margin: auto; width: 500px; margin-top: 100px; margin-bottom: 100px; background-color: #fcfcfc;">
+						style="margin: auto; margin-top: 100px; margin-bottom: 100px; background-color: #fcfcfc;">
 						<div class="panel-body">
 							<div class="text-center">
 								<img src="<PF:basePath/>actionImg/PubHomelogo.do" alt="wcp"
@@ -48,7 +48,8 @@
 							<div id="errorMessageId" class="text-center"
 								style="margin: -4px; padding: 4px; color: #666; font-size: 12px;">
 								错误信息为：
-								<%=exception.getCause()%>
+								<%=exception.getMessage() == null ? "" : exception.getMessage()%>
+								<%=exception.getCause() == null ? "" : exception.getCause()%>
 							</div>
 							<div class="text-center" style="margin-top: 26px;">
 								<a type="button" href="<PF:basePath/>"

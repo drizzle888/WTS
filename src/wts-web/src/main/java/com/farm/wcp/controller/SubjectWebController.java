@@ -214,8 +214,8 @@ public class SubjectWebController extends WebUtils {
 						subjectIds = subjectIds + "," + ownEntity.getSubjectid();
 					} else {
 						Card card = cardServiceImpl.getCardEntity(ownEntity.getCardid());
-						// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
-						if (card == null || card.getPstate().equals("6") || card.getPstate().equals("7")) {
+						// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
+						if (card == null || card.getPstate().equals("7")) {
 							// 不是来源答卷的直接可见
 							subjectIds = subjectIds + "," + ownEntity.getSubjectid();
 						}

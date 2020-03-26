@@ -23,7 +23,76 @@
 	<!-- /.carousel -->
 	<div class="containerbox">
 		<!-- 首页--分类考场 -->
+		<div>
+			<div class="row"
+				style="background-color: #ffffff; border-bottom: 1px solid #cccccc;">
+				<div class="container">
+					<div style="padding: 20px;">
+						<div class="media" style="overflow: hidden;">
+							<div class="pull-left">
+								<img alt="答题室" style="width: 64px; height: 64px;"
+									src="text/img/exam.png">
+							</div>
+							<div class="media-body">
+								<div style="margin-left: 20px; margin-top: 10px;"
+									class="pull-left">
+									<div class="side_unit_info"
+										style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">
+										${room.name}&nbsp;
+										<code>ID:${room.id}</code>
+									</div>
+									<div class="side_unit_info">
+										<c:if test="${room.timetype=='1'}">
+											<b>答题日期:</b>永久有效,
+										</c:if>
+										<c:if test="${room.timetype=='2'}">
+											<b>答题日期:</b>${room.starttime}&nbsp;至&nbsp;${room.endtime},
+										</c:if>
+										<b>答题时长:</b>${room.timelen}分,
+										<c:if test="${room.writetype=='0'}">
+											<b>答题人:</b>任何人,
+										</c:if>
+										<c:if test="${room.writetype=='1'}">
+											<b>答题人:</b>指定人,
+										</c:if>
+										<c:if test="${room.writetype=='2'}">
+											<b>答题人:</b>匿名人,
+										</c:if>
+										<c:if
+											test="${room.pshowtype!='1'||room.ssorttype!='1'||room.osorttype!='1'}">
+											<c:if test="${room.pshowtype=='2'}">
+												<code>随机答卷</code>
+											</c:if>
+											<c:if test="${room.ssorttype=='2'}">
+												<code>随机选项</code>
+											</c:if>
+											<c:if test="${room.osorttype=='2'}">
+												<code>随机题序</code>
+											</c:if>
+										</c:if>
+									</div>
+								</div>
+							</div>
+						</div>
+						<c:if test="${!empty room.roomnote }">
+							<div class="ke-content ke-content-borderbox">
+								${room.roomnote}</div>
+						</c:if>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="container" style="padding-top: 20px;">
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" ${state=='all'?'class="active"':'' }><a
+						href="adjudge/roomUser.do?roomId=${room.id}">全部</a></li>
+					<li role="presentation" ${state=='12345'?'class="active"':'' }><a
+						href="adjudge/roomUser.do?roomId=${room.id}&state=12345">待阅卷</a></li>
+					<li role="presentation" ${state=='67'?'class="active"':'' }><a
+						href="adjudge/roomUser.do?roomId=${room.id}&state=67">已发布</a></li>
+				</ul>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered"
 					style="width: 100%; background-color: #ffffff;">
@@ -59,12 +128,12 @@
 							<td>${node.ADJUDGEUSERNAME}</td>
 							<td>${node.ADJUDGETIME}</td>
 							<td>
-								<!--  --> <c:if test="${node.PSTATE=='6'}">
+								<!--  --> <c:if test="${node.PSTATE=='7'}">
 									<span style="font-size: 12px;" class="label label-primary">
 										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
 										${node.PSTATETITLE}
 									</span>
-								</c:if> <!--  --> <c:if test="${node.PSTATE!='6'}">
+								</c:if> <!--  --> <c:if test="${node.PSTATE!='7'}">
 									<span style="font-size: 12px;" class="label label-default">
 										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
 										${node.PSTATETITLE}
@@ -72,14 +141,16 @@
 								</c:if> <!--  -->
 							</td>
 							<td style="text-align: center;">
-								<!-- 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档 --> <c:if
-									test="${node.PSTATE=='2'||node.PSTATE=='4'}">
+								<!-- 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,  5:已自动阅卷,6:已完成阅卷,7:发布成绩 --> 
+								<c:if test="${node.PSTATE=='2'||node.PSTATE=='4'}">
 									<a class="btn btn-default btn-xs" id="autoPointRunId"
 										href="javascript:loadRemoteFunctionAndReload('adjudge/autoCount.do?cardid=${node.CARDID}','autoPointRunId')">自动计算</a>
-								</c:if> <c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
+								</c:if> 
+								<c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
 									<a class="btn btn-default btn-xs" id="recoveryRunId"
 										href="javascript:loadRemoteFunctionAndReload('adjudge/recovery.do?cardid=${node.CARDID}','recoveryRunId','确定收卷?')">强制收卷</a>
-								</c:if> <c:if test="${node.PSTATE=='5'}">
+								</c:if> 
+								<c:if test="${node.PSTATE=='6'}">
 									<a class="btn btn-danger btn-xs" id="autoPointRunId"
 										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
 								</c:if>

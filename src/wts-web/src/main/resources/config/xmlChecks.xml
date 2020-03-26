@@ -45,4 +45,5 @@
 	<parameter versions='0.7.0'>config.sso.ologinname</parameter>
 	<parameter versions='0.7.0'>config.sso.opassword</parameter>
 	<parameter versions='0.7.0'>config.sso.title</parameter>
+	<parameter versions='0.8.0'>config.login.repet.able</parameter>
 </conf>

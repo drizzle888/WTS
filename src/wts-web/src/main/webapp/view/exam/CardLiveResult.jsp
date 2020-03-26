@@ -67,6 +67,9 @@
 					</tr>
 				</thead>
 			</table>
+			<form method="post" action="cardquery/exportLiveExcel.do" id="reportForm">
+				<input type="hidden" name="ruleText" id="ruleTextId" />
+			</form>
 		</div>
 	</div>
 </body> 
@@ -75,7 +78,12 @@
 	var title_windowCardhis = "答题卡历史记录管理";//功能名称
 	var gridCardhis;//数据表格对象
 	var searchCardhis;//条件查询组件对象
-	var toolBarCardhis = [
+	var toolBarCardhis = [{
+		id : 'del',
+		text : '成绩导出',
+		iconCls : 'icon-blogs',
+		handler : excelExport
+	}
 	];
 	$(function() {
 		//初始化数据表格
@@ -113,5 +121,11 @@
 			$('#MessageconsoleTree').tree('expandAll');
 		});
 	});
+	//导出
+	function excelExport() {
+		$.messager.alert('报表加载中...','请等待,不要关闭本窗口直至报表导出完成... ...');
+		$('#ruleTextId').val(searchCardhis.arrayStr());
+		$('#reportForm').submit();
+	}
 </script>
 </html>

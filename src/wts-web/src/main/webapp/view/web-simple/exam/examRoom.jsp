@@ -96,7 +96,7 @@
 				<img alt="访问二维码"
 					style="width: 128px; height: 128px; opacity: 0.3; filter: alpha(opacity = 30);"
 					src="<PF:basePath/>home/PubQRCode.do">
-				<div style="margin: 10px; color: #cccccc;">可扫码访问本考场</div>
+				<div style="margin: 10px; color: #cccccc;">可扫码访问本答题室</div>
 			</div>
 		</div>
 	</div>

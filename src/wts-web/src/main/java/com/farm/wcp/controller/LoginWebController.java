@@ -340,7 +340,7 @@ public class LoginWebController extends WebUtils {
 	@RequestMapping("/webout")
 	public ModelAndView weblogOut(String name, HttpServletRequest request, HttpSession session)
 			throws UnsupportedEncodingException {
-		clearCurrentUser(session);
+		logoutUser(getCurrentIp(request), session);
 		if (FilterSso.isSsoAble()) {
 			return ViewMode.getInstance().returnRedirectUrl(FilterSso.getSsoLogoutURL(request));
 		} else {
@@ -357,7 +357,7 @@ public class LoginWebController extends WebUtils {
 	@RequestMapping("/out")
 	public ModelAndView logOut(String name, HttpServletRequest request, HttpSession session)
 			throws UnsupportedEncodingException {
-		clearCurrentUser(session);
+		logoutUser(getCurrentIp(request), session);
 		// return ViewMode.getInstance().returnRedirectUrl("/login/page.do");
 		if (FilterSso.isSsoAble()) {
 			return ViewMode.getInstance().returnRedirectUrl(FilterSso.getSsoLogoutURL(request));

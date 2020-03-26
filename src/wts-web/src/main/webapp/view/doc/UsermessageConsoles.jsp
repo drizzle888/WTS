@@ -43,7 +43,7 @@
 					</tr>
 					<tr style="text-align: center;">
 						<td colspan="6" style="color: red;">
-							当按照岗位查询时，回显岗位信息/其他时刻均不回显示岗位，以提高查询效率.</td>
+							当按照岗位查询时，回显岗位信息/其他时刻均不回显岗位，以提高查询效率.</td>
 					</tr>
 				</table>
 			</form>

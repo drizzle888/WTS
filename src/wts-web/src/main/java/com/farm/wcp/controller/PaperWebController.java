@@ -144,6 +144,12 @@ public class PaperWebController extends WebUtils {
 	/**
 	 * 暂存用户一道题答案
 	 * 
+	 * @param paperid
+	 * @param roomid
+	 * @param jsons
+	 *            {"versionid":"402895ac7102d940017104a7bca10001","answerid":
+	 *            "402895ac7102d940017104a8a74c0004","value":true}
+	 * @param session
 	 * @return
 	 */
 	@RequestMapping("/PubsaveSubjectVal")
@@ -163,6 +169,10 @@ public class PaperWebController extends WebUtils {
 			Room room = roomServiceImpl.getRoomEntity(roomid);
 			if (room.getWritetype().equals("2")) {
 				user = roomServiceImpl.getAnonymous(session);
+			} else {
+				if (user == null) {
+					throw new RuntimeException("当前用户未登陆,或登陆信息过期失效!");
+				}
 			}
 			Card card = cardServiceImpl.loadCard(paperid, roomid, user.getId());
 			if (!cardServiceImpl.isAnswerAble(card)) {
@@ -176,8 +186,14 @@ public class PaperWebController extends WebUtils {
 	}
 
 	/**
-	 * 暂存试卷答案
+	 * 暂存整套试卷答案
 	 * 
+	 * @param paperid
+	 * @param roomid
+	 * @param jsons
+	 *            [{"versionid":"402895ac7102d940017104a7bca10001","answerid":
+	 *            "402895ac7102d940017104a86c170002","value":true},... ...]
+	 * @param session
 	 * @return
 	 */
 	@RequestMapping("/PubsavePaperVal")

@@ -28,6 +28,9 @@
 						姓名</th>
 					<th field="LOGINTIME" data-options="sortable:false" width="20">
 						登录时间</th>
+					<!--三小时为周期的资源请求（含动态和静态）-->
+					<th field="LASTCOUNT" data-options="sortable:false" width="20">
+						3HOURS-COUNT</th>
 				</tr>
 			</thead>
 		</table>
@@ -39,12 +42,17 @@
 	var title_windowAction = "权限资源管理";//功能名称
 	var gridAction;//数据表格对象
 	var searchAction;//条件查询组件对象
-	var toolBarAction = [/** {
-		id : 'downLine',
-		text : '强制下线',
-		iconCls : 'icon-remove',
-		handler : delDataAction
-	} **/];
+	var toolBarAction = [ {
+		id : 'blankList',
+		text : '加入黑名单',
+		iconCls : 'icon-exclamation-red-frame',
+		handler : addBlankList
+	}, {
+		id : 'viewbList',
+		text : '查看黑名单',
+		iconCls : 'icon-cv',
+		handler : viewBlankList
+	} ];
 	$(function() {
 		//初始化数据表格
 		gridAction = $('#dataActionGrid').datagrid({
@@ -54,8 +62,8 @@
 			'toolbar' : toolBarAction,
 			pagination : true,
 			closable : true,
-			pageList:[1000],
-			pageSize:1000,
+			pageList : [ 1000 ],
+			pageSize : 1000,
 			checkOnSelect : true,
 			striped : true,
 			rownumbers : true,
@@ -67,35 +75,61 @@
 			gridObj : gridAction
 		});
 	});
-	//删除
-	function delDataAction() {
+	//添加到黑名单
+	function addBlankList() {
 		var selectedArray = $(gridAction).datagrid('getSelections');
 		if (selectedArray.length > 0) {
 			// 有数据执行操作
-			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS;
-			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
-				if (flag) {
-					$(gridAction).datagrid('loading');
-					$.post(url_delActionAction + '?ids='
-							+ $.farm.getCheckedIds(gridAction, 'ID'), {},
+			$.messager
+					.confirm(
+							MESSAGE_PLAT.PROMPT,
+							"该ip加入黑名单后将无法继续访问系统，是否继续?",
 							function(flag) {
-								var jsonObject = JSON.parse(flag, null);
-								$(gridAction).datagrid('loaded');
-								if (jsonObject.STATE == 0) {
-									$(gridAction).datagrid('reload');
-								} else {
-									var str = MESSAGE_PLAT.ERROR_SUBMIT
-											+ jsonObject.MESSAGE;
-									$.messager.alert(MESSAGE_PLAT.ERROR, str,
-											'error');
+								if (flag) {
+									$(gridAction).datagrid('loading');
+									$
+											.post(
+													'user/addBlank.do?ips='
+															+ $.farm
+																	.getCheckedIds(
+																			gridAction,
+																			'IP'),
+													{},
+													function(flag) {
+														var jsonObject = JSON
+																.parse(flag,
+																		null);
+														$(gridAction).datagrid(
+																'loaded');
+														if (jsonObject.STATE == 0) {
+														} else {
+															var str = MESSAGE_PLAT.ERROR_SUBMIT
+																	+ jsonObject.MESSAGE;
+															$.messager
+																	.alert(
+																			MESSAGE_PLAT.ERROR,
+																			str,
+																			'error');
+														}
+													});
 								}
 							});
-				}
-			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
 					'info');
 		}
+	}
+	//查看黑名单
+	function viewBlankList() {
+		$.farm
+				.openWindow({
+					id : 'winSetDicType',
+					width : 700,
+					height : 350,
+					modal : true,
+					url : 'dictionaryType/ALONEDictionaryType_ACTION_CONSOLE.do?ids=${entityId}',
+					title : '设置字典项'
+				});
 	}
 </script>
 </html>

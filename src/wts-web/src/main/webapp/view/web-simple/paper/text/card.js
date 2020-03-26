@@ -58,14 +58,16 @@ $(function() {
 	// 提交答題卡
 	$('#sideCardSubmitButton').click(function() {
 		$('#submitPaper-win').modal('hide');
-		var allJson = enCodePaperForm();
-		submitSavePaper(allJson, submitPaper);
+		submitPaper();
+		//var allJson = enCodePaperForm();
+		//先保存再提交答題卡submitSavePaper(allJson, submitPaper);
 	});
 	// 跳转到检查试卷页面
 	$('#sideCardCheckupButton').click(function() {
 		$('#submitPaper-win').modal('hide');
-		var allJson = enCodePaperForm();
-		submitSavePaper(allJson, checkupPaper);
+		checkupPaper();
+		//var allJson = enCodePaperForm();
+		//先保存再進入檢查頁面submitSavePaper(allJson, checkupPaper);
 	});
 	// 返回答题页面
 	$('#sideBackPaperButton').click(function() {

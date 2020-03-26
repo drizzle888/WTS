@@ -459,7 +459,7 @@ public class UserWebController extends WebUtils {
 			query.addRule(new DBRule("a.MODELTYPE", "1", "="));
 			query = subjectUserOwnServiceImpl.createSubjectuserownSimpleQuery(query);
 			DataResult result = query.search();
-			// result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档",
+			// result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩",
 			// "CARDSTATE");
 			return ViewMode.getInstance().putAttr("result", result)
 					.putAttr("ids", getIdsFromResult(result, "SUBJECTID"))
@@ -522,7 +522,7 @@ public class UserWebController extends WebUtils {
 			query = paperUserOwnServiceImpl.createPaperuserownSimpleQuery(query);
 			DataResult result = query.search();
 			result.runDictionary("1:答卷模式,3:练习模式", "PAPERMODELTITLE");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "CARDSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "CARDSTATE");
 			return ViewMode.getInstance().putAttr("result", result).putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnAllPaper");
 		} catch (Exception e) {

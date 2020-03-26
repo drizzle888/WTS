@@ -32,7 +32,7 @@
 					style="padding: 20px; padding-top: 4px; padding-bottom: 4px; line-height: 2em; border: 1px solid green; margin: 20px;"
 					class="ke-content ke-content-borderbox">
 					<div style="text-align: left; font-size: 18px; font-weight: 700;">
-						<code>解析:${node.pcontent}</code>
+						<code>解析:</code>${node.pcontent}
 					</div>
 					<div>${node.text}</div>
 				</div>

@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -116,6 +117,12 @@ public class FilterSso implements Filter {
 			LoginUser user = outuserServiceImpl.getUserByAccountId(remoteLogiNname, null, null);
 			FarmAuthorityService.loginIntoSession(httpRequest.getSession(), httpRequest.getRemoteAddr(),
 					user.getLoginname(), "单点登陆");
+		} else {
+			// 如果注冊码失效就访问默认页面
+			log.warn("the remoteUserKey is error:" + remoteUserKey);
+			((HttpServletResponse) response).sendRedirect(Urls.getBaseUrl(request)
+					+ FarmParameterService.getInstance().getParameter("config.index.defaultpage"));
+			return;
 		}
 		chain.doFilter(request, response);
 		return;
@@ -333,7 +340,11 @@ public class FilterSso implements Filter {
 		map.put("certificate", remoteUserKey);
 		JSONObject json = HttpUtils.httpPost(apiUrl, map);
 		checkRomoteBackState(json);
-		return json.getString("LOGINNAME");
+		if (json.isNull("LOGINNAME")) {
+			return null;
+		} else {
+			return json.getString("LOGINNAME");
+		}
 	}
 
 	/**

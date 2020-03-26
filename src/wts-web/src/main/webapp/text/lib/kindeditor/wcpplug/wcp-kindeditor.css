@@ -23,6 +23,11 @@
         width: 16px;
         height: 16px;
 }
+.ke-icon-wcplatex {
+        background-image: url(../themes/common/latex.png);
+        width: 16px;
+        height: 16px;
+}
 .wcpknow_search_limit_box{
 	text-align: left;
 }

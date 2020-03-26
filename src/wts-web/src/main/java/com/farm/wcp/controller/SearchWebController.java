@@ -68,7 +68,8 @@ public class SearchWebController extends WebUtils {
 			query.addSqlRule("and ROOMNAME is not null and PAPERNAME is not null");
 			DataResult result = cardHisServiceImpl.createUserCardQuery(query).search();
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATE");
+			result.runDictionary("LIVE:当前,BACK:归档", "SOURCE");
 			return view.putAttr("result", result).putAttr("word", word)
 					.returnModelAndView(getThemePath() + "/search/userPoints");
 		} catch (Exception e) {

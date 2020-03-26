@@ -2,6 +2,7 @@ package com.farm.web.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.Filter;
@@ -23,6 +24,8 @@ import com.farm.core.auth.domain.AuthKey;
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.auth.util.Urls;
 import com.farm.parameter.FarmParameterService;
+import com.farm.util.limit.FarmDoLimits;
+import com.farm.web.WebUtils;
 import com.farm.web.constant.FarmConstant;
 import com.farm.web.online.OnlineUserOpImpl;
 import com.farm.web.online.OnlineUserOpInter;
@@ -46,6 +49,17 @@ public class FilterValidate implements Filter {
 		return Urls.isActionByUrl(urlStr, "do") || Urls.isActionByUrl(urlStr, "html");
 	}
 
+	/**
+	 * 判断ip是否在访问黑名单中
+	 * 
+	 * @param ip
+	 * @return
+	 */
+	private boolean isBlankList(String ip) {
+		Map<String, String> blankList = FarmParameterService.getInstance().getDictionary("ONLINE_BLANKLIST");
+		return blankList.keySet().contains(ip);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2)
@@ -58,10 +72,18 @@ public class FilterValidate implements Filter {
 		HttpSession session = request.getSession();
 		String requestUrl = request.getRequestURL().toString();
 		// 如果端口为80端口则，将该端口去掉，认为是不许要端口的
-		String formatUrl = Urls.formatUrl(requestUrl,basePath);
+		String formatUrl = Urls.formatUrl(requestUrl, basePath);
 		String key = null;
 		LoginUser currentUser = null;
 		AuthKey authkey = null;
+		{
+			// 全部资源流量控制（静态和动态）
+			if (!FarmDoLimits.isVisiteAble(WebUtils.getCurrentIp(request), formatUrl)
+					|| isBlankList(WebUtils.getCurrentIp(request))) {
+				response.sendError(405, "当前用户访问受限(FarmDoLimits)!");
+				return;
+			}
+		}
 		{// 不是后台请求直接运行访问()
 			if (!isURL(formatUrl)) {
 				arg2.doFilter(arg0, arg1);
@@ -106,6 +128,11 @@ public class FilterValidate implements Filter {
 		{// 处理--online--用户在线
 			OnlineUserOpInter ouop = OnlineUserOpImpl.getInstance(request.getRemoteAddr(), session);
 			ouop.userVisitHandle();
+			if (!FarmParameterService.getInstance().getParameterBoolean("config.login.repet.able")
+					&& ouop.isRepetLogin()) {
+				WebUtils.logoutUser(WebUtils.getCurrentIp(request), session);
+				throw new RuntimeException("当前用户被迫离线，因为该用户已在另一台设备上登陆!");
+			}
 		}
 		String subKey = Urls.getActionSubKey(key);
 		{// 是否可以直接访问

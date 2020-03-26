@@ -72,6 +72,16 @@
 			</div>
 		</div>
 		<div class="container" style="padding-top: 20px;">
+			<div>
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" ${state=='all'?'class="active"':'' }><a
+						href="adjudge/paperUser.do?paperid=${paper.id}&roomId=${room.id}">全部</a></li>
+					<li role="presentation" ${state=='12345'?'class="active"':'' }><a
+						href="adjudge/paperUser.do?paperid=${paper.id}&roomId=${room.id}&state=12345">待阅卷</a></li>
+					<li role="presentation" ${state=='67'?'class="active"':'' }><a
+						href="adjudge/paperUser.do?paperid=${paper.id}&roomId=${room.id}&state=67">已发布</a></li>
+				</ul>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered"
 					style="width: 100%; background-color: #ffffff;">
@@ -103,12 +113,12 @@
 							<td>${node.ADJUDGEUSERNAME}</td>
 							<td>${node.ADJUDGETIME}</td>
 							<td>
-								<!--  --> <c:if test="${node.PSTATE=='6'}">
+								<!--  --> <c:if test="${node.PSTATE=='7'}">
 									<span style="font-size: 12px;" class="label label-primary">
 										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
 										${node.PSTATETITLE}
 									</span>
-								</c:if> <!--  --> <c:if test="${node.PSTATE!='6'}">
+								</c:if> <!--  --> <c:if test="${node.PSTATE!='7'}">
 									<span style="font-size: 12px;" class="label label-default">
 										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
 										${node.PSTATETITLE}
@@ -116,18 +126,23 @@
 								</c:if> <!--  -->
 							</td>
 							<td style="text-align: center;">
-								<!-- 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档 --> <c:if
-									test="${node.PSTATE=='2'||node.PSTATE=='4'}">
+								<!-- 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩 --> 
+								<c:if test="${node.PSTATE=='2'||node.PSTATE=='4'}">
 									<a class="btn btn-default btn-xs" id="autoPointRunId"
 										href="javascript:loadRemoteFunctionAndReload('adjudge/autoCount.do?cardid=${node.CARDID}','autoPointRunId')">自动计算</a>
-								</c:if> <c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
+								</c:if> 
+								<!---->
+								<c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
 									<a class="btn btn-default btn-xs" id="recoveryRunId"
 										href="javascript:loadRemoteFunctionAndReload('adjudge/recovery.do?cardid=${node.CARDID}','recoveryRunId','确定收卷?')">强制收卷</a>
-								</c:if> <c:if test="${node.PSTATE=='5'}">
+								</c:if> 
+								<!---->
+								<c:if test="${node.PSTATE=='6'}">
 									<a class="btn btn-danger btn-xs" id="autoPointRunId"
 										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
-								</c:if> <c:if
-									test="${node.PSTATE=='2'||node.PSTATE=='4'||node.PSTATE=='5'||node.PSTATE=='6'}">
+								</c:if> 
+								<!---->
+								<c:if test="${node.PSTATE=='5'||node.PSTATE=='6'||node.PSTATE=='7'}">
 									<a class="btn btn-success btn-xs"
 										href="adjudge/adjudgePage.do?cardId=${node.CARDID}">人工阅卷</a>
 								</c:if>

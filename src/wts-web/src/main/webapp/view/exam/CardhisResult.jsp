@@ -39,9 +39,11 @@
 						<td class="title">考卷名称:</td>
 						<td><input name="A.PAPERNAME:like" type="text"></td>
 						<td class="title">考试时间起始:</td>
-						<td><input name="STARTTIME:like" class="easyui-datebox" type="text"></td>
+						<td><input name="STARTTIME:like" class="easyui-datebox"
+							type="text"></td>
 						<td class="title">考试时间结束:</td>
-						<td><input name="ENDTIME:like" class="easyui-datebox" type="text"></td>
+						<td><input name="ENDTIME:like" class="easyui-datebox"
+							type="text"></td>
 					</tr>
 					<tr style="text-align: center;">
 						<td colspan="6"><a id="a_search" href="javascript:void(0)"
@@ -67,6 +69,10 @@
 					</tr>
 				</thead>
 			</table>
+			<form method="post" action="cardquery/exportHisExcel.do"
+				id="reportForm">
+				<input type="hidden" name="ruleText" id="ruleTextId" />
+			</form>
 		</div>
 	</div>
 </body>
@@ -77,28 +83,12 @@
 	var title_windowCardhis = "答题卡历史记录管理";//功能名称
 	var gridCardhis;//数据表格对象
 	var searchCardhis;//条件查询组件对象
-	var toolBarCardhis = [
-	//{	id : 'view',
-	//	text : '查看',
-	//	iconCls : 'icon-tip',
-	//	handler : viewDataCardhis
-	//}, {
-	//	id : 'add',
-	//	text : '新增',
-	//	iconCls : 'icon-add',
-	//	handler : addDataCardhis
-	//}, {
-	//	id : 'edit',
-	//	text : '修改',
-	//	iconCls : 'icon-edit',
-	//	handler : editDataCardhis
-	//}, {
-	//	id : 'del',
-	//	text : '删除',
-	//	iconCls : 'icon-remove',
-	//	handler : delDataCardhis
-	//} 
-	];
+	var toolBarCardhis = [ {
+		id : 'del',
+		text : '成绩导出',
+		iconCls : 'icon-blogs',
+		handler : excelExport
+	} ];
 	$(function() {
 		//初始化数据表格
 		gridCardhis = $('#dataCardhisGrid').datagrid({
@@ -135,85 +125,11 @@
 			$('#MessageconsoleTree').tree('expandAll');
 		});
 	});
-	//查看
-	function viewDataCardhis() {
-		var selectedArray = $(gridCardhis).datagrid('getSelections');
-		if (selectedArray.length == 1) {
-			var url = url_formActionCardhis + '?pageset.pageType='
-					+ PAGETYPE.VIEW + '&ids=' + selectedArray[0].ID;
-			$.farm.openWindow({
-				id : 'winCardhis',
-				width : 600,
-				height : 300,
-				modal : true,
-				url : url,
-				title : '浏览'
-			});
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-					'info');
-		}
-	}
-	//新增
-	function addDataCardhis() {
-		var url = url_formActionCardhis + '?operateType=' + PAGETYPE.ADD;
-		$.farm.openWindow({
-			id : 'winCardhis',
-			width : 600,
-			height : 300,
-			modal : true,
-			url : url,
-			title : '新增'
-		});
-	}
-	//修改
-	function editDataCardhis() {
-		var selectedArray = $(gridCardhis).datagrid('getSelections');
-		if (selectedArray.length == 1) {
-			var url = url_formActionCardhis + '?operateType=' + PAGETYPE.EDIT
-					+ '&ids=' + selectedArray[0].ID;
-			$.farm.openWindow({
-				id : 'winCardhis',
-				width : 600,
-				height : 300,
-				modal : true,
-				url : url,
-				title : '修改'
-			});
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-					'info');
-		}
-	}
-	//删除
-	function delDataCardhis() {
-		var selectedArray = $(gridCardhis).datagrid('getSelections');
-		if (selectedArray.length > 0) {
-			// 有数据执行操作
-			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS;
-			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
-				if (flag) {
-					$(gridCardhis).datagrid('loading');
-					$.post(url_delActionCardhis + '?ids='
-							+ $.farm.getCheckedIds(gridCardhis, 'ID'), {},
-							function(flag) {
-								var jsonObject = JSON.parse(flag, null);
-								$(gridCardhis).datagrid('loaded');
-								if (jsonObject.STATE == 0) {
-									$(gridCardhis).datagrid('reload');
-								} else {
-									var str = MESSAGE_PLAT.ERROR_SUBMIT
-											+ jsonObject.MESSAGE;
-									$.messager.alert(MESSAGE_PLAT.ERROR, str,
-											'error');
-								}
-							});
-				}
-			});
-		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
-					'info');
-		}
+	//导出
+	function excelExport() {
+		$.messager.alert('报表加载中...', '请等待,不要关闭本窗口直至报表导出完成... ...');
+		$('#ruleTextId').val(searchCardhis.arrayStr());
+		$('#reportForm').submit();
 	}
 </script>
 </html>
