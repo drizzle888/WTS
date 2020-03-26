@@ -36,6 +36,9 @@ import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
 import com.farm.core.sql.result.ResultsHandle;
+import com.farm.parameter.FarmParameterService;
+import com.farm.parameter.domain.AloneDictionaryEntity;
+import com.farm.parameter.service.DictionaryEntityServiceInter;
 import com.farm.report.FarmReport;
 import com.farm.report.jxls.ReportManagerImpl;
 import com.farm.web.WebUtils;
@@ -60,6 +63,8 @@ public class WebUserController extends WebUtils {
 	UserServiceInter userServiceImpl;
 	@Resource
 	private OrganizationServiceInter organizationServiceImpl;
+	@Resource
+	private DictionaryEntityServiceInter dictionaryEntityServiceImpl;
 
 	public UserServiceInter getUserServiceImpl() {
 		return userServiceImpl;
@@ -200,7 +205,9 @@ public class WebUserController extends WebUtils {
 	 */
 	@RequestMapping("/online")
 	public ModelAndView online(HttpSession session) {
-		return ViewMode.getInstance().returnModelAndView("authority/OnlineResult");
+		AloneDictionaryEntity dictionary = dictionaryEntityServiceImpl.initEntity("ONLINE_BLANKLIST", "访问黑名单", "1",
+				getCurrentUser(session));
+		return ViewMode.getInstance().putAttr("entityId", dictionary.getId()).returnModelAndView("authority/OnlineResult");
 	}
 
 	/**
@@ -213,7 +220,26 @@ public class WebUserController extends WebUtils {
 	public Map<String, Object> onlinequery(HttpServletRequest request, HttpSession session) {
 		try {
 			OnlineUserOpInter ouop = OnlineUserOpImpl.getInstance(request.getRemoteAddr(), session);
-			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(ouop.findOnlineUser())).returnObjMode();
+			return ViewMode.getInstance()
+					.putAttrs(EasyUiUtils.formatGridData(ouop.findOnlineUser(
+							FarmParameterService.getInstance().getParameterBoolean("config.login.repet.able"))))
+					.returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	@RequestMapping("/addBlank")
+	@ResponseBody
+	public Map<String, Object> addBlank(String ips, HttpServletRequest request, HttpSession session) {
+		try {
+			AloneDictionaryEntity dictionary = dictionaryEntityServiceImpl.initEntity("ONLINE_BLANKLIST", "访问黑名单", "1",
+					getCurrentUser(session));
+			for (String ip : parseIds(ips)) {
+				dictionaryEntityServiceImpl.addType(dictionary.getId(), ip, ip, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
@@ -551,10 +577,10 @@ public class WebUserController extends WebUtils {
 	 */
 	@RequestMapping("/stateUser")
 	@ResponseBody
-	public ModelAndView stateUser(String ids,String statecode, HttpSession session) {
+	public ModelAndView stateUser(String ids, String statecode, HttpSession session) {
 		try {
 			for (String userid : parseIds(ids)) {
-				userServiceImpl.editUserState(userid,statecode, getCurrentUser(session));
+				userServiceImpl.editUserState(userid, statecode, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnModelAndView("authority/UserResult");
 		} catch (Exception e) {
@@ -562,11 +588,7 @@ public class WebUserController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView("authority/UserResult");
 		}
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * 批量设置用户为只读用户
 	 *

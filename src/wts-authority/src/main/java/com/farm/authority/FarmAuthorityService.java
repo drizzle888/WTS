@@ -31,6 +31,7 @@ import com.farm.core.auth.util.Urls;
 import com.farm.parameter.FarmParameterService;
 import com.farm.util.spring.BeanFactory;
 import com.farm.web.WebUtils;
+import com.farm.web.online.OnlineUserOpImpl;
 
 public class FarmAuthorityService implements AuthorityService {
 	// 人数限制
@@ -92,6 +93,7 @@ public class FarmAuthorityService implements AuthorityService {
 		Map<String, String> returnMap = new HashMap<>();
 		returnMap.put("lastLoginTime", lastLoginTime);
 		returnMap.put("UserId", user.getId());
+		OnlineUserOpImpl.getInstance(ip, session).userlogin();
 		return returnMap;
 	}
 
