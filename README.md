@@ -68,7 +68,6 @@
 
 #### 演示环境
 > ## **[点击访问WTS演示环境](https://demo.wcpdoc.com/wts)**
-> 演示环境部署的版本为0.3.0 和开源代码0.3.0版本是完全一致的）
 
 #### 代码安装说明
 1. maven部署源码（**主模块：WTS/src/wts-web** ）编译顺序：wts-core > wts-parameter > wts-report > wts-authority > wts-quartz > wts-doc > wts-exam > wts-tag > wts-web
