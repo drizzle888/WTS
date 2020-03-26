@@ -452,7 +452,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public void finishRoom(String roomid, LoginUser currentUser) {
 		editState(roomid, "3", currentUser);
 		for (Card card : cardServiceImpl.getRoomCards(roomid)) {
-			// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
+			// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
 			if (card.getPstate().equals("1") || card.getPstate().equals("3")) {
 				// 自动提交试卷
 				cardServiceImpl.finishExamNoPop(card.getId(), currentUser);

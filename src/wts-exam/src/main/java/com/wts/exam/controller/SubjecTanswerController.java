@@ -58,6 +58,7 @@ public class SubjecTanswerController extends WebUtils {
 			query = EasyUiUtils.formatGridQuery(request, query);
 			query.addRule(new DBRule("VERSIONID", versionid, "="));
 			query.addDefaultSort(new DBSort("SORT", "ASC"));
+			query.setPagesize(100);
 			DataResult result = subjectAnswerServiceImpl.createSubjectanswerSimpleQuery(query).search();
 			result.runDictionary("1:正确答案,0:错误答案", "RIGHTANSWER");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();

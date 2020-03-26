@@ -71,7 +71,7 @@ public class CardController extends WebUtils {
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm:ss");
 			result.runformatTime("ENDTIME", "HH:mm:ss");
 			result.runformatTime("ADJUDGETIME", "yyyy-MM-dd HH:mm:ss");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -89,30 +89,12 @@ public class CardController extends WebUtils {
 	public Map<String, Object> editSubmit(Card entity, HttpSession session) {
 		// TODO 自动生成代码,修改后请去除本注释
 		try {
-			entity = cardServiceImpl.editCardEntity(entity, getCurrentUser(session));
+			entity = cardServiceImpl.editCardEntity(entity);
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
 
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
-		}
-	}
-
-	/**
-	 * 提交新增数据
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/add")
-	@ResponseBody
-	public Map<String, Object> addSubmit(Card entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
-		try {
-			entity = cardServiceImpl.insertCardEntity(entity, getCurrentUser(session));
-			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ViewMode.getInstance().setOperate(OperateType.ADD).setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 

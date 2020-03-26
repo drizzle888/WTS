@@ -135,6 +135,7 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 				"WTS_CARD a LEFT JOIN ALONE_AUTH_USERORG b ON b.USERID = a.USERID LEFT JOIN ALONE_AUTH_ORGANIZATION c ON b.ORGANIZATIONID = c.ID LEFT JOIN WTS_ROOM d ON d.ID = a.ROOMID LEFT JOIN wts_paper e ON e.id = a.PAPERID LEFT JOIN alone_auth_user f ON f.id = a.USERID",
 				"A.ID AS CARDID,A.PSTATE as PSTATE,d. NAME AS ROOMNAME, f. NAME AS USERNAME, e. NAME AS PAPERNAME, C. NAME AS ORGNAME, A.POINT AS POINT, A.STARTTIME AS STARTTIME");
 		dbQuery.addDefaultSort(new DBSort("a.STARTTIME", "desc"));
+		dbQuery.addSqlRule(" and d.id is not null");
 		return dbQuery;
 	}
 
@@ -153,11 +154,15 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 			if (paper != null) {
 				paperName = paper.getName();
 			} else {
-				//答卷在归档前有可能被删除
+				// 答卷在归档前有可能被删除
 				paperName = "失效答卷";
 			}
 			cardhis.setPapername(paperName);
-			cardhis.setUsername(FarmAuthorityService.getInstance().getUserById(card.getUserid()).getName());
+			if (FarmAuthorityService.getInstance().getUserById(card.getUserid()) != null) {
+				cardhis.setUsername(FarmAuthorityService.getInstance().getUserById(card.getUserid()).getName());
+			} else {
+				cardhis.setUsername("失效用户");
+			}
 			cardhisDaoImpl.insertEntity(cardhis);
 			// 备份card-answer
 			cardanswerhisDaoImpl.backup(card.getId());
@@ -170,8 +175,8 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 	@Transactional
 	public DataQuery createUserCardQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
-				"(( SELECT ID AS CARDID,USERID, PSTATE, ROOMNAME, PAPERNAME, POINT, STARTTIME FROM WTS_CARD_HIS ) UNION ( SELECT a.ID AS CARDID,a.USERID as USERID, a.PSTATE AS PSTATE, b. NAME AS ROOMNAME, c. NAME AS PAPERNAME, a.POINT AS POINT, a.STARTTIME AS STARTTIME FROM WTS_CARD a LEFT JOIN WTS_ROOM b ON b.ID = a.ROOMID LEFT JOIN wts_paper c ON c.id = a.PAPERID )) ALLDATA",
-				"CARDID, PSTATE, ROOMNAME,USERID, PAPERNAME, POINT, STARTTIME");
+				"(( SELECT ID AS CARDID,USERID, PSTATE, ROOMNAME, PAPERNAME, POINT, STARTTIME,'BACK' as SOURCE FROM WTS_CARD_HIS ) UNION ( SELECT a.ID AS CARDID,a.USERID as USERID, a.PSTATE AS PSTATE, b. NAME AS ROOMNAME, c. NAME AS PAPERNAME, a.POINT AS POINT, a.STARTTIME AS STARTTIME,'LIVE' as SOURCE FROM WTS_CARD a LEFT JOIN WTS_ROOM b ON b.ID = a.ROOMID LEFT JOIN wts_paper c ON c.id = a.PAPERID where a.PSTATE='6' or a.PSTATE='7')) ALLDATA",
+				"CARDID, PSTATE, ROOMNAME,USERID, PAPERNAME, POINT, STARTTIME,SOURCE");
 		dbQuery.addDefaultSort(new DBSort("STARTTIME", "desc"));
 		return dbQuery;
 	}

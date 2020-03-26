@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.farm.core.FarmUtils;
 import com.wts.exam.domain.ex.SubjectUnit;
 
 /**
@@ -31,7 +32,8 @@ public class SubjectUnitCaches {
 			UNITS_CACHE.clear();
 			log.warn("缓存超出5000上限，全部清空!");
 		}
-		return UNITS_CACHE.get(versionId);
+		SubjectUnit newunit = (SubjectUnit) FarmUtils.deepCopy(UNITS_CACHE.get(versionId));
+		return newunit;
 	}
 
 	public static void put(String versionId, SubjectUnit newunit) {

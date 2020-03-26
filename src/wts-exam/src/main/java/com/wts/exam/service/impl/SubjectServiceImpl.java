@@ -221,10 +221,9 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 				return o1.getAnswer().getSort() - o2.getAnswer().getSort();
 			}
 		});
-		SubjectUnit newunit = (SubjectUnit) FarmUtils.deepCopy(unit);
 		// 写入缓存
-		SubjectUnitCaches.put(versionId, newunit);
-		return newunit;
+		SubjectUnitCaches.put(versionId, unit);
+		return SubjectUnitCaches.get(versionId);
 	}
 
 	@Override
@@ -243,8 +242,9 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	@Transactional
 	public List<SubjectUnit> addTextSubjects(String typeid, String texts, LoginUser currentUser) {
 		// texts按照换行符断行
-		texts = texts.replaceAll(" +", "").replaceAll("（", "(").replaceAll("）", ")").replaceAll("，", ",")
-				.replaceAll("。", ".");
+		texts = texts.replaceAll(" +", "").replaceAll("（", "(").replaceAll("）", ")")
+				//.replaceAll("。", ".").replaceAll("，", ",")
+				;
 		String[] subNode = texts.split("\\[SUB:");
 		List<SubjectUnit> units = new ArrayList<>();
 		for (String node : subNode) {

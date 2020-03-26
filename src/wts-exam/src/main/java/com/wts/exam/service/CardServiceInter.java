@@ -23,19 +23,13 @@ import com.farm.core.auth.domain.LoginUser;
  *说明：
  */
 public interface CardServiceInter {
-	/**
-	 * 新增实体管理实体
-	 * 
-	 * @param entity
-	 */
-	public Card insertCardEntity(Card entity, LoginUser user);
 
 	/**
 	 * 修改实体管理实体
 	 * 
 	 * @param entity
 	 */
-	public Card editCardEntity(Card entity, LoginUser user);
+	public Card editCardEntity(Card entity);
 
 	/**
 	 * 删除实体管理实体
@@ -162,7 +156,7 @@ public interface CardServiceInter {
 	 * @param cardid
 	 * @param loginUser
 	 */
-	public CardInfo autoCountCardPoint(String cardid, LoginUser loginUser);
+	public CardInfo autoCountCardPoint(String cardid);
 
 	/**
 	 * 结束判卷

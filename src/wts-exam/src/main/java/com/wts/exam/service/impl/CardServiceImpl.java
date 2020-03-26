@@ -36,7 +36,9 @@ import com.wts.exam.service.ExamStatServiceInter;
 import com.wts.exam.service.PaperUserOwnServiceInter;
 import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.RoomServiceInter;
+import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.SubjectUserOwnServiceInter;
+import com.wts.exam.utils.CardPointAutoCounter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DBSort;
@@ -106,31 +108,15 @@ public class CardServiceImpl implements CardServiceInter {
 	private ExamStatServiceInter examStatServiceImpl;
 	@Resource
 	private PaperUserOwnDaoInter paperuserownDaoImpl;
+	@Resource
+	private SubjectServiceInter subjectServiceImpl;
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger.getLogger(CardServiceImpl.class);
 
 	@Override
 	@Transactional
-	public Card insertCardEntity(Card entity, LoginUser user) {
-		// TODO 自动生成代码,修改后请去除本注释
-		// entity.setCuser(user.getId());
-		// entity.setCtime(TimeTool.getTimeDate14());
-		// entity.setCusername(user.getName());
-		// entity.setEuser(user.getId());
-		// entity.setEusername(user.getName());
-		// entity.setEtime(TimeTool.getTimeDate14());
-		// entity.setPstate("1");
-		return cardDaoImpl.insertEntity(entity);
-	}
-
-	@Override
-	@Transactional
-	public Card editCardEntity(Card entity, LoginUser user) {
-		// TODO 自动生成代码,修改后请去除本注释
+	public Card editCardEntity(Card entity) {
 		Card entity2 = cardDaoImpl.getEntity(entity.getId());
-		// entity2.setEuser(user.getId());
-		// entity2.setEusername(user.getName());
-		// entity2.setEtime(TimeTool.getTimeDate14());
 		entity2.setPcontent(entity.getPcontent());
 		entity2.setEndtime(entity.getEndtime());
 		entity2.setPstate(entity.getPstate());
@@ -154,7 +140,7 @@ public class CardServiceImpl implements CardServiceInter {
 		cardAnswerDaoImpl.deleteEntitys(cardrules);
 		// WTS_CARD_POINT
 		cardPointDaoImpl.deleteEntitys(cardrules);
-		//删除用户答卷记录
+		// 删除用户答卷记录
 		paperuserownDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", id, "=")).toList());
 		cardDaoImpl.deleteEntity(cardDaoImpl.getEntity(id));
 	}
@@ -274,11 +260,20 @@ public class CardServiceImpl implements CardServiceInter {
 		if (card == null) {
 			throw new RuntimeException("答题卡获取失败：答题卡");
 		}
-		cardAnswerDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", card.getId(), "="))
-				.add(new DBRule("VERSIONID", versionid, "=")).add(new DBRule("ANSWERID", answerid, "=")).toList());
+		// 先刪除历史答案
+		cardAnswerDaoImpl.deleteEntitys(DBRuleList.getInstance()
+				//
+				.add(new DBRule("CARDID", card.getId(), "="))
+				//
+				.add(new DBRule("VERSIONID", versionid, "="))
+				//
+				.add(new DBRule("ANSWERID", answerid, "=")).toList());
 
 		List<CardAnswer> answers = cardAnswerDaoImpl.selectEntitys(DBRuleList.getInstance()
-				.add(new DBRule("CARDID", card.getId(), "=")).add(new DBRule("VERSIONID", versionid, "=")).toList());
+				//
+				.add(new DBRule("CARDID", card.getId(), "="))
+				//
+				.add(new DBRule("VERSIONID", versionid, "=")).toList());
 		// 添加新的答案
 		CardAnswer answer = new CardAnswer();
 		answer.setAnswerid(answerid);
@@ -291,7 +286,7 @@ public class CardServiceImpl implements CardServiceInter {
 		answer = cardAnswerDaoImpl.insertEntity(answer);
 		answers.add(answer);
 		// ---------------------------------------------
-		SubjectVersion version = subjectversionDaoImpl.getEntity(versionid);
+		SubjectVersion version = subjectServiceImpl.getSubjectUnit(versionid).getVersion();
 		TipType tiptype = TipType.getTipType(version.getTiptype());
 		return tiptype.getHandle().isHaveAnswer(answers);
 	}
@@ -321,6 +316,10 @@ public class CardServiceImpl implements CardServiceInter {
 	@Override
 	@Transactional
 	public boolean runPointCount(List<SubjectUnit> userSubjects, Card card) {
+		/**
+		 * 之前是判断是否存在题得分，如果存在则更新不存在就创建，现在是直接删除再创建不知道有没有问题（原来的逻辑在本方法下方注释掉，需要时回复）
+		 **/
+
 		Map<String, Integer> points = new HashMap<>();
 		boolean isAllComplete = true;
 		{
@@ -336,24 +335,17 @@ public class CardServiceImpl implements CardServiceInter {
 			int pointWeight = countSubjectPoint(unit);
 			Integer basePoint = points.get(unit.getVersion().getId());
 			int point = (basePoint == null ? 0 : basePoint) * pointWeight / 100;
-			List<CardPoint> cardPoints = cardPointDaoImpl.selectEntitys(
-					DBRuleList.getInstance().add(new DBRule("CARDID", unit.getCardSubject().getCardid(), "="))
-							.add(new DBRule("VERSIONID", unit.getVersion().getId(), "=")).toList());
-			if (cardPoints.size() > 1) {
-				throw new RuntimeException("用戶答題卡cardPoints中的，題數量" + cardPoints.size() + "错误:cardid("
-						+ unit.getCardSubject().getCardid() + "),versionid(" + unit.getVersion().getId() + ")");
-			}
+			cardPointDaoImpl.deleteEntitys(DBRuleList.getInstance()
+					//
+					.add(new DBRule("CARDID", unit.getCardSubject().getCardid(), "="))
+					//
+					.add(new DBRule("VERSIONID", unit.getVersion().getId(), "=")).toList());
+
 			{
 				CardPoint cardsub = null;
-				if (cardPoints.size() == 0) {
-					// 无就创建
-					cardsub = new CardPoint();
-					cardsub.setCardid(unit.getCardSubject().getCardid());
-					cardsub.setVersionid(unit.getVersion().getId());
-				} else {
-					// 有就修改
-					cardsub = cardPointDaoImpl.getEntity(cardPoints.get(0).getId());
-				}
+				cardsub = new CardPoint();
+				cardsub.setCardid(unit.getCardSubject().getCardid());
+				cardsub.setVersionid(unit.getVersion().getId());
 				if (unit.getTipType().equals(TipType.CheckBox) || unit.getTipType().equals(TipType.Select)
 						|| unit.getTipType().equals(TipType.Judge)) {
 					cardsub.setComplete("1");
@@ -362,15 +354,72 @@ public class CardServiceImpl implements CardServiceInter {
 					isAllComplete = false;
 				}
 				cardsub.setPoint(point);
-				if (cardPoints.size() == 0) {
-					cardPointDaoImpl.insertEntity(cardsub);
-				} else {
-					cardPointDaoImpl.editEntity(cardsub);
-				}
+				cardPointDaoImpl.insertEntity(cardsub);
 			}
 		}
 		return isAllComplete;
 	}
+
+	// @Override
+	// @Transactional
+	// public boolean runPointCount(List<SubjectUnit> userSubjects, Card card) {
+	// Map<String, Integer> points = new HashMap<>();
+	// boolean isAllComplete = true;
+	// {
+	// // 先获得试卷得分得配置
+	// List<PaperSubject> standPoints = papersubjectDaoImpl.selectEntitys(
+	// DBRuleList.getInstance().add(new DBRule("PAPERID", card.getPaperid(),
+	// "=")).toList());
+	// for (PaperSubject standPoint : standPoints) {
+	// points.put(standPoint.getVersionid(), standPoint.getPoint());
+	// }
+	// }
+	// for (SubjectUnit unit : userSubjects) {
+	// // 题的得分权重，可以得分得百分比（填空题和问答题都是返回百分比得）
+	// int pointWeight = countSubjectPoint(unit);
+	// Integer basePoint = points.get(unit.getVersion().getId());
+	// int point = (basePoint == null ? 0 : basePoint) * pointWeight / 100;
+	// List<CardPoint> cardPoints =
+	// cardPointDaoImpl.selectEntitys(DBRuleList.getInstance()
+	// //
+	// .add(new DBRule("CARDID", unit.getCardSubject().getCardid(), "="))
+	// //
+	// .add(new DBRule("VERSIONID", unit.getVersion().getId(), "=")).toList());
+	// if (cardPoints.size() > 1) {
+	// throw new RuntimeException("用戶答題卡cardPoints中的，題數量" + cardPoints.size() +
+	// "错误:cardid("
+	// + unit.getCardSubject().getCardid() + "),versionid(" +
+	// unit.getVersion().getId() + ")");
+	// }
+	// {
+	// CardPoint cardsub = null;
+	// if (cardPoints.size() == 0) {
+	// // 无就创建
+	// cardsub = new CardPoint();
+	// cardsub.setCardid(unit.getCardSubject().getCardid());
+	// cardsub.setVersionid(unit.getVersion().getId());
+	// } else {
+	// // 有就修改
+	// cardsub = cardPointDaoImpl.getEntity(cardPoints.get(0).getId());
+	// }
+	// if (unit.getTipType().equals(TipType.CheckBox) ||
+	// unit.getTipType().equals(TipType.Select)
+	// || unit.getTipType().equals(TipType.Judge)) {
+	// cardsub.setComplete("1");
+	// } else {
+	// cardsub.setComplete("0");
+	// isAllComplete = false;
+	// }
+	// cardsub.setPoint(point);
+	// if (cardPoints.size() == 0) {
+	// cardPointDaoImpl.insertEntity(cardsub);
+	// } else {
+	// cardPointDaoImpl.editEntity(cardsub);
+	// }
+	// }
+	// }
+	// return isAllComplete;
+	// }
 
 	@Override
 	@Transactional
@@ -668,7 +717,7 @@ public class CardServiceImpl implements CardServiceInter {
 
 	@Override
 	@Transactional
-	public CardInfo autoCountCardPoint(String cardid, LoginUser loginUser) {
+	public CardInfo autoCountCardPoint(String cardid) {
 		Card card = getCardEntity(cardid);
 		Room room = roomDaoImpl.getEntity(card.getRoomid());
 		List<SubjectUnit> subjects = loadUserSubjects(card);
@@ -676,17 +725,18 @@ public class CardServiceImpl implements CardServiceInter {
 		boolean isAllComplete = runPointCount(subjects, card);
 		// 如果题目全部判完，就把考卷状态设置为已经阅卷完成的状态
 		if (isAllComplete) {
-			// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
+			// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
 			if (room != null && room.getCounttype() != null && room.getCounttype().equals("2")) {
-				card.setPstate("6");
+				card.setPstate("7");
 			} else {
 				card.setPstate("5");
 			}
 			card.setAdjudgetime(TimeTool.getTimeDate14());
 			card.setAdjudgeusername("自动");
+		} else {
+			card.setPstate("5");
 		}
 		card.setPoint(getCardPointSum(card));
-		editCardEntity(card, loginUser);
 		// ------------------統計用戶答題數量-----------------------
 		CardInfo info = new CardInfo();
 		{
@@ -699,6 +749,9 @@ public class CardServiceImpl implements CardServiceInter {
 			}
 			info.setCompleteNum(completeNum);
 		}
+		card.setCompletenum(info.getCompleteNum());
+		card.setAllnum(info.getAllNum());
+		editCardEntity(card);
 		return info;
 	}
 
@@ -721,18 +774,18 @@ public class CardServiceImpl implements CardServiceInter {
 		card.setAdjudgeuser(currentUser.getId());
 		card.setAdjudgeusername(currentUser.getName());
 		card.setPoint(getCardPointSum(card));
-		// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
-		card.setPstate("5");
-		editCardEntity(card, currentUser);
+		// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
+		card.setPstate("6");
+		editCardEntity(card);
 	}
 
 	@Override
 	@Transactional
 	public void publicPoint(String cardid, LoginUser currentUser) {
 		Card card = getCardEntity(cardid);
-		// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷,5完成阅卷6.发布成绩,7历史存档
-		card.setPstate("6");
-		editCardEntity(card, currentUser);
+		// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
+		card.setPstate("7");
+		editCardEntity(card);
 		paperUserOwnServiceImpl.refreshScore(cardid, card.getPoint());
 	}
 
@@ -886,9 +939,9 @@ public class CardServiceImpl implements CardServiceInter {
 			card.setPstate("4");
 		}
 		{// 计算得分(回填用戶完成題的數量)
-			CardInfo info = autoCountCardPoint(cardid, currentUser);
-			card.setCompletenum(info.getCompleteNum());
-			card.setAllnum(info.getAllNum());
+			// autoCountCardPoint(cardid, currentUser);
+			// 改为异步计算
+			CardPointAutoCounter.submitTask(cardid);
 		}
 		cardDaoImpl.editEntity(card);
 	}

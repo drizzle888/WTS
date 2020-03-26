@@ -66,7 +66,7 @@ public interface SubjectServiceInter {
 	public SubjectUnit initSubjectUnit(TipType tiptype, String subjectTypeid, LoginUser user);
 
 	/**
-	 * 获得一个试题对象
+	 * 获得一个试题对象(通過緩存抓取)
 	 * 
 	 * @param versionId
 	 *            试题版本

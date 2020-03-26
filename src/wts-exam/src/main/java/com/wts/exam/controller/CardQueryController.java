@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.farm.core.page.OperateType;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
+import com.farm.report.FarmReport;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -48,7 +50,7 @@ public class CardQueryController extends WebUtils {
 	private OrganizationServiceInter organizationServiceImpl;
 
 	/**
-	 * 查询结果集合
+	 * 归档成绩查询结果集合
 	 * 
 	 * @return
 	 */
@@ -89,7 +91,7 @@ public class CardQueryController extends WebUtils {
 			query = EasyUiUtils.formatGridQuery(request, query);
 			DataResult result = cardHisServiceImpl.createHisQuery(query).search();
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档","PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -98,7 +100,7 @@ public class CardQueryController extends WebUtils {
 	}
 
 	/**
-	 * 查询结果集合
+	 * 当前成绩查询结果集合
 	 * 
 	 * @return
 	 */
@@ -139,7 +141,7 @@ public class CardQueryController extends WebUtils {
 			query = EasyUiUtils.formatGridQuery(request, query);
 			DataResult result = cardHisServiceImpl.createLiveQuery(query).search();
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档","PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -148,58 +150,42 @@ public class CardQueryController extends WebUtils {
 	}
 
 	/**
-	 * 提交修改数据
+	 * 下载文件
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/edit")
-	@ResponseBody
-	public Map<String, Object> editSubmit(CardHis entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
+	@RequestMapping("/exportHisExcel")
+	public void exportHisExcel(String ruleText, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
 		try {
-			entity = cardHisServiceImpl.editCardhisEntity(entity, getCurrentUser(session));
-			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
-
+			DataQuery query = new DataQuery();
+			query.setPagesize(5000);
+			query.setRuleText(ruleText);
+			Map<String, Object> result = queryall(query, request);
+			FarmReport.newInstance("hisCard.xls").addParameter("result", result.get("rows")).generateForHttp(response,
+					"hisCardReport");
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 
 	/**
-	 * 提交新增数据
+	 * 下载文件
 	 * 
 	 * @return
 	 */
-	@RequestMapping("/add")
-	@ResponseBody
-	public Map<String, Object> addSubmit(CardHis entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
+	@RequestMapping("/exportLiveExcel")
+	public void exportLiveExcel(String ruleText, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
 		try {
-			entity = cardHisServiceImpl.insertCardhisEntity(entity, getCurrentUser(session));
-			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
+			DataQuery query = new DataQuery();
+			query.setPagesize(5000);
+			query.setRuleText(ruleText);
+			Map<String, Object> result = liveQuery(query, request);
+			FarmReport.newInstance("liveCard.xls").addParameter("result", result.get("rows")).generateForHttp(response,
+					"liveCardReport");
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return ViewMode.getInstance().setOperate(OperateType.ADD).setError(e.getMessage(), e).returnObjMode();
-		}
-	}
-
-	/**
-	 * 删除数据
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/del")
-	@ResponseBody
-	public Map<String, Object> delSubmit(String ids, HttpSession session) {
-		try {
-			for (String id : parseIds(ids)) {
-				cardHisServiceImpl.deleteCardhisEntity(id, getCurrentUser(session));
-			}
-			return ViewMode.getInstance().returnObjMode();
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 
@@ -213,34 +199,4 @@ public class CardQueryController extends WebUtils {
 		return ViewMode.getInstance().returnModelAndView("exam/CardLiveResult");
 	}
 
-	/**
-	 * 显示详细信息（修改或浏览时）
-	 *
-	 * @return
-	 */
-	@RequestMapping("/form")
-	public ModelAndView view(RequestMode pageset, String ids) {
-		try {
-			switch (pageset.getOperateType()) {
-			case (0): {// 查看
-				return ViewMode.getInstance().putAttr("pageset", pageset)
-						.putAttr("entity", cardHisServiceImpl.getCardhisEntity(ids))
-						.returnModelAndView("exam/CardhisForm");
-			}
-			case (1): {// 新增
-				return ViewMode.getInstance().putAttr("pageset", pageset).returnModelAndView("exam/CardhisForm");
-			}
-			case (2): {// 修改
-				return ViewMode.getInstance().putAttr("pageset", pageset)
-						.putAttr("entity", cardHisServiceImpl.getCardhisEntity(ids))
-						.returnModelAndView("exam/CardhisForm");
-			}
-			default:
-				break;
-			}
-			return ViewMode.getInstance().returnModelAndView("exam/CardhisForm");
-		} catch (Exception e) {
-			return ViewMode.getInstance().setError(e + e.getMessage(), e).returnModelAndView("exam/CardhisForm");
-		}
-	}
 }
