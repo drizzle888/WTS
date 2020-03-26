@@ -2,6 +2,7 @@ package com.farm.doc.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import com.farm.doc.server.commons.FileCopyProcessCache;
 import com.farm.doc.server.utils.FileDownloadUtils;
 import com.farm.doc.util.VerifyCodeUtils;
 import com.farm.parameter.FarmParameterService;
+import com.farm.util.latex.LatexUtils;
 import com.farm.web.WebUtils;
 
 /**
@@ -287,7 +289,6 @@ public class FileAccessController extends WebUtils {
 		return ViewMode.getInstance().putAttr("error", error).putAttr("url", url).putAttr("message", message)
 				.putAttr("id", id).putAttr("fileName", fileName).returnObjMode();
 	}
-
 
 	/**
 	 * 下载图片

@@ -41,6 +41,48 @@ public class FileDownloadUtils {
 	 * @param filename
 	 * @param response
 	 */
+	public static void simpleDownloadFile(byte[] data, String filename, String contentType,
+			HttpServletResponse response) {
+		filename = filename.replaceAll(" ", "").replaceAll(",", "").replaceAll("=", "").replaceAll("&", "");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("multipart/form-data");
+		response.setHeader("Content-length", data.length + "");
+		try {
+			response.setHeader("Content-Disposition",
+					"attachment;fileName=" + new String(filename.getBytes("gbk"), "iso-8859-1"));
+		} catch (UnsupportedEncodingException e2) {
+			e2.printStackTrace();
+		}
+		OutputStream os = null;
+		try {
+			byte[] b = data;
+			os = response.getOutputStream();
+			os.write(b, 0, b.length);
+		} catch (IOException e) {
+			// 在下载图片时端口连接（有可能是客户端断开）
+			// if (e.getClass().getName().indexOf("ClientAbortException") >= 0)
+			// {// 在下载图片时端口连接（有可能是客户端断开）
+			// } else {
+			// log.error(e.getMessage());
+			// }
+		} finally {
+			// 这里主要关闭。
+			try {
+				os.close();
+			} catch (IOException e) {
+				// 在下载图片时端口连接（有可能是客户端断开）
+				// log.error(e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * response下载文件(普通下载)
+	 * 
+	 * @param file
+	 * @param filename
+	 * @param response
+	 */
 	public static void simpleDownloadFile(File file, String filename, String contentType,
 			HttpServletResponse response) {
 		filename = filename.replaceAll(" ", "").replaceAll(",", "").replaceAll("=", "").replaceAll("&", "");
