@@ -1,6 +1,7 @@
 package com.farm.doc.dao.impl;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.farm.core.sql.query.DBRule;
+import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
 import com.farm.core.sql.utils.HibernateSQLTools;
@@ -109,6 +111,7 @@ public class FarmDocfileDao extends HibernateSQLTools<FarmDocfile>implements Far
 		sqlquery.addEntity(FarmDocfile.class);
 		return sqlquery.list();
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<FarmDocfile> getDocFilesByDocTextId(String textid) {
@@ -119,6 +122,7 @@ public class FarmDocfileDao extends HibernateSQLTools<FarmDocfile>implements Far
 		sqlquery.addEntity(FarmDocfile.class);
 		return sqlquery.list();
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<FarmDocfile> getEntityByDocIdAndExName(String docid, String exname) {
@@ -141,5 +145,13 @@ public class FarmDocfileDao extends HibernateSQLTools<FarmDocfile>implements Far
 		return FarmDocfile.class;
 	}
 
-	
+	@Override
+	public List<FarmDocfile> getfilesByAppids(List<String> appids) {
+		List<FarmDocfile> files = new ArrayList<>();
+		for (String appid : appids) {
+			files.addAll(selectEntitys(DBRuleList.getInstance().add(new DBRule("APPID", appid, "=")).toList()));
+		}
+		return files;
+	}
+
 }

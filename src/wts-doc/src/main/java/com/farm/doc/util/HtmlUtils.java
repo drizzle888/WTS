@@ -52,6 +52,15 @@ public class HtmlUtils {
 		return FarmHtmlUtils.HtmlRemoveTag(html);// 返回文本字符串
 	}
 
+	/**删除html标签并且标记图片为<图片>
+	 * @param html
+	 * @return
+	 */
+	public static String HtmlRemoveTagAndMarkImg(String html) {
+		boolean isHasImg = html.indexOf("<img") >= 0;
+		return FarmHtmlUtils.HtmlRemoveTag(html) + (isHasImg ? "<图片>" : "");// 返回文本字符串
+	}
+
 	/**
 	 * 下载网络资源
 	 * 
@@ -107,7 +116,7 @@ public class HtmlUtils {
 						public String getId() {
 							return "NONE";
 						}
-						
+
 						@Override
 						public String getType() {
 							return "NONE";

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -34,6 +35,23 @@ public class FarmDocFiles {
 	 */
 	public static String filenameFilter(String str) {
 		return str == null ? null : FilePattern.matcher(str).replaceAll("");
+	}
+
+	/**
+	 * @param path
+	 * @return
+	 * @throws Exception
+	 */
+	public static String encodeBase64File(File file) throws Exception {
+		FileInputStream inputFile = new FileInputStream(file);
+		byte[] buffer = null;
+		try {
+			buffer = new byte[(int) file.length()];
+			inputFile.read(buffer);
+		} finally {
+			inputFile.close();
+		}
+		return Base64.encodeBase64String(buffer);
 	}
 
 	/**
@@ -190,7 +208,7 @@ public class FarmDocFiles {
 	public static List<String> getFilesIdFromHtml(String html) {
 		List<String> list = new ArrayList<String>();
 		Set<String> set = new HashSet<>();
-		if (html == null) {
+		if (StringUtils.isBlank(html)) {
 			return list;
 		}
 		Document doc = Jsoup.parse(html);

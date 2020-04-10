@@ -39,7 +39,8 @@ public interface FarmFileManagerInter {
 	public enum FILE_APPLICATION_TYPE {
 		// 1:图片,2:资源,3:压缩,0:其他
 		WEBURL_IMG("推荐服务图标"), RESUME_PHOTO("个人档案照片"), RESUME_FILE("个人档案附件"), USER_IMG("用户头像"), OTHER("未知"), ROOMNOTE(
-				"答题室描述"), PAPERNOTE("试卷描述"), PAPER_CHAPTERNOTE("试卷章节描述"), SUBJECTNOTE("题描述"), SUBJECT_ANSWERNOTE("题选项描述");
+				"答题室描述"), ROOMIMG("答题室头像"), PAPERNOTE("试卷描述"), PAPER_CHAPTERNOTE("试卷章节描述"), SUBJECTNOTE(
+						"题描述"), SUBJECT_ANSWERNOTE("题选项描述"), SUBJECT_ANALYSIS("题解析"), SUBJECT_MATERIAL("题材料");
 		private String value;
 
 		public String getValue() {
@@ -427,7 +428,7 @@ public interface FarmFileManagerInter {
 	 * @param value
 	 * @param appid
 	 */
-	public void submitFile(String fileid, String value, String appid);
+	public void submitFile(String fileid, String note, String appid);
 
 	/**
 	 * 提交一個應用的超文本中的圖片附件
@@ -436,6 +437,16 @@ public interface FarmFileManagerInter {
 	 * @param appid
 	 */
 	public void submitFileByAppHtml(String roomnote, String appid, FILE_APPLICATION_TYPE TYPE);
+
+	/**
+	 * 更新一个引用的超文本中的图片附件（删除旧得，提交新得）
+	 * 
+	 * @param oldText
+	 * @param newText
+	 * @param appid
+	 * @param TYPE
+	 */
+	public void updateFileByAppHtml(String oldText, String newText, String appid, FILE_APPLICATION_TYPE TYPE);
 
 	/**
 	 * 取消一個應用中的附件的提交狀態

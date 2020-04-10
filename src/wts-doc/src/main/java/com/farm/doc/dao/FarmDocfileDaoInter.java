@@ -97,6 +97,7 @@ public interface FarmDocfileDaoInter {
 	 * @return
 	 */
 	public List<FarmDocfile> getDocFilesByDocId(String id);
+
 	/**
 	 * 获得文档某个版本的附件
 	 * 
@@ -114,6 +115,13 @@ public interface FarmDocfileDaoInter {
 	 *            扩展名如.doc
 	 * @return
 	 */
-	public List<FarmDocfile> getEntityByDocIdAndExName(String docid,
-			String exname);
+	public List<FarmDocfile> getEntityByDocIdAndExName(String docid, String exname);
+
+	/**
+	 * 通过appid获得附件对象
+	 * 
+	 * @param appids
+	 * @return
+	 */
+	public List<FarmDocfile> getfilesByAppids(List<String> appids);
 }

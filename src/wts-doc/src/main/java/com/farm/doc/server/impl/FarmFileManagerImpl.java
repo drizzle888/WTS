@@ -701,6 +701,9 @@ public class FarmFileManagerImpl implements FarmFileManagerInter {
 	@Override
 	@Transactional
 	public void cancelFilesByApp(String appid) {
+		if (StringUtils.isBlank(appid)) {
+			return;
+		}
 		List<DBRule> rules = new ArrayList<>();
 		rules.add(new DBRule("appid", appid, "="));
 		List<FarmDocfile> lists = farmDocfileDao.selectEntitys(rules);
@@ -708,6 +711,29 @@ public class FarmFileManagerImpl implements FarmFileManagerInter {
 			file.setPstate("0");
 			file.setEtime(TimeTool.getTimeDate14());
 			farmDocfileDao.editEntity(file);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void updateFileByAppHtml(String oldText, String newText, String appid, FILE_APPLICATION_TYPE TYPE) {
+		List<String> oldfiles = FarmDocFiles.getFilesIdFromHtml(oldText);
+		List<String> newfiles = FarmDocFiles.getFilesIdFromHtml(newText);
+		oldfiles.removeAll(FarmDocFiles.getFilesIdFromHtml(newText));
+		for (String fileid : oldfiles) {
+			FarmDocfile file = getFileNoCache(fileid);
+			if (file != null) {
+				// 删除新得中没有得
+				cancelFile(fileid);
+			}
+		}
+		newfiles.removeAll(FarmDocFiles.getFilesIdFromHtml(oldText));
+		for (String fileid : newfiles) {
+			FarmDocfile file = getFileNoCache(fileid);
+			if (file != null) {
+				// 添加旧的中没有得
+				submitFile(fileid, TYPE.getValue(), appid);
+			}
 		}
 	}
 

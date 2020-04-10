@@ -79,7 +79,7 @@ public class FarmDocfile implements java.io.Serializable, java.lang.Cloneable {
 		try {
 			stu = (FarmDocfile) super.clone();
 		} catch (CloneNotSupportedException e) {
-			log.error(e+e.getMessage(), e);
+			log.error(e + e.getMessage(), e);
 		}
 		return stu;
 	}
@@ -99,7 +99,7 @@ public class FarmDocfile implements java.io.Serializable, java.lang.Cloneable {
 		this.euser = euser;
 		this.pstate = pstate;
 	}
-	
+
 	public String getAppid() {
 		return appid;
 	}
@@ -265,7 +265,7 @@ public class FarmDocfile implements java.io.Serializable, java.lang.Cloneable {
 	}
 
 	public InputStream getInputStream() throws FileNotFoundException {
-		if (!file.exists()) {
+		if (file == null || !file.exists()) {
 			return null;
 		}
 
@@ -311,5 +311,5 @@ public class FarmDocfile implements java.io.Serializable, java.lang.Cloneable {
 	public void setDownum(Integer downum) {
 		this.downum = downum;
 	}
-	
+
 }
