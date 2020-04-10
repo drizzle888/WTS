@@ -24,6 +24,12 @@
 						data-options="required:true,validType:[,'maxLength[256]']"
 						id="entity_title" name="title" value="${entity.title}"></td>
 				</tr>
+				<c:if test="${pageset.operateType==0}">
+					<tr>
+						<td class="title">UUID:</td>
+						<td colspan="3">${entity.uuid}</td>
+					</tr>
+				</c:if>
 				<c:if test="${pageset.operateType!=0}">
 					<tr>
 						<td colspan="4"><textarea id="entity_text"
@@ -38,7 +44,8 @@
 				</c:if>
 				<c:if test="${pageset.operateType==0}">
 					<tr>
-						<td colspan="4" class="ke-content"><TIP:InitHtmlContentTag html="${entity.text}"></TIP:InitHtmlContentTag></td>
+						<td colspan="4" class="ke-content"><TIP:InitHtmlContentTag
+								html="${entity.text}"></TIP:InitHtmlContentTag></td>
 					</tr>
 				</c:if>
 			</table>

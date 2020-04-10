@@ -18,6 +18,10 @@
 <jsp:include page="../atext/include-web.jsp"></jsp:include>
 <link href="view/web-simple/adjudge/text/adjudgeCard.css"
 	rel="stylesheet" />
+<script charset="utf-8"
+	src="<PF:basePath/>text/lib/codemirror/codemirror.min.js"></script>
+<link href="<PF:basePath/>text/lib/codemirror/codemirror.css"
+	rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="../commons/head.jsp"></jsp:include>
@@ -89,4 +93,22 @@
 	<jsp:include page="../commons/foot.jsp"></jsp:include>
 	<script src="view/web-simple/adjudge/text/adjudgeCard.js"></script>
 </body>
+<script type="text/javascript">
+	$(function() {
+		//加载问答题编辑器
+		$('.interlocutionInput').each(function(i, obj) {
+			var editor = CodeMirror.fromTextArea(obj, {
+				lineNumbers : true,
+				lineNumberFormatter : function(num) {
+					if (num == 1) {
+						return "答:"
+					}
+					return num;
+				},
+				readOnly : true
+			});
+			editor.setSize('auto', '150px');
+		});
+	});
+</script>
 </html>

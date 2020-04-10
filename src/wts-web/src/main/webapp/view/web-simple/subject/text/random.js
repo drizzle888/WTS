@@ -265,10 +265,12 @@ function enCodePaperForm() {
 		}
 	});
 	$(".wts-paper-forms textarea").each(function(i, obj) {
-		if (json) {
-			json = json + ',' + enCodeFormInput(obj);
-		} else {
-			json = enCodeFormInput(obj);
+		if ($(obj).attr('name')) {
+			if (json) {
+				json = json + ',' + enCodeFormInput(obj);
+			} else {
+				json = enCodeFormInput(obj);
+			}
 		}
 	});
 	return "[" + json + "]";

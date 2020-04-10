@@ -215,13 +215,15 @@ public class PaperWebController extends WebUtils {
 			}
 			for (JsonElement obj : jsonArray) {
 				JsonObject sjonObj = obj.getAsJsonObject();
-				String versionid = sjonObj.get("versionid").getAsString();
-				String answerid = sjonObj.get("answerid").getAsString();
-				String value = sjonObj.get("value").getAsString();
-				if (StringUtils.isNotBlank(value)) {
-					value = AntiXSS.replaceHtmlCode(value);
+				if (sjonObj.has("versionid") && sjonObj.has("answerid") && sjonObj.has("value")) {
+					String versionid = sjonObj.get("versionid").getAsString();
+					String answerid = sjonObj.get("answerid").getAsString();
+					String value = sjonObj.get("value").getAsString();
+					if (StringUtils.isNotBlank(value)) {
+						value = AntiXSS.replaceHtmlCode(value);
+					}
+					cardServiceImpl.saveCardVal(card, versionid, answerid, value);
 				}
-				cardServiceImpl.saveCardVal(card, versionid, answerid, value);
 			}
 			return page.returnObjMode();
 		} catch (Exception e) {

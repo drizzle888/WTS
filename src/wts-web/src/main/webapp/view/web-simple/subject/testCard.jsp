@@ -22,6 +22,10 @@
 <link href="view/web-simple/subject/text/random.css" rel="stylesheet">
 <script charset="utf-8"
 	src="<PF:basePath/>text/lib/alert/sweetalert.min.js"></script>
+<script charset="utf-8"
+	src="<PF:basePath/>text/lib/codemirror/codemirror.min.js"></script>
+<link href="<PF:basePath/>text/lib/codemirror/codemirror.css"
+	rel="stylesheet">
 </head>
 <body>
 	<jsp:include page="../commons/head.jsp"></jsp:include>
@@ -321,5 +325,26 @@
 	var testid = "${test.TESTID}";
 	var versionId = "${subjectu.version.id}";
 	var subjectId = "${subjectu.subject.id}";
+</script>
+<script type="text/javascript">
+	$(function() {
+		//加载问答题编辑器
+		$('.interlocutionInput').each(function(i, obj) {
+			var editor = CodeMirror.fromTextArea(obj, {
+				lineNumbers : true,
+				lineNumberFormatter : function(num) {
+					if (num == 1) {
+						return "答:"
+					}
+					return num;
+				}
+			});
+			editor.on("blur", function(Editor, changes) {
+				$(obj).val(editor.getValue());
+				$(obj).change()
+			});
+			editor.setSize('auto', '150px');
+		});
+	});
 </script>
 </html>

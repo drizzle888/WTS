@@ -10,7 +10,7 @@
 		<div class="subjectOrder">${status.index + 1}</div>
 		<div>
 			<c:if test="${flag!='adjudge'}">
-				<div>${subjectu.version.tipstr}<span class="subjectPoint">${subjectu.point}分</span>
+				<div>${subjectu.version.tipstr}<span class="subjectPoint">本题${subjectu.point}分</span>
 				</div>
 				<c:if test="${!empty subjectu.version.tipnote}">
 					<div class="ke-content ke-content-borderbox">
@@ -21,25 +21,22 @@
 			<c:if test="${flag=='answer'||flag==null}">
 				<!-- 用户答题和预览时显示，填写答案 -->
 				<div class="answerInterLocutionViewBox">
-					<div>答：</div>
 					<div>
-						<textarea name="${subjectu.version.id}" class="form-control"
-							rows="3">${subjectu.val}</textarea>
+						<!-- 用户答题控件 -->
+						<textarea name="${subjectu.version.id}"
+							class="form-control interlocutionInput" rows="3">${subjectu.val}</textarea>
 					</div>
 				</div>
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!-- 答案检查和阅卷时显示，答案展示-->
 				<div class="answerInterLocutionViewBox">
-					<div>
-						<b>答案：</b>
-					</div>
-					<div>${subjectu.val}</div>
+					<!-- 阅卷答案 -->
+					<textarea readonly="readonly" style="width: 100%"
+						class="interlocutionInput">${subjectu.val}</textarea>
 				</div>
 			</c:if>
 			<%@ include file="../includePointInput.jsp"%>
 		</div>
 	</div>
 </div>
-
-

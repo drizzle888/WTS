@@ -60,6 +60,7 @@
 						<th field="OSORTTYPE" data-options="sortable:true" width="20">选项顺序</th>
 						<th field="COUNTTYPE" data-options="sortable:true" width="20">阅卷类型</th>
 						<th field="PSTATETITLE" data-options="sortable:true" width="20">状态</th>
+						<th field="UUID" data-options="sortable:true" width="20">UUID</th>
 						<!-- PSTATE -->
 					</tr>
 				</thead>

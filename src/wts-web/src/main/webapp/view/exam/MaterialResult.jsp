@@ -37,6 +37,7 @@
 					<th field="RFNUM" data-options="sortable:true" width="50">引用次数</th>
 					<th field="USERNAME" data-options="sortable:true" width="50">创建人</th>
 					<th field="CTIME" data-options="sortable:true" width="50">创建时间</th>
+					<th field="UUID" data-options="sortable:true" width="50">UUID</th>
 				</tr>
 			</thead>
 		</table>

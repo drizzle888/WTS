@@ -104,6 +104,10 @@
 				<div onclick="setState('0')">设置为禁用</div>
 				<div onclick="setState('1')">设置为启用</div>
 				<div onclick="setState('3')">设置为待审核</div>
+				<div class="menu-sep"></div>
+				<div onclick="setUsersOrg()">设置组织机构</div>
+				<div onclick="addUsersPost()">添加新岗位</div>
+				<div onclick="delUsersPost()">删除原岗位</div>
 			</div>
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-remove',plain:true,onClick:delDataUser">删除
@@ -470,6 +474,154 @@
 	function userExport() {
 		$('#ruleTextId').val(searchUser.arrayStr());
 		$('#reportForm').submit();
+	}
+	
+	//批量设置组织机构
+	function setUsersOrg() {
+		var selectedArray = $(gridUser).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			var userids = $.farm.getCheckedIds(gridUser, 'ID');
+			$.farm.openWindow({
+				id : 'chooseOrgWin',
+				width : 300,
+				height : 400,
+				modal : true,
+				url : 'organization/chooseOrg.do',
+				title : '选择组织机构'
+			});
+			chooseOrgWindowCallBackHandle = function(node) {
+				$.messager.confirm(MESSAGE_PLAT.PROMPT, "确认执行批量更新操作？",
+						function(confirmFlag) {
+							if (confirmFlag) {
+								$.post('user/editUserOrg.do', {
+									"ids" : userids,
+									"orgid" : node.id
+								}, function(flag) {
+									var jsonObject = JSON.parse(flag, null);
+									$('#chooseOrgWin').window('close');
+									$(gridUser).datagrid('loaded');
+									if (jsonObject.STATE == 0) {
+										$(gridUser).datagrid('reload');
+									} else {
+										var str = MESSAGE_PLAT.ERROR_SUBMIT
+												+ jsonObject.MESSAGE;
+										$.messager.alert(MESSAGE_PLAT.ERROR,
+												str, 'error');
+									}
+								});
+							}
+						});
+			}
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//批量添加岗位
+	function addUsersPost() {
+		var selectedArray = $(gridUser).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if(!$('#PARENTID_RULE').val()){
+				alert("注意：必须点击左侧组织机构树后才能选择组织机构下相应岗位,否则只显示全局岗位！"); 
+			}
+			// 有数据执行操作
+			var userids = $.farm.getCheckedIds(gridUser, 'ID');
+			$.farm.openWindow({
+				id : 'choosePostWin',
+				width : 600,
+				height : 400,
+				modal : true,
+				url : 'post/choosePostByOrg.do?orgid='
+						+ $('#PARENTID_RULE').val(),
+				title : '添加用户岗位'
+			});
+			chooseWindowCallBackHandle = function(selectedArray) {
+				$.messager.confirm(MESSAGE_PLAT.PROMPT, "确认执行批量添加操作,原有岗位将保留，如果用户无权使用该岗位则不会被添加？",
+						function(confirmFlag) {
+							if (confirmFlag) {
+								var postidsvar;
+								$(selectedArray).each(function(i, obj) {
+									if (postidsvar) {
+										postidsvar = postidsvar + ',' + obj.ID;
+									} else {
+										postidsvar = obj.ID;
+									}
+								});
+								$.post('user/addUserPost.do', {
+									"ids" : userids,
+									"postids" : postidsvar
+								}, function(flag) {
+									var jsonObject = JSON.parse(flag, null);
+									$('#choosePostWin').window('close');
+									$(gridUser).datagrid('loaded');
+									if (jsonObject.STATE == 0) {
+										$(gridUser).datagrid('reload');
+									} else {
+										var str = MESSAGE_PLAT.ERROR_SUBMIT
+												+ jsonObject.MESSAGE;
+										$.messager.alert(MESSAGE_PLAT.ERROR,
+												str, 'error');
+									}
+								});
+							}
+						});
+			}
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//批量删除岗位
+	function delUsersPost() {
+		var selectedArray = $(gridUser).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			var userids = $.farm.getCheckedIds(gridUser, 'ID');
+			$.farm.openWindow({
+				id : 'choosePostWin',
+				width : 600,
+				height : 400,
+				modal : true,
+				url : 'post/choosePostByOrg.do?orgid='
+						+ $('#PARENTID_RULE').val(),
+				title : '删除用户岗位'
+			});
+			chooseWindowCallBackHandle = function(selectedArray) {
+				$.messager.confirm(MESSAGE_PLAT.PROMPT, "确认执行批量删除操作？",
+						function(confirmFlag) {
+							if (confirmFlag) {
+								var postidsvar;
+								$(selectedArray).each(function(i, obj) {
+									if (postidsvar) {
+										postidsvar = postidsvar + ',' + obj.ID;
+									} else {
+										postidsvar = obj.ID;
+									}
+								});
+								$.post('user/delUserPost.do', {
+									"ids" : userids,
+									"postids" : postidsvar
+								}, function(flag) {
+									var jsonObject = JSON.parse(flag, null);
+									$('#choosePostWin').window('close');
+									$(gridUser).datagrid('loaded');
+									if (jsonObject.STATE == 0) {
+										$(gridUser).datagrid('reload');
+									} else {
+										var str = MESSAGE_PLAT.ERROR_SUBMIT
+												+ jsonObject.MESSAGE;
+										$.messager.alert(MESSAGE_PLAT.ERROR,
+												str, 'error');
+									}
+								});
+							}
+						});
+			}
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
 	}
 </script>
 

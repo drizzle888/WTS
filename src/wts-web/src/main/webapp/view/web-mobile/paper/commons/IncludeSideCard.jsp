@@ -4,10 +4,10 @@
 <div style="margin-top: 0px; text-align: center; margin-bottom: 100px;"
 	id="saveButtonsId" role="group" aria-label="...">
 	<c:if test="${flag=='answer'||flag==null}">
-		<!-- 答卷 -->
+		<!-- 答卷
 		<div class="btn-group" role="group">
 			<button id="sideCardSaveButton" type="button" class="btn btn-info">保存</button>
-		</div>
+		</div> -->
 		<div class="btn-group" role="group">
 			<button id="sideCardRefreshButton" type="button" class="btn btn-info">刷新</button>
 		</div>

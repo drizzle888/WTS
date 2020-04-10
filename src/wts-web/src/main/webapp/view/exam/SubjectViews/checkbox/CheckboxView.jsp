@@ -11,7 +11,7 @@
 		<div>
 			<c:if test="${flag!='adjudge'}">
 				<!-- 阅卷時不显示 题目-->
-				<div>${subjectu.version.tipstr}<span class="subjectPoint">${subjectu.point}分</span>
+				<div>${subjectu.version.tipstr}<span class="subjectPoint">本题${subjectu.point}分</span>
 				</div>
 				<c:if test="${!empty subjectu.version.tipnote}">
 					<div class="ke-content ke-content-borderbox">
@@ -26,9 +26,11 @@
 								<TIP:WordCode code="${status.index+1}" />
 								.
 							</div>
-							<div>${node.answer.answer}</div>
+							<c:if test="${not empty node.answer.answer}">
+								<div>${node.answer.answer}</div>
+							</c:if>
 							<c:if test="${!empty node.answer.answernote}">
-								<div class="ke-content ke-content-borderbox">${node.answer.answernote}</div>
+								<div class="ke-content ${(not empty node.answer.answer)?'ke-content-borderbox':''}">${node.answer.answernote}</div>
 							</c:if>
 						</div>
 					</c:forEach>

@@ -33,7 +33,7 @@
 					<td class="title">选项:</td>
 					<td colspan="3"><textarea rows="3" style="width: 420px;"
 							class="easyui-validatebox"
-							data-options="required:true,validType:[,'maxLength[256]']"
+							data-options="validType:[,'maxLength[256]']"
 							id="entity_answer" name="answer">${entity.answer}</textarea></td>
 				</tr>
 				<tr>

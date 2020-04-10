@@ -62,8 +62,9 @@ $(function() {
 	// 提交答題卡
 	$('#sideCardSubmitButton').click(function() {
 		$('#submitPaper-win').modal('hide');
-		var allJson = enCodePaperForm();
-		submitSavePaper(allJson, submitPaper);
+		submitPaper();
+		//var allJson = enCodePaperForm();
+		//submitSavePaper(allJson, submitPaper);
 	});
 	// 跳转到检查试卷页面
 	$('#sideCardCheckupButton').click(function() {

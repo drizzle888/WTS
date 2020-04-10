@@ -10,7 +10,7 @@
 		<div class="subjectOrder">${status.index + 1}</div>
 		<div>
 			<c:if test="${flag!='adjudge'}">
-				<div>${subjectu.version.tipstr}<span class="subjectPoint">${subjectu.point}分</span>
+				<div>${subjectu.version.tipstr}<span class="subjectPoint">本题${subjectu.point}分</span>
 				</div>
 				<c:if test="${!empty subjectu.version.tipnote}">
 					<div class="ke-content ke-content-borderbox">

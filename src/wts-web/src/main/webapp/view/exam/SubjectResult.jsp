@@ -69,6 +69,7 @@
 						<th field="ANALYSISNUM" data-options="sortable:true" width="30">题解析</th>
 						<th field="DONUM" data-options="sortable:true" width="15">答题量</th>
 						<th field="RIGHTNUM" data-options="sortable:true" width="15">正确量</th>
+						<th field="UUID" data-options="sortable:true" width="10">UUID</th>
 					</tr>
 				</thead>
 			</table>

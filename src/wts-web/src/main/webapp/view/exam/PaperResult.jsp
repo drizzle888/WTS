@@ -54,6 +54,7 @@
 						<th field="ADVICETIME" data-options="sortable:true" width="40">建议答题时间(分)</th>
 						<th field="SUBJECTNUM" data-options="sortable:true" width="20">题目数量</th>
 						<th field="PSTATE" data-options="sortable:true" width="20">状态</th>
+						<th field="UUID" data-options="sortable:true" width="20">UUID</th>
 					</tr>
 				</thead>
 			</table>
@@ -95,6 +96,7 @@
 				<div onclick="examPrivate()">禁用</div>
 				<div class="menu-sep"></div>
 				<div onclick="examWord()">导出word答卷</div>
+				<div onclick="examWtsp()">导出wtsp答卷</div>
 			</div>
 		</div>
 	</div>
@@ -344,6 +346,25 @@
 									+ selectedArray[0].ID;
 						}
 					});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+
+	//导出答卷为Wtsp
+	function examWtsp() {
+		var selectedArray = $(gridPaper).datagrid('getSelections');
+		if (selectedArray.length == 1) {
+			$.messager.confirm('确认', '答卷导出为wtsp格式,可用于答卷备份和恢复!', function(r) {
+				if (r) {
+					$.messager.alert('导出答卷', '答卷生成中，等待浏览器下载... (完成后请手动关闭此对话框)',
+							'info');
+					window.location.href = basePath
+							+ "paper/exportWtsp.do?paperid="
+							+ selectedArray[0].ID;
+				}
+			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
 					'info');

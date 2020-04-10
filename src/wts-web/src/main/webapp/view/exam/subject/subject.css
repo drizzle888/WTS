@@ -137,6 +137,7 @@
 
 .answerVacancyViewBox input {
 	border: 1px dashed;
+	background-color: #fcfcf6; 
 }
 
 .chapter-material {
@@ -155,7 +156,6 @@
 	margin-bottom: 1em;
 }
 
-/* 下面为移动端css */
 .chapterBox-mobile {
 	background-color: #f5f5f5;
 	border: 1px solid #e3e3e3;
