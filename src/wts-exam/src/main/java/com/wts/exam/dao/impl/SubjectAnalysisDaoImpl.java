@@ -5,6 +5,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.wts.exam.domain.SubjectAnalysis;
+import com.wts.exam.domain.SubjectVersion;
 import com.wts.exam.dao.SubjectAnalysisDaoInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
@@ -123,5 +124,16 @@ public class SubjectAnalysisDaoImpl extends HibernateSQLTools<SubjectAnalysis>im
 	@Override
 	protected SessionFactory getSessionFactory() {
 		return sessionFatory;
+	}
+
+	@Override
+	public List<SubjectAnalysis> getAnalysisByPaperId(String paperId) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery(
+				"select distinct b.ID as ID,b.CTIME as CTIME,b.CUSER as CUSER,b.CUSERNAME as CUSERNAME,b.PSTATE as PSTATE,b.PCONTENT as PCONTENT,b.TEXT as TEXT,b.SUBJECTID as SUBJECTID from WTS_PAPER_SUBJECT a left join WTS_SUBJECT_ANALYSIS b on a.SUBJECTID=b.SUBJECTID where a.paperid=? and b.id is not null");
+		sqlquery.setString(0, paperId);
+		@SuppressWarnings("unchecked")
+		List<SubjectAnalysis> list = (List<SubjectAnalysis>) sqlquery.addEntity(SubjectAnalysis.class).list();
+		return list;
 	}
 }

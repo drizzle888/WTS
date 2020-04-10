@@ -182,4 +182,13 @@ public interface PaperServiceInter {
 	 * @return
 	 */
 	public File exprotWord(PaperUnit paper, LoginUser user);
+
+	/**
+	 * 将答卷导出为json
+	 * 
+	 * @param paper
+	 * @param currentUser
+	 * @return
+	 */
+	public File exprotWtsp(String paperId, LoginUser currentUser);
 }

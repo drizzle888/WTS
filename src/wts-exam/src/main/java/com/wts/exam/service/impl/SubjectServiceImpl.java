@@ -87,15 +87,20 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	@Transactional
 	public SubjectVersion editSubjectEntity(SubjectVersion entity, String tipanalysis, LoginUser currentUser) {
 		SubjectVersion entity2 = subjectversionDaoImpl.getEntity(entity.getId());
+		String oldText = entity2.getTipnote();
 		entity2.setTipstr(entity.getTipstr());
 		entity2.setTipnote(entity.getTipnote());
+		if (entity2.getTipstr() == null) {
+			entity2.setTipstr("");
+		}
 		subjectversionDaoImpl.editEntity(entity2);
 		Subject subject = subjectDaoImpl.getEntity(entity2.getSubjectid());
 		subject.setPstate("1");
 		subjectDaoImpl.editEntity(subject);
 		// --------------------------------------------------
-		farmFileManagerImpl.submitFileByAppHtml(entity.getTipnote(), entity.getId(), FILE_APPLICATION_TYPE.SUBJECTNOTE);
 		updateAnswered(entity2.getSubjectid());
+		farmFileManagerImpl.updateFileByAppHtml(oldText, entity.getTipnote(), entity.getId(),
+				FILE_APPLICATION_TYPE.SUBJECTNOTE);
 		// 更新缓存
 		SubjectUnitCaches.refresh(subject.getVersionid());
 		return entity2;
@@ -114,10 +119,17 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 				.selectEntitys(DBRuleList.getInstance().add(new DBRule("SUBJECTID", subjectId, "=")).toList());
 		for (SubjectVersion version : versions) {
 			// 删除答案
+			List<SubjectAnswer> answers = subjectanswerDaoImpl.selectEntitys(
+					DBRuleList.getInstance().add(new DBRule("VERSIONID", version.getId(), "=")).toList());
+			for (SubjectAnswer answer : answers) {
+				// 删除答案附件
+				farmFileManagerImpl.cancelFilesByApp(answer.getId());
+			}
 			subjectanswerDaoImpl.deleteEntitys(
 					DBRuleList.getInstance().add(new DBRule("VERSIONID", version.getId(), "=")).toList());
 			// 删除版本
 			subjectversionDaoImpl.deleteEntity(version);
+			// 删除题附件
 			farmFileManagerImpl.cancelFilesByApp(version.getId());
 		}
 		// 删除引用
@@ -145,7 +157,7 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 		query.addDefaultSort(new DBSort("b.ctime", "desc"));
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_SUBJECT a left join WTS_SUBJECT_VERSION b on a.VERSIONID=b.id left join WTS_SUBJECT_TYPE c on a.TYPEID =c.ID left join WTS_MATERIAL d on a.MATERIALID=d.id",
-				"a.ID as ID,a.ANALYSISNUM as ANALYSISNUM,a.DONUM as DONUM,a.RIGHTNUM as RIGHTNUM,b.id as VID,b.TIPSTR as TIPSTR,C.NAME as TYPENAME,b.TIPTYPE as TIPTYPE,b.ANSWERED as ANSWERED,d.title as title");
+				"a.ID as ID,a.uuid as UUID,b.TIPNOTE as TIPNOTE,a.ANALYSISNUM as ANALYSISNUM,a.DONUM as DONUM,a.RIGHTNUM as RIGHTNUM,b.id as VID,b.TIPSTR as TIPSTR,C.NAME as TYPENAME,b.TIPTYPE as TIPTYPE,b.ANSWERED as ANSWERED,d.title as title");
 		return dbQuery;
 	}
 
@@ -243,8 +255,8 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	public List<SubjectUnit> addTextSubjects(String typeid, String texts, LoginUser currentUser) {
 		// texts按照换行符断行
 		texts = texts.replaceAll(" +", "").replaceAll("（", "(").replaceAll("）", ")")
-				//.replaceAll("。", ".").replaceAll("，", ",")
-				;
+		// .replaceAll("。", ".").replaceAll("，", ",")
+		;
 		String[] subNode = texts.split("\\[SUB:");
 		List<SubjectUnit> units = new ArrayList<>();
 		for (String node : subNode) {

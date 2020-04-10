@@ -2,6 +2,9 @@ package com.wts.exam.service.impl;
 
 import com.wts.exam.domain.SubjectAnalysis;
 import com.farm.core.time.TimeTool;
+import com.farm.doc.server.FarmFileManagerInter;
+import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
+
 import org.apache.log4j.Logger;
 import com.wts.exam.dao.SubjectAnalysisDaoInter;
 import com.wts.exam.service.SubjectAnalysisServiceInter;
@@ -27,7 +30,8 @@ import com.farm.core.auth.domain.LoginUser;
 public class SubjectAnalysisServiceImpl implements SubjectAnalysisServiceInter {
 	@Resource
 	private SubjectAnalysisDaoInter SubjectAnalysisDaoImpl;
-
+	@Resource
+	private FarmFileManagerInter farmFileManagerImpl;
 	private static final Logger log = Logger.getLogger(SubjectAnalysisServiceImpl.class);
 
 	@Override
@@ -36,17 +40,23 @@ public class SubjectAnalysisServiceImpl implements SubjectAnalysisServiceInter {
 		entity.setCuser(user.getId());
 		entity.setCtime(TimeTool.getTimeDate14());
 		entity.setCusername(user.getName());
-		return SubjectAnalysisDaoImpl.insertEntity(entity);
+		entity = SubjectAnalysisDaoImpl.insertEntity(entity);
+		farmFileManagerImpl.submitFileByAppHtml(entity.getText(), entity.getId(),
+				FILE_APPLICATION_TYPE.SUBJECT_ANALYSIS);
+		return entity;
 	}
 
 	@Override
 	@Transactional
 	public SubjectAnalysis editSubjectAnalysisEntity(SubjectAnalysis entity, LoginUser user) {
 		SubjectAnalysis entity2 = SubjectAnalysisDaoImpl.getEntity(entity.getId());
+		String oldText = entity2.getText();
 		entity2.setText(entity.getText());
 		entity2.setPcontent(entity.getPcontent());
 		entity2.setPstate(entity.getPstate());
 		SubjectAnalysisDaoImpl.editEntity(entity2);
+		farmFileManagerImpl.updateFileByAppHtml(oldText, entity2.getText(), entity2.getId(),
+				FILE_APPLICATION_TYPE.SUBJECT_ANALYSIS);
 		return entity2;
 	}
 
@@ -55,6 +65,7 @@ public class SubjectAnalysisServiceImpl implements SubjectAnalysisServiceInter {
 	public void deleteSubjectAnalysisEntity(String id, LoginUser user) {
 		// TODO 自动生成代码,修改后请去除本注释
 		SubjectAnalysisDaoImpl.deleteEntity(SubjectAnalysisDaoImpl.getEntity(id));
+		farmFileManagerImpl.cancelFilesByApp(id);
 	}
 
 	@Override

@@ -106,9 +106,9 @@ public class SubjectAnalysisController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				String subjectid = SubjectAnalysisServiceImpl.getSubjectAnalysisEntity(id).getSubjectid();
 				SubjectAnalysisServiceImpl.deleteSubjectAnalysisEntity(id, getCurrentUser(session));
-				subjectServiceImpl
-						.refrashAnalysisnum(SubjectAnalysisServiceImpl.getSubjectAnalysisEntity(id).getSubjectid());
+				subjectServiceImpl.refrashAnalysisnum(subjectid);
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {

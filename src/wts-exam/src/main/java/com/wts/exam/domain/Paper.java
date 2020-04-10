@@ -65,7 +65,16 @@ public class Paper implements java.io.Serializable {
 	private String ctime;
 	@Column(name = "EXAMTYPEID", length = 32)
 	private String examtypeid;
+	@Column(name = "UUID", length = 32, nullable = false)
+	private String uuid;
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	public Integer getBooknum() {
 		return booknum;
 	}

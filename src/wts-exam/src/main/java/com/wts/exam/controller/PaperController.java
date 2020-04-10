@@ -150,14 +150,29 @@ public class PaperController extends WebUtils {
 	 * @return
 	 */
 	@RequestMapping("/exportWord")
-	public void loadimg(String paperid, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public void exportWord(String paperid, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
 		PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
-		WcpLog.info("导出答卷" + paperid + "/" + paper.getInfo().getName(), getCurrentUser(session).getName(),
+		WcpLog.info("导出WORD答卷" + paperid + "/" + paper.getInfo().getName(), getCurrentUser(session).getName(),
 				getCurrentUser(session).getId());
 		log.info(getCurrentUser(session).getLoginname() + "/" + getCurrentUser(session).getName() + "导出答卷" + paperid);
 		File file = paperServiceImpl.exprotWord(paper, getCurrentUser(session));
 		FileDownloadUtils.simpleDownloadFile(file, "paper" + TimeTool.getTimeDate12() + ".docx",
 				"application/octet-stream", response);
+	}
+
+	/**
+	 * 下载Json答卷
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/exportWtsp")
+	public void exportWtsp(String paperid, HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) {
+		WcpLog.info("导出JSON.wtsp答卷" + paperid, getCurrentUser(session).getName(), getCurrentUser(session).getId());
+		log.info(getCurrentUser(session).getLoginname() + "/" + getCurrentUser(session).getName() + "导出答卷" + paperid);
+		File file = paperServiceImpl.exprotWtsp(paperid, getCurrentUser(session));
+		FileDownloadUtils.simpleDownloadFile(file, "paper" + paperid + ".wtsp", "application/octet-stream", response);
 	}
 
 	/**

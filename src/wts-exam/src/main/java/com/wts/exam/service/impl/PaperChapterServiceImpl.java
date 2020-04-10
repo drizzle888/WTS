@@ -75,11 +75,8 @@ public class PaperChapterServiceImpl implements PaperChapterServiceInter {
 	@Override
 	@Transactional
 	public PaperChapter editPaperchapterEntity(PaperChapter entity, LoginUser user) {
-		// TODO 自动生成代码,修改后请去除本注释
 		PaperChapter entity2 = paperchapterDaoImpl.getEntity(entity.getId());
-		// entity2.setEuser(user.getId());
-		// entity2.setEusername(user.getName());
-		// entity2.setEtime(TimeTool.getTimeDate14());
+		String oldText = entity2.getTextnote();
 		entity2.setTextnote(entity.getTextnote());
 		entity2.setPaperid(entity.getPaperid());
 		entity2.setParentid(entity.getParentid());
@@ -94,7 +91,7 @@ public class PaperChapterServiceImpl implements PaperChapterServiceInter {
 		entity2.setSort(entity.getSort());
 		paperchapterDaoImpl.editEntity(entity2);
 		initTreeCode(entity2.getId());
-		farmFileManagerImpl.submitFileByAppHtml(entity2.getTextnote(), entity2.getId(),
+		farmFileManagerImpl.updateFileByAppHtml(oldText, entity2.getTextnote(), entity2.getId(),
 				FILE_APPLICATION_TYPE.PAPER_CHAPTERNOTE);
 		return entity2;
 	}

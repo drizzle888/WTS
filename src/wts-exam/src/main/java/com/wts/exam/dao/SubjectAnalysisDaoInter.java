@@ -99,4 +99,10 @@ public interface SubjectAnalysisDaoInter {
 	 *            统计条件
 	 */
 	public int countEntitys(List<DBRule> rules);
+
+	/**获得答卷的试题解析
+	 * @param paperId
+	 * @return
+	 */
+	public List<SubjectAnalysis> getAnalysisByPaperId(String paperId);
 }

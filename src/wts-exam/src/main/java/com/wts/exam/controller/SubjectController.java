@@ -31,6 +31,8 @@ import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.sql.result.ResultsHandle;
+import com.farm.doc.util.HtmlUtils;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -84,6 +86,16 @@ public class SubjectController extends WebUtils {
 			}
 			query.addDefaultSort(new DBSort("b.ctime", "DESC"));
 			DataResult result = subjectServiceImpl.createSubjectSimpleQuery(query).search();
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					if (StringUtils.isBlank((String) row.get("TIPSTR"))
+							&& StringUtils.isNotBlank((String) row.get("TIPNOTE"))) {
+						// 如果题目为空就用描述填充题目
+						row.put("TIPSTR", "[无题目:显示描述]" + HtmlUtils.HtmlRemoveTagAndMarkImg((String) row.get("TIPNOTE")));
+					}
+				}
+			});
 			result.runDictionary(TipType.getDictionary(), "TIPTYPE");
 			result.runDictionary("1:已设置,0:未设置,3:未知", "ANSWERED");
 			result.runDictionary("0:无", "ANALYSISNUM");
@@ -156,11 +168,13 @@ public class SubjectController extends WebUtils {
 		try {
 			SubjectUnit unit = subjectServiceImpl.parseSubjectJsonVal(jsons);
 			int pointWeight = unit == null ? 0 : cardServiceImpl.countSubjectPoint(unit);
-			//if (getCurrentUser(session) != null && unit != null && unit.getVersion() != null) {
-			//	// 2.把错题加入错题集合// 3.用户答题历史存入，答题历史记录
-			//	subjectUserOwnServiceImpl.addFinishSubject(unit.getVersion().getSubjectid(), pointWeight == 100,
-			//			getCurrentUser(session));
-			//}
+			// if (getCurrentUser(session) != null && unit != null &&
+			// unit.getVersion() != null) {
+			// // 2.把错题加入错题集合// 3.用户答题历史存入，答题历史记录
+			// subjectUserOwnServiceImpl.addFinishSubject(unit.getVersion().getSubjectid(),
+			// pointWeight == 100,
+			// getCurrentUser(session));
+			// }
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("point", pointWeight).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());

@@ -44,6 +44,9 @@ public class SubjectAnswerServiceImpl implements SubjectAnswerServiceInter {
 		entity.setCtime(TimeTool.getTimeDate14());
 		entity.setCusername(user.getName());
 		entity.setPstate("1");
+		if (entity.getAnswer() == null) {
+			entity.setAnswer("");
+		}
 		if (StringUtils.isBlank(entity.getRightanswer())) {
 			entity.setRightanswer("2");
 		}
@@ -52,7 +55,8 @@ public class SubjectAnswerServiceImpl implements SubjectAnswerServiceInter {
 		}
 		entity = subjectanswerDaoImpl.insertEntity(entity);
 		// -------------------------------------
-		farmFileManagerImpl.submitFileByAppHtml(entity.getAnswernote(), entity.getVersionid(),FILE_APPLICATION_TYPE.SUBJECT_ANSWERNOTE);
+		farmFileManagerImpl.submitFileByAppHtml(entity.getAnswernote(), entity.getVersionid(),
+				FILE_APPLICATION_TYPE.SUBJECT_ANSWERNOTE);
 		return entity;
 	}
 
@@ -60,10 +64,15 @@ public class SubjectAnswerServiceImpl implements SubjectAnswerServiceInter {
 	@Transactional
 	public SubjectAnswer editSubjectanswerEntity(SubjectAnswer entity, LoginUser user) {
 		SubjectAnswer entity2 = subjectanswerDaoImpl.getEntity(entity.getId());
+		String oldText = entity2.getAnswernote();
 		entity2.setRightanswer(entity.getRightanswer());
 		entity2.setAnswernote(entity.getAnswernote());
 		entity2.setSort(entity.getSort());
-		entity2.setAnswer(entity.getAnswer());
+		if (entity.getAnswer() == null) {
+			entity2.setAnswer("");
+		} else {
+			entity2.setAnswer(entity.getAnswer());
+		}
 		entity2.setPointweight(entity.getPointweight());
 		entity2.setPcontent(entity.getPcontent());
 		entity2.setId(entity.getId());
@@ -75,7 +84,8 @@ public class SubjectAnswerServiceImpl implements SubjectAnswerServiceInter {
 		}
 		subjectanswerDaoImpl.editEntity(entity2);
 		// ------------------
-		farmFileManagerImpl.submitFileByAppHtml(entity2.getAnswernote(), entity.getVersionid(),FILE_APPLICATION_TYPE.SUBJECT_ANSWERNOTE);
+		farmFileManagerImpl.updateFileByAppHtml(oldText, entity2.getAnswernote(), entity.getVersionid(),
+				FILE_APPLICATION_TYPE.SUBJECT_ANSWERNOTE);
 		return entity2;
 	}
 

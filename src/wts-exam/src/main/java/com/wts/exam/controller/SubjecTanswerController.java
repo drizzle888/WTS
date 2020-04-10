@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
@@ -23,6 +25,8 @@ import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.sql.result.ResultsHandle;
+import com.farm.doc.util.HtmlUtils;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -60,6 +64,15 @@ public class SubjecTanswerController extends WebUtils {
 			query.addDefaultSort(new DBSort("SORT", "ASC"));
 			query.setPagesize(100);
 			DataResult result = subjectAnswerServiceImpl.createSubjectanswerSimpleQuery(query).search();
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					if (StringUtils.isBlank((String) row.get("ANSWER"))
+							&& StringUtils.isNotBlank((String) row.get("ANSWERNOTE"))) {
+						row.put("ANSWER", HtmlUtils.HtmlRemoveTagAndMarkImg((String) row.get("ANSWERNOTE")));
+					}
+				}
+			});
 			result.runDictionary("1:正确答案,0:错误答案", "RIGHTANSWER");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {

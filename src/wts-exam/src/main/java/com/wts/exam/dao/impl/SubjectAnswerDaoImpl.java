@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
+import com.wts.exam.domain.SubjectAnalysis;
 import com.wts.exam.domain.SubjectAnswer;
 import com.wts.exam.dao.SubjectAnswerDaoInter;
 import com.farm.core.sql.query.DBRule;
@@ -125,5 +127,16 @@ public class SubjectAnswerDaoImpl extends HibernateSQLTools<SubjectAnswer>implem
 	@Override
 	protected SessionFactory getSessionFactory() {
 		return sessionFatory;
+	}
+
+	@Override
+	public List<SubjectAnswer> getAnswersByPaperId(String paperId) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery(
+				"select distinct b.ID as ID,b.CTIME as CTIME,b.CUSERNAME as CUSERNAME,b.CUSER as CUSER,b.PSTATE as PSTATE,b.PCONTENT as PCONTENT,b.VERSIONID as VERSIONID,b.ANSWER as ANSWER,b.ANSWERNOTE as ANSWERNOTE,b.SORT as SORT,b.RIGHTANSWER as RIGHTANSWER,b.POINTWEIGHT as POINTWEIGHT from WTS_PAPER_SUBJECT a left join WTS_SUBJECT_ANSWER b on a.VERSIONID=b.VERSIONID where a.paperid=? and b.id is not null");
+		sqlquery.setString(0, paperId);
+		@SuppressWarnings("unchecked")
+		List<SubjectAnswer> list = (List<SubjectAnswer>) sqlquery.addEntity(SubjectAnswer.class).list();
+		return list;
 	}
 }

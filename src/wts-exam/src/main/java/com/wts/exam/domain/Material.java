@@ -43,6 +43,16 @@ public class Material implements java.io.Serializable {
 	private String etime;
 	@Column(name = "CTIME", length = 16, nullable = false)
 	private String ctime;
+	@Column(name = "UUID", length = 32, nullable = false)
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getTitle() {
 		return this.title;

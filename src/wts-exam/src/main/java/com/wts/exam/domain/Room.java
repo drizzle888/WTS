@@ -77,7 +77,16 @@ public class Room implements java.io.Serializable {
 	private String osorttype;
 	@Column(name = "PSHOWTYPE", length = 2, nullable = false)
 	private String pshowtype;
-	
+	@Column(name = "UUID", length = 32, nullable = false)
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	public String getSsorttype() {
 		return ssorttype;
 	}

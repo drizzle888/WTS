@@ -7,24 +7,33 @@ import com.wts.exam.domain.PaperSubject;
 import com.wts.exam.domain.SubjectType;
 import com.wts.exam.domain.SubjectVersion;
 import com.wts.exam.domain.ex.ChapterUnit;
+import com.wts.exam.domain.ex.FileJsonBean;
+import com.wts.exam.domain.ex.PaperJsonBean;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.SubjectUnit;
 import com.wts.exam.domain.ex.TipType;
 import com.farm.core.time.TimeTool;
+import com.farm.doc.dao.FarmDocfileDaoInter;
+import com.farm.doc.domain.FarmDocfile;
 import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
+import com.farm.doc.server.commons.FarmDocFiles;
 import com.farm.parameter.FarmParameterService;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import com.wts.exam.dao.PaperDaoInter;
+import com.wts.exam.dao.MaterialDaoInter;
 import com.wts.exam.dao.PaperChapterDaoInter;
 import com.wts.exam.dao.PaperSubjectDaoInter;
 import com.wts.exam.dao.PaperUserOwnDaoInter;
 import com.wts.exam.dao.RoomPaperDaoInter;
+import com.wts.exam.dao.SubjectAnalysisDaoInter;
 import com.wts.exam.dao.SubjectAnswerDaoInter;
+import com.wts.exam.dao.SubjectDaoInter;
 import com.wts.exam.dao.SubjectTypeDaoInter;
 import com.wts.exam.dao.SubjectVersionDaoInter;
 import com.wts.exam.service.ExamTypeServiceInter;
@@ -63,6 +72,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+
+import com.alibaba.fastjson.JSON;
 import com.farm.core.auth.domain.LoginUser;
 
 /* *
@@ -110,6 +121,14 @@ public class PaperServiceImpl implements PaperServiceInter {
 	private SubjectTypeServiceInter subjectTypeServiceImpl;
 	@Resource
 	private PaperUserOwnDaoInter paperuserownDaoImpl;
+	@Resource
+	private SubjectDaoInter subjectDaoImpl;
+	@Resource
+	private SubjectAnalysisDaoInter SubjectAnalysisDaoImpl;
+	@Resource
+	private MaterialDaoInter materialDaoImpl;
+	@Resource
+	private FarmDocfileDaoInter farmDocfileDao;
 	private static final Logger log = Logger.getLogger(PaperServiceImpl.class);
 
 	@Override
@@ -141,6 +160,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 	@Transactional
 	public Paper editPaperEntity(Paper entity, LoginUser user) {
 		Paper entity2 = paperDaoImpl.getEntity(entity.getId());
+		String oldText = entity2.getPapernote();
 		entity2.setEuser(user.getId());
 		entity2.setEusername(user.getName());
 		entity2.setEtime(TimeTool.getTimeDate14());
@@ -154,7 +174,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 			entity2.setExamtypeid(null);
 		}
 		paperDaoImpl.editEntity(entity2);
-		farmFileManagerImpl.submitFileByAppHtml(entity2.getPapernote(), entity2.getId(),
+		farmFileManagerImpl.updateFileByAppHtml(oldText, entity.getPapernote(), entity2.getId(),
 				FILE_APPLICATION_TYPE.PAPERNOTE);
 		return entity2;
 	}
@@ -186,7 +206,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 	public DataQuery createPaperSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_PAPER a LEFT JOIN WTS_EXAM_TYPE b ON a.EXAMTYPEID = b.id left join alone_auth_user c on a.CUSER=c.ID",
-				"a.ID as ID,c.name as USERNAME,a.PAPERNOTE as PAPERNOTE,a.ADVICETIME as ADVICETIME,a.LOWPOINT as LOWPOINT,a.TOPPOINT as TOPPOINT,a.AVGPOINT as AVGPOINT,a.COMPLETETNUM as COMPLETETNUM,a.POINTNUM as POINTNUM,a.SUBJECTNUM as SUBJECTNUM,a.PSTATE as PSTATE,a.PCONTENT as PCONTENT,a.NAME as NAME,a.EUSER as EUSER,a.EUSERNAME as EUSERNAME,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EXAMTYPEID as EXAMTYPEID,b.name as TYPENAME");
+				"a.ID as ID,a.UUID as UUID,c.name as USERNAME,a.PAPERNOTE as PAPERNOTE,a.ADVICETIME as ADVICETIME,a.LOWPOINT as LOWPOINT,a.TOPPOINT as TOPPOINT,a.AVGPOINT as AVGPOINT,a.COMPLETETNUM as COMPLETETNUM,a.POINTNUM as POINTNUM,a.SUBJECTNUM as SUBJECTNUM,a.PSTATE as PSTATE,a.PCONTENT as PCONTENT,a.NAME as NAME,a.EUSER as EUSER,a.EUSERNAME as EUSERNAME,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EXAMTYPEID as EXAMTYPEID,b.name as TYPENAME");
 		return dbQuery;
 	}
 
@@ -524,14 +544,14 @@ public class PaperServiceImpl implements PaperServiceInter {
 	 * @param user
 	 * @return
 	 */
-	private File getUserPaperFile(LoginUser user) {
+	private File getUserPaperFile(LoginUser user, String exname) {
 		// 附件根目錄
 		String fileDirPath = FarmParameterService.getInstance().getParameter("config.doc.dir");
 		// 附件用戶臨時目錄
 		String uesrDirPath = fileDirPath + File.separator + "user" + user.getId();
 		new File(uesrDirPath).mkdirs();
 		// 答卷臨時文件
-		String papaerFilePath = uesrDirPath + File.separator + "paper.docx";
+		String papaerFilePath = uesrDirPath + File.separator + "paper." + exname;
 		File papaerFile = new File(papaerFilePath);
 		if (papaerFile.exists()) {
 			papaerFile.delete();
@@ -543,7 +563,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 	@Transactional
 	public File exprotWord(PaperUnit paper, LoginUser user) {
 		// 获取一个空得docx文件
-		File papaerFile = getUserPaperFile(user);
+		File papaerFile = getUserPaperFile(user, "docx");
 		FileOutputStream out = null;
 		XWPFDocument document = null;
 		try {
@@ -570,4 +590,50 @@ public class PaperServiceImpl implements PaperServiceInter {
 		return papaerFile;
 	}
 
+	@Override
+	@Transactional
+	public File exprotWtsp(String paperId, LoginUser user) {
+		if (StringUtils.isBlank(paperId)) {
+			throw new RuntimeException("the papaerId is not exist:" + paperId);
+		}
+		// 获取一个空得docx文件
+		File papaerFile = getUserPaperFile(user, "wtsp");
+		PaperJsonBean paperj = new PaperJsonBean();
+		paperj.setPaper(paperDaoImpl.getEntity(paperId));
+		paperj.setChapters(paperchapterDaoImpl
+				.selectEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", paperId, "=")).toList()));
+		paperj.setPaperSubjects(papersubjectDaoImpl
+				.selectEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", paperId, "=")).toList()));
+		paperj.setSubjects(subjectDaoImpl.getSubjectsByPaperId(paperId));
+		paperj.setSubjectVersions(subjectversionDaoImpl.getVersionsByPaperId(paperId));
+		paperj.setSubjectAnalysies(SubjectAnalysisDaoImpl.getAnalysisByPaperId(paperId));
+		paperj.setSubjectAnswers(subjectanswerDaoImpl.getAnswersByPaperId(paperId));
+		paperj.setMaterials(materialDaoImpl.getMaterialsByPaperId(paperId));
+		List<FarmDocfile> files = farmDocfileDao.getfilesByAppids(paperj.getAllAppid());
+		List<FileJsonBean> jsonfiles = new ArrayList<>();
+		for (FarmDocfile file : files) {
+			FileJsonBean jfile = new FileJsonBean();
+			File drivefile = farmFileManagerImpl.getFile(file);
+			if (drivefile.exists()) {
+				try {
+					String base64File = FarmDocFiles.encodeBase64File(drivefile);
+					if (file.getLen() < (10 * 1024 * 1024)) {
+						jfile.setBase64(base64File);
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+			jfile.setInfo(file);
+			jsonfiles.add(jfile);
+		}
+		paperj.setFiles(jsonfiles);
+		String jsonStr = JSON.toJSONString(paperj);
+		try {
+			FileUtils.writeStringToFile(papaerFile, jsonStr);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return papaerFile;
+	}
 }

@@ -45,7 +45,16 @@ public class Subject implements java.io.Serializable {
 	private Integer donum;	
 	@Column(name = "RIGHTNUM", length = 10)
 	private Integer rightnum;
-	
+	@Column(name = "UUID", length = 32, nullable = false)
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	
 	public Integer getAnalysisnum() {
 		return analysisnum;

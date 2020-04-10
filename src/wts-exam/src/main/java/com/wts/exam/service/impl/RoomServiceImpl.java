@@ -102,6 +102,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 		entity = roomDaoImpl.insertEntity(entity);
 		// --------------------------------------------------
 		farmFileManagerImpl.submitFileByAppHtml(entity.getRoomnote(), entity.getId(), FILE_APPLICATION_TYPE.ROOMNOTE);
+		farmFileManagerImpl.submitFile(entity.getImgid(), FILE_APPLICATION_TYPE.ROOMNOTE.getValue(), entity.getId());
 		return entity;
 	}
 
@@ -109,6 +110,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	@Transactional
 	public Room editRoomEntity(Room entity, LoginUser user) {
 		Room entity2 = roomDaoImpl.getEntity(entity.getId());
+		String oldtext = entity2.getRoomnote();
 		entity2.setCounttype(entity.getCounttype());
 		entity2.setRoomnote(entity.getRoomnote());
 		entity2.setTimelen(entity.getTimelen());
@@ -138,7 +140,9 @@ public class RoomServiceImpl implements RoomServiceInter {
 			entity2.setExamtypeid(null);
 		}
 		roomDaoImpl.editEntity(entity2);
-		farmFileManagerImpl.submitFileByAppHtml(entity2.getRoomnote(), entity2.getId(), FILE_APPLICATION_TYPE.ROOMNOTE);
+		farmFileManagerImpl.updateFileByAppHtml(oldtext, entity.getRoomnote(), entity2.getId(),
+				FILE_APPLICATION_TYPE.ROOMNOTE);
+		farmFileManagerImpl.submitFile(entity2.getImgid(), FILE_APPLICATION_TYPE.ROOMIMG.getValue(), entity2.getId());
 		return entity2;
 	}
 
@@ -157,7 +161,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public DataQuery createRoomSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_ROOM a left join WTS_EXAM_TYPE b on a.EXAMTYPEID=b.id left join (select COUNT(*) NUM,ROOMID from WTS_ROOM_USER GROUP BY ROOMID )  ROOMUSERNUM on ROOMUSERNUM.ROOMID=a.ID",
-				"a.SSORTTYPE as SSORTTYPE,a.OSORTTYPE as OSORTTYPE,a.PSHOWTYPE as PSHOWTYPE,a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
+				"a.SSORTTYPE as SSORTTYPE,a.UUID as UUID,a.OSORTTYPE as OSORTTYPE,a.PSHOWTYPE as PSHOWTYPE,a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
 		return dbQuery;
 	}
 

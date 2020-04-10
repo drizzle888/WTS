@@ -43,31 +43,8 @@ public class SubjectVersionServiceImpl implements SubjectVersionServiceInter {
 		// entity.setPstate("1");
 		entity = subjectversionDaoImpl.insertEntity(entity);
 		// --------------------------------------------------
-		farmFileManagerImpl.submitFileByAppHtml(entity.getTipnote(), entity.getId(),FILE_APPLICATION_TYPE.SUBJECTNOTE);
+		farmFileManagerImpl.submitFileByAppHtml(entity.getTipnote(), entity.getId(), FILE_APPLICATION_TYPE.SUBJECTNOTE);
 		return entity;
-	}
-
-	@Override
-	@Transactional
-	public SubjectVersion editSubjectversionEntity(SubjectVersion entity, LoginUser user) {
-		// TODO 自动生成代码,修改后请去除本注释
-		SubjectVersion entity2 = subjectversionDaoImpl.getEntity(entity.getId());
-		// entity2.setEuser(user.getId());
-		// entity2.setEusername(user.getName());
-		// entity2.setEtime(TimeTool.getTimeDate14());
-		entity2.setTiptype(entity.getTiptype());
-		entity2.setSubjectid(entity.getSubjectid());
-		entity2.setTipnote(entity.getTipnote());
-		entity2.setTipstr(entity.getTipstr());
-		entity2.setPcontent(entity.getPcontent());
-		entity2.setPstate(entity.getPstate());
-		entity2.setCuser(entity.getCuser());
-		entity2.setCusername(entity.getCusername());
-		entity2.setCtime(entity.getCtime());
-		entity2.setId(entity.getId());
-		subjectversionDaoImpl.editEntity(entity2);
-		farmFileManagerImpl.submitFileByAppHtml(entity2.getTipnote(), entity.getId(),FILE_APPLICATION_TYPE.SUBJECTNOTE);
-		return entity2;
 	}
 
 	@Override
