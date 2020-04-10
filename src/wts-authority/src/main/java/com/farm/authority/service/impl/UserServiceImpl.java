@@ -5,9 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -691,13 +693,12 @@ public class UserServiceImpl implements UserServiceInter {
 					String userName = node.get("USERNAME") == null ? "" : node.get("USERNAME").toString().trim();
 					String loginName = node.get("LOGINNAME") == null ? "" : node.get("LOGINNAME").toString().trim();
 					String orgName = node.get("ORGNAME") == null ? "" : node.get("ORGNAME").toString().trim();
-					String postName = node.get("POSTNAME") == null ? "" : node.get("POSTNAME").toString().trim();
 					String content = node.get("PCONTENT") == null ? "" : node.get("PCONTENT").toString().trim();// 军衔
 					String location = "错误位置:第" + index + "行，问题人员'" + userName + "'";
 					index++;
 					if (index == 0) {
 						if (!("姓名".equals(userName) || !("登录名").equals(loginName) || !("组织机构").equals(orgName)
-								|| !("所属岗位").equals(postName) || !("备注").equals(content))) {
+								|| !("备注").equals(content))) {
 							throw new RuntimeException("模板格式不正确。请从\"用户管理/人员导入/模板下载\"下载。");
 						}
 						return;// 第一行不需要处理
@@ -705,7 +706,6 @@ public class UserServiceImpl implements UserServiceInter {
 					if (index == 1) {
 						return;// 第二行不需要处理
 					}
-
 					if (userName.length() < 2 || userName.length() > 16) {
 						throw new RuntimeException("姓名（" + userName + "）必须大于2个字符或小于16个字符！" + location);
 					}
@@ -715,7 +715,9 @@ public class UserServiceImpl implements UserServiceInter {
 					if (!content.isEmpty() && content.length() > 64) {
 						throw new RuntimeException("备注（" + content + "）最长64位！" + location);
 					}
-
+					if (StringUtils.isBlank(orgName)) {
+						throw new RuntimeException("组织机构为必填项:" + location);
+					}
 					boolean existOrgPost = false;
 					String orgId = null, postId = null;
 					for (Entry<Organization, List<Map<String, Object>>> entry : orgPostMap.entrySet()) {
@@ -723,21 +725,10 @@ public class UserServiceImpl implements UserServiceInter {
 							break;
 						}
 						Organization org = entry.getKey();
-						if (org.getName().equals(orgName) || org.getId().equals(orgName)) {
+						if (org.getName().trim().equals(orgName.trim()) || org.getId().trim().equals(orgName.trim())) {
 							// 检查组织机构是否存在
-							List<Map<String, Object>> postList = entry.getValue();
 							existOrgPost = true;
 							orgId = org.getId();
-							if (StringUtils.isNotBlank(postName)) {
-								// 检查岗位是否存在
-								for (Map<String, Object> map : postList) {
-									if (map.get("POSTNAME").equals(postName)) {
-										postId = map.get("POSTID").toString();
-										break;
-									}
-									throw new RuntimeException("所填写岗位不属于该组织机构！" + location);
-								}
-							}
 						}
 					}
 					if (!existOrgPost) {
@@ -769,7 +760,7 @@ public class UserServiceImpl implements UserServiceInter {
 					user.setType(usernode.get("TYPE"));
 					user.setState(usernode.get("STATE"));
 					user.setComments(usernode.get("COMMENTS"));
-					insertUserEntity(user, currentUser, usernode.get("ORGID"), usernode.get("POSTID"));
+					insertUserEntity(user, currentUser, usernode.get("ORGID"), null);
 				}
 			}
 		} catch (Exception e) {
@@ -783,8 +774,7 @@ public class UserServiceImpl implements UserServiceInter {
 		config.addColumn(0, "USERNAME", ColumnType.STRING);
 		config.addColumn(1, "LOGINNAME", ColumnType.STRING);
 		config.addColumn(2, "ORGNAME", ColumnType.STRING);
-		config.addColumn(3, "POSTNAME", ColumnType.STRING);
-		config.addColumn(4, "PCONTENT", ColumnType.STRING);
+		config.addColumn(3, "PCONTENT", ColumnType.STRING);
 		ExcelReader reader = ExcelReaderImpl.getInstance(config, cmfile.getInputStream());
 		return reader;
 	}
@@ -904,4 +894,33 @@ public class UserServiceImpl implements UserServiceInter {
 		}
 	}
 
+	@Override
+	@Transactional
+	public void addUserPost(String userid, String postids, LoginUser currentUser) {
+		String[] postIdArr = postids.split(",");
+		Organization org = getUserOrganization(userid);
+		String orgId = org == null ? null : org.getId();
+		List<Map<String, Object>> ablePosts = organizationServiceImpl.getPostListWithPOrgPost(orgId);
+		Set<String> ablePostSet = new HashSet<>();
+		for (Map<String, Object> post : ablePosts) {
+			ablePostSet.add((String) post.get("POSTID"));
+		}
+		for (String postId : postIdArr) {
+			if (ablePostSet.contains(postId)) {
+				userpostDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("USERID", userid, "="))
+						.add(new DBRule("POSTID", postId, "=")).toList());
+				userpostDaoImpl.insertEntity(new Userpost("", postId, userid));
+			}
+		}
+	}
+
+	@Override
+	@Transactional
+	public void delUserPost(String userid, String postids, LoginUser currentUser) {
+		String[] postIdArr = postids.split(",");
+		for (String postId : postIdArr) {
+			userpostDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("USERID", userid, "="))
+					.add(new DBRule("POSTID", postId, "=")).toList());
+		}
+	}
 }

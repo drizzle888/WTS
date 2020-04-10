@@ -365,4 +365,23 @@ public interface UserServiceInter {
 	 * @return 如果用户之前没有，被新增则返回true
 	 */
 	public User syncRemoteUser(User remoteUser);
+	
+	
+	/**
+	 * 为用户添加岗位
+	 * 
+	 * @param userid
+	 * @param postids
+	 * @param currentUser
+	 */
+	public void addUserPost(String userid, String postids, LoginUser currentUser);
+
+	/**
+	 * 為用户删除岗位
+	 * 
+	 * @param userid
+	 * @param postids
+	 * @param currentUser
+	 */
+	public void delUserPost(String userid, String postids, LoginUser currentUser);
 }

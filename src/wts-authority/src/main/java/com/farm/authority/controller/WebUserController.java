@@ -207,7 +207,8 @@ public class WebUserController extends WebUtils {
 	public ModelAndView online(HttpSession session) {
 		AloneDictionaryEntity dictionary = dictionaryEntityServiceImpl.initEntity("ONLINE_BLANKLIST", "访问黑名单", "1",
 				getCurrentUser(session));
-		return ViewMode.getInstance().putAttr("entityId", dictionary.getId()).returnModelAndView("authority/OnlineResult");
+		return ViewMode.getInstance().putAttr("entityId", dictionary.getId())
+				.returnModelAndView("authority/OnlineResult");
 	}
 
 	/**
@@ -643,6 +644,63 @@ public class WebUserController extends WebUtils {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView("authority/UserResult");
+		}
+	}
+
+	/**
+	 * 批量设置用户机构
+	 *
+	 * @return
+	 */
+	@RequestMapping("/editUserOrg")
+	@ResponseBody
+	public Map<String, Object> editUserOrg(String ids, String orgid, HttpSession session) {
+		try {
+			for (String userid : parseIds(ids)) {
+				userServiceImpl.setUserOrganization(userid, orgid, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 批量设置用户岗位
+	 *
+	 * @return
+	 */
+	@RequestMapping("/addUserPost")
+	@ResponseBody 
+	public Map<String, Object> addUserPost(String ids, String postids, HttpSession session) {
+		try {
+			for (String userid : parseIds(ids)) {
+				userServiceImpl.addUserPost(userid, postids, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 批量删除用户岗位 
+	 *
+	 * @return
+	 */
+	@RequestMapping("/delUserPost")
+	@ResponseBody
+	public Map<String, Object> delUserPost(String ids, String postids, HttpSession session) {
+		try {
+			for (String userid : parseIds(ids)) {
+				userServiceImpl.delUserPost(userid, postids, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 }
