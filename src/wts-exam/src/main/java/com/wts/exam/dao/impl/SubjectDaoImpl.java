@@ -137,7 +137,7 @@ public class SubjectDaoImpl extends HibernateSQLTools<Subject>implements Subject
 	public List<Subject> getSubjectsByPaperId(String paperId) {
 		Session session = sessionFatory.getCurrentSession();
 		SQLQuery sqlquery = session.createSQLQuery(
-				"select distinct b.ID as ID,b.TYPEID as TYPEID,b.VERSIONID as VERSIONID,b.PSTATE as PSTATE,b.MATERIALID as MATERIALID,b.PRAISENUM as PRAISENUM,b.COMMENTNUM as COMMENTNUM,b.ANALYSISNUM as ANALYSISNUM,b.DONUM as DONUM,b.RIGHTNUM as RIGHTNUM from WTS_PAPER_SUBJECT a left join WTS_SUBJECT b on a.SUBJECTID=b.ID where a.paperid=? and b.id is not null");
+				"select distinct b.ID as ID,b.UUID as UUID,b.TYPEID as TYPEID,b.VERSIONID as VERSIONID,b.PSTATE as PSTATE,b.MATERIALID as MATERIALID,b.PRAISENUM as PRAISENUM,b.COMMENTNUM as COMMENTNUM,b.ANALYSISNUM as ANALYSISNUM,b.DONUM as DONUM,b.RIGHTNUM as RIGHTNUM from WTS_PAPER_SUBJECT a left join WTS_SUBJECT b on a.SUBJECTID=b.ID where a.paperid=? and b.id is not null");
 		sqlquery.setString(0, paperId);
 		@SuppressWarnings("unchecked")
 		List<Subject> list = (List<Subject>) sqlquery.addEntity(Subject.class).list();
