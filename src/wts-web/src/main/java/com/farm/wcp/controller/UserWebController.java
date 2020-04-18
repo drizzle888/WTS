@@ -43,6 +43,7 @@ import com.farm.web.WebUtils;
 import com.wts.exam.domain.ExamStat;
 import com.wts.exam.service.ExamStatServiceInter;
 import com.wts.exam.service.PaperUserOwnServiceInter;
+import com.wts.exam.service.RoomPaperServiceInter;
 import com.wts.exam.service.SubjectUserOwnServiceInter;
 
 /**
@@ -71,6 +72,8 @@ public class UserWebController extends WebUtils {
 	private ExamStatServiceInter examStatServiceImpl;
 	@Resource
 	private PaperUserOwnServiceInter paperUserOwnServiceImpl;
+	@Resource
+	private RoomPaperServiceInter roomPaperServiceImpl;
 	private static final Logger log = Logger.getLogger(UserWebController.class);
 
 	/**
@@ -523,6 +526,15 @@ public class UserWebController extends WebUtils {
 			DataResult result = query.search();
 			result.runDictionary("1:答卷模式,3:练习模式", "PAPERMODELTITLE");
 			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "CARDSTATE");
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					String alias = roomPaperServiceImpl.getPaperAlias((String) row.get("CARDID"));
+					if (StringUtils.isNotBlank(alias)) {
+						row.put("PAPERNAME", alias);
+					}
+				}
+			});
 			return ViewMode.getInstance().putAttr("result", result).putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnAllPaper");
 		} catch (Exception e) {
@@ -541,6 +553,16 @@ public class UserWebController extends WebUtils {
 			query.addRule(new DBRule("a.MODELTYPE", "2", "="));
 			query = paperUserOwnServiceImpl.createPaperuserownSimpleQuery(query);
 			DataResult result = query.search();
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					String alias = roomPaperServiceImpl.getPaperAlias((String) row.get("ROOMID"),
+							(String) row.get("PAPERID"));
+					if (StringUtils.isNotBlank(alias)) {
+						row.put("PAPERNAME", alias);
+					}
+				}
+			});
 			result.runDictionary("1:答卷模式,3:练习模式", "PAPERMODELTITLE");
 			return ViewMode.getInstance().putAttr("result", result).putAttr("ownids", getIdsFromResult(result, "ID"))
 					.returnModelAndView(ThemesUtil.getThemePath() + "/user/commons/includeLoadOwnBookPaper");

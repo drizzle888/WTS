@@ -30,6 +30,7 @@ import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.doc.server.UsermessageServiceInter;
 import com.farm.doc.util.HtmlUtils;
 import com.farm.parameter.FarmParameterService;
+import com.farm.wcp.userfunc.JlscUtils;
 import com.farm.wcp.util.CheckcodeAbleUtil;
 import com.farm.wcp.util.ThemesUtil;
 import com.farm.web.WebUtils;
@@ -252,6 +253,13 @@ public class LoginWebController extends WebUtils {
 		LoginUser user = FarmAuthorityService.getInstance().getUserByLoginName(name);
 		if (user != null) {
 			name = user.getLoginname();
+		}
+		{
+			// 客户定制功能，如果通过机构备注+用户名可用获得用户登陆名，则用此登陆名登陆
+			String orgAndNameGetLoginName = JlscUtils.getUserLoginName(name);
+			if (orgAndNameGetLoginName != null) {
+				name = orgAndNameGetLoginName;
+			}
 		}
 		return name;
 	}

@@ -379,8 +379,10 @@
 	function examValidate(funcHandle) {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length == 1) {
+			$(gridRoom).datagrid('loading');
 			$.post("room/examValid.do" + '?roomid='
 					+ $.farm.getCheckedIds(gridRoom, 'ID'), {}, function(flag) {
+				$(gridRoom).datagrid('loaded');
 				if (flag.STATE == 0) {
 					if (flag.warning) {
 						$.messager.alert(MESSAGE_PLAT.PROMPT, flag.warning,

@@ -1,5 +1,7 @@
 package com.farm.wcp.controller;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,12 +17,14 @@ import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.sql.result.ResultsHandle;
 import com.farm.doc.server.UsermessageServiceInter;
 import com.farm.parameter.FarmParameterService;
 import com.farm.web.WebUtils;
 import com.farm.web.easyui.EasyUiUtils;
 import com.wts.exam.service.CardHisServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
+import com.wts.exam.service.RoomPaperServiceInter;
 
 /**
  * 查询
@@ -37,6 +41,8 @@ public class SearchWebController extends WebUtils {
 	private ExamTypeServiceInter examTypeServiceImpl;
 	@Resource
 	private CardHisServiceInter cardHisServiceImpl;
+	@Resource
+	private RoomPaperServiceInter roomPaperServiceImpl;
 	private static final Logger log = Logger.getLogger(SearchWebController.class);
 
 	public static String getThemePath() {
@@ -63,10 +69,21 @@ public class SearchWebController extends WebUtils {
 				query.addSqlRule(" and (ROOMNAME like '%" + word + "%' OR PAPERNAME like '%" + word + "%')");
 			}
 			query = EasyUiUtils.formatGridQuery(request, query);
-			//query.addRule(new DBRule("PSTATE", "6", "="));
+			// query.addRule(new DBRule("PSTATE", "6", "="));
 			query.addRule(new DBRule("USERID", getCurrentUser(session).getId(), "="));
 			query.addSqlRule("and ROOMNAME is not null and PAPERNAME is not null");
 			DataResult result = cardHisServiceImpl.createUserCardQuery(query).search();
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					if (row.get("SOURCE").equals("LIVE")) {
+						String alias = roomPaperServiceImpl.getPaperAlias((String) row.get("CARDID"));
+						if (StringUtils.isNotBlank(alias)) {
+							row.put("PAPERNAME", alias);
+						}
+					}
+				}
+			});
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
 			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATE");
 			result.runDictionary("LIVE:当前,BACK:归档", "SOURCE");

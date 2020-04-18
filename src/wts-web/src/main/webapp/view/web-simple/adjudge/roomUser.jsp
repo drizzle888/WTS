@@ -112,9 +112,7 @@
 					<c:forEach items="${result.resultList}" var="node">
 						<tr>
 							<td>${node.NAME}</td>
-							<td><a
-								href="adjudge/paperUser.do?paperid=${node.PAPERID}&roomId=${room.id}">
-									${node.PAPERNAME}</a></td>
+							<td>${node.PAPERNAME}</td>
 							<td>${node.STARTTIME}</td>
 							<td>${node.ENDTIME}</td>
 							<td><div class="progress" style="margin-bottom: 0px;">
@@ -153,6 +151,16 @@
 								<c:if test="${node.PSTATE=='6'}">
 									<a class="btn btn-danger btn-xs" id="autoPointRunId"
 										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
+								</c:if>
+								<!---->
+								<c:if test="${node.PSTATE=='5'||node.PSTATE=='6'||node.PSTATE=='7'}">
+									<a class="btn btn-success btn-xs"
+										href="adjudge/paperUser.do?paperid=${node.PAPERID}&roomId=${room.id}">此答卷阅卷</a>
+								</c:if>
+								<!---->
+								<c:if test="${node.PSTATE=='5'}">
+									<a class="btn btn-danger btn-xs" id="autoPointRunId"
+										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','当前未进行人工阅卷，得分发布后将无法变更，是否发布该得分?')">强制发布成绩</a>	
 								</c:if>
 							</td>
 						</tr>

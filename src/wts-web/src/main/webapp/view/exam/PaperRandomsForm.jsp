@@ -77,9 +77,11 @@
 		$('#dom_add_entityRandom').bind(
 				'click',
 				function() {
-					$.messager.alert('请等待',
-							'当前操作将消耗一定时间，请等待直至系统提示执行完毕后手动关闭此对话框...', 'info');
-					submitFormRandom.postSubmit("paper/runRandomPapers.do");
+					$.messager.confirm(MESSAGE_PLAT.PROMPT,"执行当前操作有可能会需要等待一段时间，是否继续?", function(flag) {
+						if (flag) {
+							submitFormRandom.postSubmit("paper/runRandomPapers.do");
+						}
+					});
 				});
 	});
 //-->

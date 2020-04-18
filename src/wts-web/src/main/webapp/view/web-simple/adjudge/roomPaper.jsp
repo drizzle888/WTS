@@ -74,7 +74,11 @@
 					<div class="panel panel-default">
 						<div class="panel-body" style="text-align: center; padding: 40px;">
 							<a href="adjudge/roomUser.do?roomId=${room.room.id}"
-								type="button" class="btn btn-default">~~~~~~查看答题室全部人员答卷信息~~~~~~
+								type="button" class="btn btn-default">~~~~~~全部人员阅卷(阅<span
+								class="wts-red"><b>${allPaperNum.adjudgeUserNum}</b></span>人/答<span
+								class="wts-red"><b>${allPaperNum.currentUserNum}</b></span>人<c:if
+									test="${allPaperNum.allUserNum>0}">/共<span
+										class="wts-red"><b>${allPaperNum.allUserNum}</b></span>人</c:if>)~~~~~~
 							</a>
 						</div>
 					</div>

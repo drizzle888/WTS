@@ -95,7 +95,14 @@ public class adjudgeWebController extends WebUtils {
 			}
 			RoomUnit roomunit = roomServiceImpl.getRoomUnit(roomid, getCurrentUser(session), false);
 			cardServiceImpl.loadPaperUserNum(roomunit);
-			return view.putAttr("room", roomunit).returnModelAndView(getThemePath() + "/adjudge/roomPaper");
+			PaperUnit allPaper = new PaperUnit();
+			for (PaperUnit paper : roomunit.getPapers()) {
+				allPaper.setAdjudgeUserNum(allPaper.getAdjudgeUserNum() + paper.getAdjudgeUserNum());
+				allPaper.setCurrentUserNum(allPaper.getCurrentUserNum() + paper.getCurrentUserNum());
+				allPaper.setAllUserNum(paper.getAllUserNum());
+			}
+			return view.putAttr("room", roomunit).putAttr("allPaperNum", allPaper)
+					.returnModelAndView(getThemePath() + "/adjudge/roomPaper");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
@@ -246,7 +253,8 @@ public class adjudgeWebController extends WebUtils {
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm:ss");
 			result.runformatTime("ENDTIME", "HH:mm:ss");
 			result.runformatTime("ADJUDGETIME", "yyyy-MM-dd HH:mm:ss");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATETITLE");
+			// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷, 5已自动阅卷 6已完成阅卷7.发布成绩
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATETITLE");
 			return view.putAttr("room", room).putAttr("result", result)
 					.returnModelAndView(getThemePath() + "/adjudge/roomUser");
 		} catch (Exception e) {
@@ -355,7 +363,7 @@ public class adjudgeWebController extends WebUtils {
 			if (examPopsServiceImpl.isNotJudger(card.getRoomid(), getCurrentUser(session))) {
 				throw new RuntimeException("当前用户无权变更答题卡状态!");
 			}
-			if (!card.getPstate().equals("6")) {
+			if (!card.getPstate().equals("6") && !card.getPstate().equals("5")) {
 				// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
 				throw new RuntimeException("考卷未完成阅卷，无法发布分数!");
 			}
@@ -384,7 +392,7 @@ public class adjudgeWebController extends WebUtils {
 			if (!usertypeids.contains(examTypeid)) {
 				throw new RuntimeException("当前用户无权提交分数!");
 			}
-			if (card.getPstate().equals("1") ) {
+			if (card.getPstate().equals("1")) {
 				// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
 				throw new RuntimeException("考卷状态异常，无法提交分数!");
 			}

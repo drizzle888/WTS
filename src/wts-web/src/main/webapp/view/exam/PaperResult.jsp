@@ -97,6 +97,8 @@
 				<div class="menu-sep"></div>
 				<div onclick="examWord()">导出word答卷</div>
 				<div onclick="examWtsp()">导出wtsp答卷</div>
+				<div class="menu-sep"></div>
+				<div onclick="importWtsp()">导入wtsp答卷</div>
 			</div>
 		</div>
 	</div>
@@ -144,6 +146,17 @@
 			$('#examTypeTree').tree('expandAll');
 		});
 	});
+	//达到人员导入页面
+	function importWtsp() {
+		$.farm.openWindow({
+			id : 'toWtspImport',
+			width : 400,
+			height : 250,
+			modal : true,
+			url : "paper/toWtspImport.do",
+			title : 'wtsp文件导入'
+		});
+	}
 	//查看
 	function viewDataPaper() {
 		var selectedArray = $(gridPaper).datagrid('getSelections');

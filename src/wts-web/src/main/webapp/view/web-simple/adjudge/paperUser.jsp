@@ -61,8 +61,13 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="pull-right">
+									<c:if test="${room.pshowtype=='2'}">
+										<a href="adjudge/roomUser.do?roomId=${room.id}"
+											data-toggle="modal" type="button" class="btn btn-success">返回答题室人员列表
+										</a>
+									</c:if>
 									<a href="adjudge/roompage.do?roomid=${room.id}"
-										data-toggle="modal" type="button" class="btn btn-primary">返回答题室
+										data-toggle="modal" type="button" class="btn btn-primary">返回答题室阅卷首页
 									</a>
 								</div>
 							</div>
@@ -98,56 +103,64 @@
 						<th>操作</th>
 					</tr>
 					<c:forEach items="${result.resultList}" var="node">
-						<tr>
-							<td>${node.NAME}</td>
-							<td>${node.STARTTIME}</td>
-							<td>${node.ENDTIME}</td>
-							<td><div class="progress" style="margin-bottom: 0px;">
-									<div class="progress-bar" role="progressbar"
-										aria-valuenow="${node.COMPLETENUM}" aria-valuemin="0"
-										aria-valuemax="${node.ALLNUM}"
-										style="width: ${node.COMPLETEPERCENT}%;">
-										${node.COMPLETENUM}/${node.ALLNUM}</div>
-								</div></td>
-							<td>${node.POINT}</td>
-							<td>${node.ADJUDGEUSERNAME}</td>
-							<td>${node.ADJUDGETIME}</td>
-							<td>
-								<!--  --> <c:if test="${node.PSTATE=='7'}">
-									<span style="font-size: 12px;" class="label label-primary">
-										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
-										${node.PSTATETITLE}
-									</span>
-								</c:if> <!--  --> <c:if test="${node.PSTATE!='7'}">
-									<span style="font-size: 12px;" class="label label-default">
-										<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
-										${node.PSTATETITLE}
-									</span>
-								</c:if> <!--  -->
-							</td>
-							<td style="text-align: center;">
-								<!-- 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩 --> 
-								<c:if test="${node.PSTATE=='2'||node.PSTATE=='4'}">
-									<a class="btn btn-default btn-xs" id="autoPointRunId"
-										href="javascript:loadRemoteFunctionAndReload('adjudge/autoCount.do?cardid=${node.CARDID}','autoPointRunId')">自动计算</a>
-								</c:if> 
-								<!---->
-								<c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
-									<a class="btn btn-default btn-xs" id="recoveryRunId"
-										href="javascript:loadRemoteFunctionAndReload('adjudge/recovery.do?cardid=${node.CARDID}','recoveryRunId','确定收卷?')">强制收卷</a>
-								</c:if> 
-								<!---->
-								<c:if test="${node.PSTATE=='6'}">
-									<a class="btn btn-danger btn-xs" id="autoPointRunId"
-										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
-								</c:if> 
-								<!---->
-								<c:if test="${node.PSTATE=='5'||node.PSTATE=='6'||node.PSTATE=='7'}">
-									<a class="btn btn-success btn-xs"
-										href="adjudge/adjudgePage.do?cardId=${node.CARDID}">人工阅卷</a>
-								</c:if>
-							</td>
-						</tr>
+						<c:if test="${room.pshowtype!='2'||(room.pshowtype=='2'&&node.CARDID!=null)}">
+							<!-- 非随机答题室可以展示全部人员，随机答题室只展示答题人员 -->
+							<tr>
+								<td>${node.NAME}</td>
+								<td>${node.STARTTIME}</td>
+								<td>${node.ENDTIME}</td>
+								<td><div class="progress" style="margin-bottom: 0px;">
+										<div class="progress-bar" role="progressbar"
+											aria-valuenow="${node.COMPLETENUM}" aria-valuemin="0"
+											aria-valuemax="${node.ALLNUM}"
+											style="width: ${node.COMPLETEPERCENT}%;">
+											${node.COMPLETENUM}/${node.ALLNUM}</div>
+									</div></td>
+								<td>${node.POINT}</td>
+								<td>${node.ADJUDGEUSERNAME}</td>
+								<td>${node.ADJUDGETIME}</td>
+								<td>
+									<!--  --> <c:if test="${node.PSTATE=='7'}">
+										<span style="font-size: 12px;" class="label label-primary">
+											<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
+											${node.PSTATETITLE}
+										</span>
+									</c:if> <!--  --> <c:if test="${node.PSTATE!='7'}">
+										<span style="font-size: 12px;" class="label label-default">
+											<c:if test="${node.PSTATETITLE==null}">未答题</c:if>
+											${node.PSTATETITLE}
+										</span>
+									</c:if> <!--  -->
+								</td>
+								<td style="text-align: center;">
+									<!-- 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩 --> 
+									<c:if test="${node.PSTATE=='2'||node.PSTATE=='4'}">
+										<a class="btn btn-default btn-xs" id="autoPointRunId"
+											href="javascript:loadRemoteFunctionAndReload('adjudge/autoCount.do?cardid=${node.CARDID}','autoPointRunId')">自动计算</a>
+									</c:if> 
+									<!---->
+									<c:if test="${node.PSTATE=='1'||node.PSTATE=='3'}">
+										<a class="btn btn-default btn-xs" id="recoveryRunId"
+											href="javascript:loadRemoteFunctionAndReload('adjudge/recovery.do?cardid=${node.CARDID}','recoveryRunId','确定收卷?')">强制收卷</a>
+									</c:if> 
+									<!---->
+									<c:if test="${node.PSTATE=='6'}">
+										<a class="btn btn-danger btn-xs" id="autoPointRunId"
+											href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
+									</c:if> 
+									<!---->
+									<c:if test="${node.PSTATE=='5'||node.PSTATE=='6'||node.PSTATE=='7'}">
+										<a class="btn btn-success btn-xs"
+											href="adjudge/adjudgePage.do?cardId=${node.CARDID}">人工阅卷</a>
+									</c:if>
+									<!---->
+									<c:if test="${node.PSTATE=='5'}">
+										<a class="btn btn-danger btn-xs" id="autoPointRunId"
+											href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','当前未进行人工阅卷，得分发布后将无法变更，是否发布该得分?')">强制发布成绩</a>	
+									</c:if>
+								</td>
+							</tr>
+						</c:if>
 					</c:forEach>
 				</table>
 			</div>

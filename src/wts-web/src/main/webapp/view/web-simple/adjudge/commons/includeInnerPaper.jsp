@@ -26,13 +26,25 @@
 					<div class="btn-group btn-group-justified" role="group"
 						aria-label="...">
 						<div class="btn-group" role="group">
-							<a
-								href="adjudge/paperUser.do?paperid=${paper.info.id}&roomId=${room.room.id}"
-								type="button" class="btn btn-default">阅卷管理 (阅<span
-								class="wts-red"><b>${paper.adjudgeUserNum}</b></span>人/答<span
-								class="wts-red"><b>${paper.currentUserNum}</b></span>人<c:if
-									test="${paper.allUserNum>0}">/共<span class="wts-red"><b>${paper.allUserNum}</b></span>人</c:if>)
-							</a>
+							<c:if test="${room.room.pshowtype=='2'}">
+								<!-- 随机答卷只显示当前人数，不显示总人数 -->
+								<a
+									href="adjudge/paperUser.do?paperid=${paper.info.id}&roomId=${room.room.id}"
+									type="button" class="btn btn-default">阅卷管理 (阅<span
+									class="wts-red"><b>${paper.adjudgeUserNum}</b></span>人/答<span
+									class="wts-red"><b>${paper.currentUserNum}</b></span>人)
+								</a>
+							</c:if>
+							<c:if test="${room.room.pshowtype=='1'}">
+								<!-- 普通答卷-->
+								<a
+									href="adjudge/paperUser.do?paperid=${paper.info.id}&roomId=${room.room.id}"
+									type="button" class="btn btn-default">阅卷管理 (阅<span
+									class="wts-red"><b>${paper.adjudgeUserNum}</b></span>人/答<span
+									class="wts-red"><b>${paper.currentUserNum}</b></span>人<c:if
+										test="${paper.allUserNum>0}">/共<span class="wts-red"><b>${paper.allUserNum}</b></span>人</c:if>)
+								</a>
+							</c:if>
 						</div>
 						<div class="btn-group" role="group">
 							<button onclick="exportWordPaper('${paper.info.id}')"
