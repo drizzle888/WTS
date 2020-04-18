@@ -923,4 +923,12 @@ public class UserServiceImpl implements UserServiceInter {
 					.add(new DBRule("POSTID", postId, "=")).toList());
 		}
 	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersByName(String username) {
+		List<User> users = userDaoImpl.selectEntitys(DBRuleList.getInstance().add(new DBRule("NAME", username, "="))
+				.add(new DBRule("STATE", "1", "=")).toList());
+		return users;
+	}
 }

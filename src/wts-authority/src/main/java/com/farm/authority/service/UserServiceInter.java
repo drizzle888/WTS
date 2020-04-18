@@ -187,8 +187,6 @@ public interface UserServiceInter {
 	 */
 	public List<Post> getUserPosts(String userId);
 
-	
-
 	/**
 	 * 获得用户的组织机构
 	 * 
@@ -259,10 +257,12 @@ public interface UserServiceInter {
 
 	/**
 	 * 编辑当前登录用户密码
+	 * 
 	 * @param userid
 	 * @param newPassword
 	 */
 	public void editUserPassword(String userid, String newPassword);
+
 	/**
 	 * 修改密码
 	 * 
@@ -272,6 +272,7 @@ public interface UserServiceInter {
 	 * @return
 	 */
 	public boolean editUserPasswordByLoginName(String loginname, String oldPassword, String newPassword);
+
 	/**
 	 * 校验当前登录用户密码是否有效
 	 * 
@@ -360,13 +361,14 @@ public interface UserServiceInter {
 	 */
 	public void visitUserHomePage(String userid, LoginUser currentUser, String currentIp);
 
-	/**同步遠程用戶到本地
+	/**
+	 * 同步遠程用戶到本地
+	 * 
 	 * @param remoteUser
 	 * @return 如果用户之前没有，被新增则返回true
 	 */
 	public User syncRemoteUser(User remoteUser);
-	
-	
+
 	/**
 	 * 为用户添加岗位
 	 * 
@@ -384,4 +386,12 @@ public interface UserServiceInter {
 	 * @param currentUser
 	 */
 	public void delUserPost(String userid, String postids, LoginUser currentUser);
+
+	/**
+	 * 通过用户名称获取用户（多个）
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public List<User> getUsersByName(String username);
 }

@@ -167,4 +167,12 @@ public class OrganizationDaoImpl extends HibernateSQLTools<Organization>implemen
 		sqlquery.executeUpdate();
 
 	}
+
+	@Override
+	public List<String> getAllOrgComments() {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select COMMENTS from ALONE_AUTH_ORGANIZATION");
+		List<String> list = (List<String>) sqlquery.list();
+		return list;
+	}
 }

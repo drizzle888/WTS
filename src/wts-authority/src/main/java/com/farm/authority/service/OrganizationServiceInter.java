@@ -221,4 +221,19 @@ public interface OrganizationServiceInter {
 	 */
 	public void syncRemotOrgs(List<Organization> remoteOrgs);
 
+	/**
+	 * 獲取所有組織機構備注
+	 * 
+	 * @return
+	 */
+	public List<String> getAllOrgComments();
+
+	/**
+	 * 通过备注获得组织机构
+	 * 
+	 * @param orgComment
+	 * @return
+	 */
+	public List<Organization> getOrganizationByComments(String orgComment);
+
 }

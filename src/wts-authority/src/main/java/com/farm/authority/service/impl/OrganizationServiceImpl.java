@@ -32,6 +32,7 @@ import com.farm.authority.domain.Userpost;
 import com.farm.authority.service.OrganizationServiceInter;
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.sql.query.DBRule;
+import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.query.DataQuerys;
@@ -576,6 +577,21 @@ public class OrganizationServiceImpl implements OrganizationServiceInter {
 				organizationDao.editEntity(org);
 			}
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<String> getAllOrgComments() {
+		List<String> list = organizationDao.getAllOrgComments();
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public List<Organization> getOrganizationByComments(String orgComment) {
+		List<Organization> orgs = organizationDao.selectEntitys(DBRuleList.getInstance()
+				.add(new DBRule("COMMENTS", orgComment, "=")).add(new DBRule("STATE", "1", "=")).toList());
+		return orgs;
 	}
 
 }

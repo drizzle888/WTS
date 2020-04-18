@@ -121,4 +121,11 @@ public interface OrganizationDaoInter {
 	 * @param org
 	 */
 	public void insertSqlEntity(Organization org);
+
+	/**
+	 * 获得所有机构别名
+	 * 
+	 * @return
+	 */
+	public List<String> getAllOrgComments();
 }
