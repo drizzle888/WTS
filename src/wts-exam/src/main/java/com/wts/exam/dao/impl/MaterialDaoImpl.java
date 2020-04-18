@@ -137,10 +137,24 @@ public class MaterialDaoImpl extends HibernateSQLTools<Material>implements Mater
 	public List<Material> getMaterialsByPaperId(String paperId) {
 		Session session = sessionFatory.getCurrentSession();
 		SQLQuery sqlquery = session.createSQLQuery(
-				"select distinct c.ID as ID,c.CTIME as CTIME,c.ETIME as ETIME,c.CUSER as CUSER,c.EUSER as EUSER,c.PSTATE as PSTATE,c.PCONTENT as PCONTENT,c.TEXT as TEXT,c.TITLE as TITLE from WTS_PAPER_SUBJECT a left join WTS_SUBJECT b on a.SUBJECTID=b.ID left join WTS_MATERIAL c on c.id=b.MATERIALID where a.paperid=? and c.id is not null");
+				"select distinct c.ID as ID,C.UUID as UUID,c.CTIME as CTIME,c.ETIME as ETIME,c.CUSER as CUSER,c.EUSER as EUSER,c.PSTATE as PSTATE,c.PCONTENT as PCONTENT,c.TEXT as TEXT,c.TITLE as TITLE from WTS_PAPER_SUBJECT a left join WTS_SUBJECT b on a.SUBJECTID=b.ID left join WTS_MATERIAL c on c.id=b.MATERIALID where a.paperid=? and c.id is not null");
 		sqlquery.setString(0, paperId);
 		@SuppressWarnings("unchecked")
 		List<Material> list = (List<Material>) sqlquery.addEntity(Material.class).list();
 		return list;
+	}
+
+	@Override
+	public String getIdByUuid(String uuid) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select ID from WTS_MATERIAL where uuid=?");
+		sqlquery.setString(0, uuid);
+		@SuppressWarnings("unchecked")
+		List<String> list = (List<String>) sqlquery.list();
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
 	}
 }

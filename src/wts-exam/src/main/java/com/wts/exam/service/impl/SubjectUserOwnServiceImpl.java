@@ -62,7 +62,21 @@ public class SubjectUserOwnServiceImpl implements SubjectUserOwnServiceInter {
 			}
 		}
 	}
-
+	@Override
+	@Transactional
+	public void addFinishStandardSubject(String subjectid, Boolean isRight, LoginUser user) {
+		if (user != null) {
+			// 統計用戶答題
+			examStatServiceImpl.addFinishSubjectNum(subjectid, isRight, user);
+		}
+		{
+			// 更新题统计
+			subjectServiceImpl.addDoNum(subjectid);
+			if (isRight != null && isRight) {
+				subjectServiceImpl.addRightNum(subjectid);
+			}
+		}
+	}
 	/**
 	 * 创建一个用户题
 	 * 

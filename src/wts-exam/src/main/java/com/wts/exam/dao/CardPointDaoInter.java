@@ -99,4 +99,12 @@ public interface CardPointDaoInter {
 	 *            统计条件
 	 */
 	public int countEntitys(List<DBRule> rules);
+
+	/**
+	 * 获得答题室所有题得分信息（含有subjectid和题得分和满分信息）
+	 * 
+	 * @param roomid
+	 * @return POINT,MPOINT,SUBJECTID,USERID
+	 */
+	public List<Map<String, Object>> getAllRoomCardPoints(String roomid);
 }

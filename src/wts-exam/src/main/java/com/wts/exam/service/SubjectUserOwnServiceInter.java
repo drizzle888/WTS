@@ -22,6 +22,13 @@ public interface SubjectUserOwnServiceInter {
 	 * @param user
 	 */
 	public void addFinishTestSubject(String subjectid, Boolean isRight, LoginUser user);
+	
+	/**添加一道用戶完成的題(记录非练习题,考试题)
+	 * @param subjectid
+	 * @param isRight
+	 * @param user
+	 */
+	public void addFinishStandardSubject(String subjectid, Boolean isRight, LoginUser user);
 
 	/**
 	 * 删除实体管理实体

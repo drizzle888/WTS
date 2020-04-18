@@ -107,4 +107,10 @@ public interface MaterialDaoInter {
 	 * @return
 	 */
 	public List<Material> getMaterialsByPaperId(String paperId);
+
+	/**通过UUID获得ID（無返回null）
+	 * @param uuid
+	 * @return
+	 */
+	public String getIdByUuid(String uuid);
 }

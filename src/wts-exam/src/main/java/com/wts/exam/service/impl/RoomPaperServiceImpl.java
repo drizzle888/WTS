@@ -1,6 +1,8 @@
 package com.wts.exam.service.impl;
 
 import com.wts.exam.domain.RoomPaper;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import com.wts.exam.dao.RoomPaperDaoInter;
 import com.wts.exam.service.RoomPaperServiceInter;
@@ -9,6 +11,9 @@ import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DataQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 import javax.annotation.Resource;
 import com.farm.core.auth.domain.LoginUser;
 
@@ -109,5 +114,25 @@ public class RoomPaperServiceImpl implements RoomPaperServiceInter {
 		RoomPaper entity = getRoompaperEntity(roompaperid);
 		entity.setName(null);
 		roompaperDaoImpl.editEntity(entity);
+	}
+
+	@Override
+	@Transactional
+	public String getPaperAlias(String roomid, String paperId) {
+		if (StringUtils.isBlank(roomid) || StringUtils.isBlank(paperId)) {
+			return null;
+		}
+		List<RoomPaper> rpList = roompaperDaoImpl.selectEntitys(DBRuleList.getInstance()
+				.add(new DBRule("PAPERID", paperId, "=")).add(new DBRule("ROOMID", roomid, "=")).toList());
+		if (rpList.size() >= 0) {
+			return rpList.get(0).getName();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public String getPaperAlias(String cardId) {
+		return roompaperDaoImpl.getPaperAliasByCardId(cardId);
 	}
 }

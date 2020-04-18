@@ -77,4 +77,21 @@ public interface RoomPaperServiceInter {
 	 * @param currentUser
 	 */
 	public void clearOtherName(String roompaperid, LoginUser currentUser);
+
+	/**
+	 * 获得答卷别名
+	 * 
+	 * @param roomid
+	 * @param paperId
+	 * @return
+	 */
+	public String getPaperAlias(String roomid, String paperId);
+
+	/**
+	 * 获得答卷别名(只能獲得未歸檔的答題卡)
+	 * 
+	 * @param cardId
+	 * @return
+	 */
+	public String getPaperAlias(String cardId);
 }

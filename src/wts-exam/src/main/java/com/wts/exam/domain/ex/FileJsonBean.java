@@ -2,7 +2,11 @@ package com.wts.exam.domain.ex;
 
 import com.farm.doc.domain.FarmDocfile;
 
-public class FileJsonBean {
+public class FileJsonBean implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2165169049243720411L;
 	private FarmDocfile info;
 	private String base64;
 

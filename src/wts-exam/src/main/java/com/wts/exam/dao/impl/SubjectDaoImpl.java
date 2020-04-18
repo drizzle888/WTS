@@ -3,6 +3,7 @@ package com.wts.exam.dao.impl;
 import java.math.BigInteger;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -142,5 +143,32 @@ public class SubjectDaoImpl extends HibernateSQLTools<Subject>implements Subject
 		@SuppressWarnings("unchecked")
 		List<Subject> list = (List<Subject>) sqlquery.addEntity(Subject.class).list();
 		return list;
+	}
+
+	@Override
+	public String getIdByUuid(String uuid) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select ID from WTS_SUBJECT where uuid=?");
+		sqlquery.setString(0, uuid);
+		@SuppressWarnings("unchecked")
+		List<String> list = (List<String>) sqlquery.list();
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public Subject getEntityByUuid(String uuid) {
+		Session session = sessionFatory.getCurrentSession();
+		Query query = session.createQuery("from Subject where uuid=?");
+		query.setString(0, uuid);
+		List<Subject> list = (List<Subject>) query.list();
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
 	}
 }

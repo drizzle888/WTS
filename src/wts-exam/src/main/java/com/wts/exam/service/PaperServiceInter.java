@@ -4,9 +4,11 @@ import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.ex.ChapterUnit;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.SubjectUnit;
+import com.wts.exam.domain.ex.WtsPaperBean;
 import com.farm.core.sql.query.DataQuery;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import com.farm.core.auth.domain.LoginUser;
@@ -190,5 +192,15 @@ public interface PaperServiceInter {
 	 * @param currentUser
 	 * @return
 	 */
-	public File exprotWtsp(String paperId, LoginUser currentUser);
+	public File exprotWtsp(String paperId, LoginUser currentUser) throws IOException;
+
+	/**
+	 * 由wtsp對象导入答卷
+	 * 
+	 * @param bean
+	 * @param examType
+	 * @param examType2
+	 * @return
+	 */
+	public String importByWtsPaperBean(WtsPaperBean bean, String examTypeId, String subjectTypeId, LoginUser user);
 }

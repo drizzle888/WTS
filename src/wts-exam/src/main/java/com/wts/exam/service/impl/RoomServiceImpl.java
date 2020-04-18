@@ -17,6 +17,7 @@ import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.wts.exam.dao.CardPointDaoInter;
 import com.wts.exam.dao.ExamTypeDaoInter;
 import com.wts.exam.dao.PaperDaoInter;
 import com.wts.exam.dao.PaperUserOwnDaoInter;
@@ -29,6 +30,7 @@ import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.ExamPopsServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.RoomServiceInter;
+import com.wts.exam.service.SubjectUserOwnServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DataQuery;
@@ -44,6 +46,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.farm.authority.FarmAuthorityService;
 import com.farm.core.auth.domain.AnonymousUser;
 import com.farm.core.auth.domain.LoginUser;
 
@@ -82,6 +85,10 @@ public class RoomServiceImpl implements RoomServiceInter {
 	private CardHisServiceInter cardHisServiceImpl;
 	@Resource
 	private PaperUserOwnDaoInter paperuserownDaoImpl;
+	@Resource
+	private SubjectUserOwnServiceInter subjectUserOwnServiceImpl;
+	@Resource
+	private CardPointDaoInter cardPointDaoImpl;
 	private static final Logger log = Logger.getLogger(RoomServiceImpl.class);
 
 	@Override
@@ -468,6 +475,19 @@ public class RoomServiceImpl implements RoomServiceInter {
 	@Override
 	@Transactional
 	public void backupRoom(String roomid, LoginUser currentUser) throws Exception {
+		// 将用户答题信息进行统计汇总 POINT,MPOINT,SUBJECTID,USERID
+		List<Map<String, Object>> cardPoints = cardPointDaoImpl.getAllRoomCardPoints(roomid);
+		for (Map<String, Object> node : cardPoints) {
+			try {// 统计答题记录，题记录和用户记录
+				int point = (int) node.get("POINT");
+				int mpoint = (int) node.get("MPOINT");
+				subjectUserOwnServiceImpl.addFinishStandardSubject((String) node.get("SUBJECTID"),
+						(point == mpoint && mpoint > 0),
+						FarmAuthorityService.getInstance().getUserById((String) node.get("USERID")));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		// 归档状态
 		editState(roomid, "4", currentUser);
 		// 归档用户成绩

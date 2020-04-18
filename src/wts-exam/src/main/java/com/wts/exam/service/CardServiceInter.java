@@ -201,7 +201,7 @@ public interface CardServiceInter {
 	 *            题目版本id
 	 * @param value
 	 *            用户答案
-	 * @return
+	 * @return （0~100）
 	 */
 	public int countSubjectPoint(SubjectUnit subjectUnit);
 

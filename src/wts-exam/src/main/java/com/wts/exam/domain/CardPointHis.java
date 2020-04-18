@@ -35,7 +35,14 @@ public class CardPointHis implements java.io.Serializable {
 	private String cardid;
 	@Column(name = "POINT", length = 10)
 	private Integer point;
-
+	@Column(name = "MPOINT", length = 10)
+    private Integer mpoint;
+	public Integer getMpoint() {
+		return mpoint;
+	}
+	public void setMpoint(Integer mpoint) {
+		this.mpoint = mpoint;
+	}
 	public String getComplete() {
 		return this.complete;
 	}

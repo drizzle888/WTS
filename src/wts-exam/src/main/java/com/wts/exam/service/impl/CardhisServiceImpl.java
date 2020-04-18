@@ -16,6 +16,7 @@ import com.wts.exam.dao.CardPointHisDaoInter;
 import com.wts.exam.dao.PaperDaoInter;
 import com.wts.exam.dao.RoomDaoInter;
 import com.wts.exam.service.CardHisServiceInter;
+import com.wts.exam.service.RoomPaperServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DBSort;
@@ -57,6 +58,8 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 	private CardPointDaoInter cardPointDaoImpl;
 	@Resource
 	private PaperDaoInter paperDaoImpl;
+	@Resource
+	RoomPaperServiceInter roomPaperServiceImpl;
 	private static final Logger log = Logger.getLogger(CardhisServiceImpl.class);
 
 	@Override
@@ -153,6 +156,11 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 			String paperName = null;
 			if (paper != null) {
 				paperName = paper.getName();
+				// 答卷别名
+				String paperAlias = roomPaperServiceImpl.getPaperAlias(roomid, paper.getId());
+				if (paperAlias != null) {
+					paperName = paperAlias;
+				}
 			} else {
 				// 答卷在归档前有可能被删除
 				paperName = "失效答卷";
@@ -175,7 +183,7 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 	@Transactional
 	public DataQuery createUserCardQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
-				"(( SELECT ID AS CARDID,USERID, PSTATE, ROOMNAME, PAPERNAME, POINT, STARTTIME,'BACK' as SOURCE FROM WTS_CARD_HIS ) UNION ( SELECT a.ID AS CARDID,a.USERID as USERID, a.PSTATE AS PSTATE, b. NAME AS ROOMNAME, c. NAME AS PAPERNAME, a.POINT AS POINT, a.STARTTIME AS STARTTIME,'LIVE' as SOURCE FROM WTS_CARD a LEFT JOIN WTS_ROOM b ON b.ID = a.ROOMID LEFT JOIN wts_paper c ON c.id = a.PAPERID where a.PSTATE='6' or a.PSTATE='7')) ALLDATA",
+				"(( SELECT ID AS CARDID,USERID, PSTATE, ROOMNAME, PAPERNAME, POINT, STARTTIME,'BACK' as SOURCE FROM WTS_CARD_HIS ) UNION ( SELECT a.ID AS CARDID,a.USERID as USERID, a.PSTATE AS PSTATE, b. NAME AS ROOMNAME, c. NAME AS PAPERNAME, a.POINT AS POINT, a.STARTTIME AS STARTTIME,'LIVE' as SOURCE FROM WTS_CARD a LEFT JOIN WTS_ROOM b ON b.ID = a.ROOMID LEFT JOIN wts_paper c ON c.id = a.PAPERID where a.PSTATE='7')) ALLDATA",
 				"CARDID, PSTATE, ROOMNAME,USERID, PAPERNAME, POINT, STARTTIME,SOURCE");
 		dbQuery.addDefaultSort(new DBSort("STARTTIME", "desc"));
 		return dbQuery;

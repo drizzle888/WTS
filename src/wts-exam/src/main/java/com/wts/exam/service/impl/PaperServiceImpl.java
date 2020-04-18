@@ -4,11 +4,14 @@ import com.wts.exam.domain.Material;
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.PaperChapter;
 import com.wts.exam.domain.PaperSubject;
+import com.wts.exam.domain.Subject;
+import com.wts.exam.domain.SubjectAnalysis;
+import com.wts.exam.domain.SubjectAnswer;
 import com.wts.exam.domain.SubjectType;
 import com.wts.exam.domain.SubjectVersion;
 import com.wts.exam.domain.ex.ChapterUnit;
 import com.wts.exam.domain.ex.FileJsonBean;
-import com.wts.exam.domain.ex.PaperJsonBean;
+import com.wts.exam.domain.ex.WtsPaperBean;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.domain.ex.SubjectUnit;
 import com.wts.exam.domain.ex.TipType;
@@ -17,10 +20,11 @@ import com.farm.doc.dao.FarmDocfileDaoInter;
 import com.farm.doc.domain.FarmDocfile;
 import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
+import com.farm.doc.server.FarmFileManagerInter.FILE_TYPE;
 import com.farm.doc.server.commons.FarmDocFiles;
 import com.farm.parameter.FarmParameterService;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -45,6 +49,7 @@ import com.wts.exam.service.SubjectAnswerServiceInter;
 import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.SubjectTypeServiceInter;
 import com.wts.exam.service.SubjectVersionServiceInter;
+import com.wts.exam.utils.PaperJsonBeanUtils;
 import com.wts.exam.utils.WordPaperCreator;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
@@ -69,6 +74,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -592,13 +598,13 @@ public class PaperServiceImpl implements PaperServiceInter {
 
 	@Override
 	@Transactional
-	public File exprotWtsp(String paperId, LoginUser user) {
+	public File exprotWtsp(String paperId, LoginUser user) throws IOException {
 		if (StringUtils.isBlank(paperId)) {
 			throw new RuntimeException("the papaerId is not exist:" + paperId);
 		}
 		// 获取一个空得docx文件
 		File papaerFile = getUserPaperFile(user, "wtsp");
-		PaperJsonBean paperj = new PaperJsonBean();
+		WtsPaperBean paperj = new WtsPaperBean();
 		paperj.setPaper(paperDaoImpl.getEntity(paperId));
 		paperj.setChapters(paperchapterDaoImpl
 				.selectEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", paperId, "=")).toList()));
@@ -628,12 +634,199 @@ public class PaperServiceImpl implements PaperServiceInter {
 			jsonfiles.add(jfile);
 		}
 		paperj.setFiles(jsonfiles);
-		String jsonStr = JSON.toJSONString(paperj);
-		try {
-			FileUtils.writeStringToFile(papaerFile, jsonStr);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		PaperJsonBeanUtils.writeToFile(papaerFile, paperj);
 		return papaerFile;
+	}
+
+	@Override
+	@Transactional
+	public String importByWtsPaperBean(WtsPaperBean bean, String examTypeId, String subjectTypeId, LoginUser user) {
+		// 判断答卷是否存在
+		String paperUuid = bean.getPaper().getUuid();
+		Paper existPaper = paperDaoImpl.getEntityByUuid(paperUuid);
+		if (existPaper != null) {
+			// 该答卷已经存在
+			throw new RuntimeException("该答卷已经存在：" + existPaper.getName()+":"+existPaper.getId());
+		}
+		// 所有旧ID和新ID的映射
+		Map<String, String> idDic = new HashMap<>();
+		// 附件旧id和新id的映射
+		Map<String, String> fileIdDic = new HashMap<>();
+		// 章节旧id和新id的映射
+		Map<String, String> chapterIdDic = new HashMap<>();
+		// // --附件表(含附件的base64数据)
+		// 附件
+		for (FileJsonBean file : bean.getFiles()) {
+			byte[] fileByte = Base64.decodeBase64(file.getBase64());
+			String newid = farmFileManagerImpl.saveFile(fileByte, FILE_TYPE.parseType(file.getInfo().getType()),
+					file.getInfo().getName(), user);
+			idDic.put(file.getInfo().getId(), newid);
+			fileIdDic.put(file.getInfo().getId(), newid);
+		}
+		// // --题目5张表
+		// 材料
+		for (Material material : bean.getMaterials()) {
+			String oid = material.getId();
+			String existId = materialDaoImpl.getIdByUuid(material.getUuid());
+			if (existId != null) {
+				// 存在就不重复创建
+				idDic.put(oid, existId);
+			} else {
+				material.setId(null);
+				material.setCuser(user.getId());
+				material.setEuser(user.getId());
+				material.setText(raplaceWtspFileId(material.getText(), fileIdDic, "题材料"));
+				material = materialDaoImpl.insertEntity(material);
+				idDic.put(oid, material.getId());
+			}
+		}
+		// 题
+		for (Subject subject : bean.getSubjects()) {
+			// 1.题
+			String subjectoid = subject.getId();
+			Subject existSubject = subjectDaoImpl.getEntityByUuid(subject.getUuid());
+			if (existSubject != null) {
+				// 已经存在就不重复创建
+				idDic.put(subjectoid, existSubject.getId());
+				idDic.put(subject.getVersionid(), existSubject.getVersionid());
+			} else {
+				subject.setId(null);
+				subject.setTypeid(subjectTypeId);
+				subject.setMaterialid(idDic.get(subject.getMaterialid()));
+				subject.setPraisenum(0);
+				subject.setCommentnum(0);
+				subject.setDonum(0);
+				subject.setRightnum(0);
+				subject = subjectDaoImpl.insertEntity(subject);
+				idDic.put(subjectoid, subject.getId());
+				// 2.题版本
+				for (SubjectVersion version : bean.getSubjectVersions()) {
+					if (version.getSubjectid().equals(subjectoid)) {
+						String versionoid = version.getId();
+						version.setId(null);
+						version.setCuser(user.getId());
+						version.setCusername(user.getName());
+						version.setSubjectid(subject.getId());
+						version.setTipnote(raplaceWtspFileId(version.getTipnote(), fileIdDic, "题版本"));
+						version = subjectversionDaoImpl.insertEntity(version);
+						idDic.put(versionoid, version.getId());
+						// 3.题答案
+						for (SubjectAnswer answer : bean.getSubjectAnswers()) {
+							if (answer.getVersionid().equals(versionoid)) {
+								String answeroid = answer.getId();
+								answer.setCuser(user.getId());
+								answer.setCusername(user.getName());
+								answer.setVersionid(version.getId());
+								answer.setAnswernote(raplaceWtspFileId(answer.getAnswernote(), fileIdDic, "题答案"));
+								answer = subjectanswerDaoImpl.insertEntity(answer);
+								idDic.put(answeroid, answer.getId());
+							}
+						}
+					}
+				}
+				// 4.题解析
+				for (SubjectAnalysis analysis : bean.getSubjectAnalysies()) {
+					if (analysis.getSubjectid().equals(subjectoid)) {
+						String oid = analysis.getId();
+						analysis.setCuser(user.getId());
+						analysis.setCusername(user.getName());
+						analysis.setSubjectid(subject.getId());
+						analysis.setText(raplaceWtspFileId(analysis.getText(), fileIdDic, "题解析"));
+						analysis = SubjectAnalysisDaoImpl.insertEntity(analysis);
+						idDic.put(oid, analysis.getId());
+					}
+				}
+				subject.setVersionid(idDic.get(subject.getVersionid()));
+				subjectDaoImpl.editEntity(subject);
+			}
+		}
+		// // --答卷3张表
+		// 1.答卷
+		{
+			{
+				Paper paper = bean.getPaper();
+				String oid = paper.getId();
+				paper.setExamtypeid(examTypeId);
+				paper.setCuser(user.getId());
+				paper.setCusername(user.getName());
+				paper.setEuser(user.getId());
+				paper.setEusername(user.getName());
+				paper.setCompletetnum(0);
+				paper.setBooknum(0);
+				paper.setAvgpoint(0);
+				paper.setToppoint(0);
+				paper.setLowpoint(0);
+				paper.setPapernote(raplaceWtspFileId(paper.getPapernote(), fileIdDic, "答卷"));
+				paper = paperDaoImpl.insertEntity(paper);
+				idDic.put(oid, paper.getId());
+			}
+			// 2.答卷章节
+			for (PaperChapter chapter : bean.getChapters()) {
+				String oid = chapter.getId();
+				chapter.setTextnote(raplaceWtspFileId(chapter.getTextnote(), fileIdDic, "答卷章节"));
+				chapter.setPaperid(idDic.get(chapter.getPaperid()));
+				chapter = paperchapterDaoImpl.insertEntity(chapter);
+				idDic.put(oid, chapter.getId());
+				chapterIdDic.put(oid, chapter.getId());
+			}
+			// 3.答卷题
+			for (PaperSubject psubject : bean.getPaperSubjects()) {
+				String oid = psubject.getId();
+				psubject.setVersionid(idDic.get(psubject.getVersionid()));
+				psubject.setSubjectid(idDic.get(psubject.getSubjectid()));
+				psubject.setChapterid(idDic.get(psubject.getChapterid()));
+				psubject.setPaperid(idDic.get(psubject.getPaperid()));
+				psubject = papersubjectDaoImpl.insertEntity(psubject);
+				idDic.put(oid, psubject.getId());
+			}
+			// 最后再处理章节的parentid，treeid和答卷的版本id，因为之前关联数据还没有创建
+			{
+				// 处理chapters:parentid和treecode
+				for (PaperChapter chapter : bean.getChapters()) {
+					chapter = paperchapterDaoImpl.getEntity(chapter.getId());
+					String parentid = chapterIdDic.get(chapter.getParentid());
+					if (StringUtils.isBlank(parentid)) {
+						chapter.setParentid("NONE");
+					} else {
+						chapter.setParentid(parentid);
+					}
+					String treecode = chapter.getTreecode();
+					for (Entry<String, String> entry : chapterIdDic.entrySet()) {
+						treecode = treecode.replace(entry.getKey(), entry.getValue());
+					}
+					chapter.setTreecode(treecode);
+					paperchapterDaoImpl.editEntity(chapter);
+				}
+			}
+		}
+		{// 处理无用附件
+			for (Entry<String, String> file : fileIdDic.entrySet()) {
+				String fileid = file.getValue();
+				FarmDocfile dfile = farmFileManagerImpl.getFile(fileid);
+				if (dfile.getPstate().equals("0")) {
+					farmFileManagerImpl.delFile(fileid, user);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 替换wtfp数据中富文本中的附件id
+	 * 
+	 * @param htmltext
+	 * @param fileIdDic
+	 * @return
+	 */
+	private String raplaceWtspFileId(String htmltext, Map<String, String> fileIdDic, String filenote) {
+		if (htmltext != null) {
+			for (Entry<String, String> iddic : fileIdDic.entrySet()) {
+				if (htmltext.indexOf(iddic.getKey()) >= 0) {
+					htmltext = htmltext.replaceAll(iddic.getKey(), iddic.getValue());
+					farmFileManagerImpl.submitFile(iddic.getValue(), "wtsp导入" + filenote);
+				}
+			}
+		}
+		return htmltext;
 	}
 }

@@ -107,4 +107,8 @@ public interface SubjectDaoInter {
 	 * @return
 	 */
 	public List<Subject> getSubjectsByPaperId(String paperId);
+
+	public String getIdByUuid(String uuid);
+
+	public Subject getEntityByUuid(String uuid);
 }

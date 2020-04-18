@@ -3,10 +3,12 @@ package com.wts.exam.dao.impl;
 import java.math.BigInteger;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.wts.exam.domain.Paper;
+import com.wts.exam.domain.Subject;
 import com.wts.exam.dao.PaperDaoInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
@@ -131,5 +133,18 @@ public class PaperDaoImpl extends HibernateSQLTools<Paper>implements PaperDaoInt
 	@Override
 	protected SessionFactory getSessionFactory() {
 		return sessionFatory;
+	}
+	
+	@Override
+	public Paper getEntityByUuid(String uuid) {
+		Session session = sessionFatory.getCurrentSession();
+		Query query = session.createQuery("from Paper where uuid=?");
+		query.setString(0, uuid);
+		List<Paper> list = (List<Paper>) query.list();
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
 	}
 }

@@ -3,14 +3,19 @@ package com.wts.exam.controller;
 import com.wts.exam.domain.ExamType;
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.RandomStep;
+import com.wts.exam.domain.ex.WtsPaperBean;
 import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.RandomItemServiceInter;
+import com.wts.exam.utils.PaperJsonBeanUtils;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +24,8 @@ import com.farm.web.easyui.EasyUiUtils;
 import com.farm.web.log.WcpLog;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -165,10 +172,11 @@ public class PaperController extends WebUtils {
 	 * 下载Json答卷
 	 * 
 	 * @return
+	 * @throws IOException
 	 */
 	@RequestMapping("/exportWtsp")
 	public void exportWtsp(String paperid, HttpServletRequest request, HttpServletResponse response,
-			HttpSession session) {
+			HttpSession session) throws IOException {
 		WcpLog.info("导出JSON.wtsp答卷" + paperid, getCurrentUser(session).getName(), getCurrentUser(session).getId());
 		log.info(getCurrentUser(session).getLoginname() + "/" + getCurrentUser(session).getName() + "导出答卷" + paperid);
 		File file = paperServiceImpl.exprotWtsp(paperid, getCurrentUser(session));
@@ -465,6 +473,53 @@ public class PaperController extends WebUtils {
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 到达人员导入页面
+	 * 
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/toWtspImport")
+	public ModelAndView toUserImport() {
+		try {
+			return ViewMode.getInstance().returnModelAndView("exam/PaperWtspImport");
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView("exam/PaperWtspImport");
+		}
+	}
+
+	/**
+	 * 完成wtsp导入
+	 * 
+	 * @return Map<String,Object>
+	 */
+	@RequestMapping("/doWtspImport")
+	@ResponseBody
+	public Map<String, Object> doUserImport(@RequestParam(value = "file", required = false) MultipartFile file,
+			String examType, String subjectType, HttpSession session) {
+		try {
+			// 校验数据有效性
+			CommonsMultipartFile cmfile = (CommonsMultipartFile) file;
+			if (cmfile.getSize() >= 10000000) {
+				throw new RuntimeException("文件不能大于10M");
+			}
+			if (cmfile.isEmpty()) {
+				throw new RuntimeException("请上传有效文件!");
+			}
+			InputStream is = cmfile.getInputStream();
+			try {
+				WtsPaperBean bean = PaperJsonBeanUtils.readFromFile(is);
+				paperServiceImpl.importByWtsPaperBean(bean, examType, subjectType, getCurrentUser(session));
+			} finally {
+				is.close();
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}

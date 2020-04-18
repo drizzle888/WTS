@@ -344,6 +344,7 @@ public class CardServiceImpl implements CardServiceInter {
 			{
 				CardPoint cardsub = null;
 				cardsub = new CardPoint();
+				cardsub.setMpoint(basePoint);
 				cardsub.setCardid(unit.getCardSubject().getCardid());
 				cardsub.setVersionid(unit.getVersion().getId());
 				if (unit.getTipType().equals(TipType.CheckBox) || unit.getTipType().equals(TipType.Select)
