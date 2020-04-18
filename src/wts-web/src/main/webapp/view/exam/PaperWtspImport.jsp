@@ -65,6 +65,16 @@
 	});
 
 	function doWtspImport() {
+		if($('#entity_examTypeId').combotree('getValue')=="NONE"){
+			$.messager.alert('警告','请勿选择根分类!');   
+			$('#entity_examTypeId').combotree('setValue','');
+			$('#entity_examTypeId').combotree('setText','');
+		}
+		if($('#entity_subjectTypeId').combotree('getValue')=="NONE"){
+			$.messager.alert('警告','请勿选择根分类!');   
+			$('#entity_subjectTypeId').combotree('setValue','');
+			$('#entity_subjectTypeId').combotree('setText','');
+		}
 		if ($('#doWtspImportForm').form('validate')) {
 			var formData = new FormData($("#doWtspImportForm")[0]);
 			var doWtspImportMessage = $("#doWtspImportMessage");
