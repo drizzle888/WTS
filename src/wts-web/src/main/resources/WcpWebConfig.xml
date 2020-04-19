@@ -43,6 +43,10 @@
 			<val>true</val>
 			<describe>是否允许重复登陆,如果不允许则新登陆的用户会顶掉之前登陆的用户</describe>
 		</parameter>
+		<parameter name="config.login.onameanduname.able">
+			<val>false</val>
+			<describe>是否允许用组织机构备注加用户名方式登陆</describe>
+		</parameter>
 		<parameter name="config.sys.firstBind.message">
 			<val>欢迎使用本系统!</val>
 			<describe>用户首次通过外部账号绑定到系统登录后收到的提示信息</describe>

@@ -2,10 +2,13 @@ package com.farm.wcp.userfunc;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.farm.authority.domain.Organization;
 import com.farm.authority.domain.User;
 import com.farm.authority.service.OrganizationServiceInter;
 import com.farm.authority.service.UserServiceInter;
+import com.farm.parameter.FarmParameterService;
 import com.farm.util.spring.BeanFactory;
 
 /**
@@ -15,8 +18,12 @@ import com.farm.util.spring.BeanFactory;
  *
  */
 public class JlscUtils {
-
 	public static String getUserLoginName(String orgBNAMEAndUserName) {
+		boolean jlscloginAble = FarmParameterService.getInstance()
+				.getParameterBoolean("config.login.onameanduname.able");
+		if (!jlscloginAble) {
+			return null;
+		}
 		if (orgBNAMEAndUserName == null) {
 			return orgBNAMEAndUserName;
 		}
@@ -28,19 +35,21 @@ public class JlscUtils {
 		String username = null;
 		Organization org = null;
 		for (String orgComment : orgComments) {
-			if (orgBNAMEAndUserName.startsWith(orgComment)) {
-				username = orgBNAMEAndUserName.replace(orgComment, "");
-				// 1.1查询组织机构
-				List<Organization> orgs = orgServer.getOrganizationByComments(orgComment);
-				if (orgs.size() > 1) {
-					throw new RuntimeException("別名对应多个组织机构：" + orgComment);
+			if (StringUtils.isNotBlank(orgComment)) {
+				if (orgBNAMEAndUserName.startsWith(orgComment)) {
+					username = orgBNAMEAndUserName.replace(orgComment, "");
+					// 1.1查询组织机构
+					List<Organization> orgs = orgServer.getOrganizationByComments(orgComment);
+					if (orgs.size() > 1) {
+						throw new RuntimeException("別名对应多个组织机构：" + orgComment);
+					}
+					if (orgs.size() <= 0) {
+						throw new RuntimeException("別名未对应到组织机构：" + orgComment);
+					} else {
+						org = orgs.get(0);
+					}
+					break;
 				}
-				if (orgs.size() <= 0) {
-					throw new RuntimeException("別名未对应到组织机构：" + orgComment);
-				} else {
-					org = orgs.get(0);
-				}
-				break;
 			}
 		}
 		if (username == null) {
