@@ -34,6 +34,15 @@ public interface FarmFileManagerInter {
 		FILE_TYPE(String value) {
 			this.value = value;
 		}
+
+		public static FILE_TYPE parseType(String var) {
+			for (FILE_TYPE type : FILE_TYPE.values()) {
+				if (type.getValue().equals(var)) {
+					return type;
+				}
+			}
+			return null;
+		}
 	}
 
 	public enum FILE_APPLICATION_TYPE {
