@@ -17,6 +17,16 @@
 			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
 		</attribute>
 	</tag>
+	<tag><!-- html标签转义 -->
+		<name>HtmlEscape</name>
+		<tag-class>com.farm.tip.tag.HtmlEscape</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>text</name><!-- 字段索引名 -->
+			<required>true</required><!-- 是否必填 -->
+			<rtexprvalue>true</rtexprvalue><!-- 是否能够以${}方式传值 -->
+		</attribute>
+	</tag>
 	<tag><!--初始化多媒体标签 -->
 		<name>InitHtmlContentTag</name>
 		<tag-class>com.farm.tip.tag.InitHtmlContentTag</tag-class>
