@@ -32,6 +32,14 @@ public class WtsPaperBean implements java.io.Serializable {
 	private List<Material> materials;
 	// --附件表(含附件的base64数据)
 	private List<FileJsonBean> files;
+	private String version;
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	public Paper getPaper() {
 		return paper;

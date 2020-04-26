@@ -33,6 +33,8 @@ public class Card implements java.io.Serializable {
 	private String endtime;
 	@Column(name = "PSTATE", length = 2, nullable = false)
 	private String pstate;
+	@Column(name = "OVERTIME", length = 2, nullable = false)
+	private String overtime;
 	@Column(name = "STARTTIME", length = 16)
 	private String starttime;
 	@Column(name = "ADJUDGETIME", length = 16)
@@ -53,6 +55,15 @@ public class Card implements java.io.Serializable {
 	private Integer completenum;
 	@Column(name = "ALLNUM", length = 10)
 	private Integer allnum;
+
+	
+	public String getOvertime() {
+		return overtime;
+	}
+
+	public void setOvertime(String overtime) {
+		this.overtime = overtime;
+	}
 
 	public Integer getCompletenum() {
 		return completenum;

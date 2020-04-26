@@ -386,30 +386,34 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	@Override
 	@Transactional
 	public SubjectUnit parseSubjectJsonVal(String jsons) {
-		SubjectUnit backUnit = null;
-		JsonParser parse = new JsonParser();
-		JsonArray jsonArray = (JsonArray) parse.parse(jsons);
-		for (JsonElement obj : jsonArray) {
-			if (obj.isJsonObject()) {
-				JsonObject sjonObj = obj.getAsJsonObject();
-				String versionid = sjonObj.get("versionid").getAsString();
-				String answerid = sjonObj.get("answerid").getAsString();
-				String value = sjonObj.get("value").getAsString();
-				if (backUnit == null) {
-					backUnit = getSubjectUnit(versionid);
-				}
-				if (StringUtils.isBlank(answerid) || answerid.toUpperCase().equals("NONE")) {
-					backUnit.setVal(value);
-				} else {
-					for (AnswerUnit answer : backUnit.getAnswers()) {
-						if (answer.getAnswer().getId().equals(answerid)) {
-							answer.setVal(value);
+		try {
+			SubjectUnit backUnit = null;
+			JsonParser parse = new JsonParser();
+			JsonArray jsonArray = (JsonArray) parse.parse(jsons);
+			for (JsonElement obj : jsonArray) {
+				if (obj.isJsonObject()) {
+					JsonObject sjonObj = obj.getAsJsonObject();
+					String versionid = sjonObj.get("versionid").getAsString();
+					String answerid = sjonObj.get("answerid").getAsString();
+					String value = sjonObj.get("value").getAsString();
+					if (backUnit == null) {
+						backUnit = getSubjectUnit(versionid);
+					}
+					if (StringUtils.isBlank(answerid) || answerid.toUpperCase().equals("NONE")) {
+						backUnit.setVal(value);
+					} else {
+						for (AnswerUnit answer : backUnit.getAnswers()) {
+							if (answer.getAnswer().getId().equals(answerid)) {
+								answer.setVal(value);
+							}
 						}
 					}
 				}
 			}
+			return backUnit;
+		} catch (Exception e) {
+			throw new RuntimeException(e.toString()+e.getMessage()+",错误发生在解析json时:"+jsons);
 		}
-		return backUnit;
 	}
 
 	@Override

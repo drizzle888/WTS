@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
+import javax.naming.spi.DirStateFactory.Result;
+
 import com.farm.web.easyui.EasyUiUtils;
 
 import java.util.ArrayList;
@@ -21,12 +23,15 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.loader.custom.ResultRowProcessor;
+
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
 import com.farm.core.page.OperateType;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.sql.result.ResultsHandle;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -74,9 +79,20 @@ public class RoomController extends WebUtils {
 				}
 			}
 			DataResult result = roomServiceImpl.createRoomSimpleQuery(query).search();
+			result.runHandle(new ResultsHandle() {
+				@Override
+				public void handle(Map<String, Object> row) {
+					if(!row.get("PSHOWTYPE").toString().equals("1")&&!row.get("PSHOWTYPE").toString().equals("2")){
+						row.put("TIMELEN", "-");
+						row.put("SSORTTYPE", "-");
+						row.put("OSORTTYPE", "-");
+						row.put("COUNTTYPE", "-");
+					}
+				}
+			});
 			result.runDictionary("1:固定,2:随机", "SSORTTYPE");
 			result.runDictionary("1:固定,2:随机", "OSORTTYPE");
-			result.runDictionary("1:标准答题,2:随机单套,3:习题练习", "PSHOWTYPE");
+			result.runDictionary("1:标准答题,2:随机抽取,3:习题练习,4:只读学习", "PSHOWTYPE");
 			result.runDictionary("1:永久,2:限时", "TIMETYPE");
 			result.runDictionary("1:指定人员,0:任何人员,2:匿名答题", "WRITETYPETITLE");
 			result.runDictionary("1:自动/人工,2:自动,3:人工", "COUNTTYPE");

@@ -8,7 +8,8 @@ import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.RandomItemServiceInter;
-import com.wts.exam.utils.PaperJsonBeanUtils;
+import com.wts.exam.service.SubjectTypeServiceInter;
+import com.wts.exam.utils.WtsPaperBeanUtils;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,8 @@ public class PaperController extends WebUtils {
 	private AloneApplogServiceInter aloneApplogServiceImpl;
 	@Resource
 	private RandomItemServiceInter randomItemServiceImpl;
-
+	@Resource
+	private SubjectTypeServiceInter subjectTypeServiceImpl;
 	/**
 	 * 查询结果集合
 	 * 
@@ -502,6 +504,9 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> doUserImport(@RequestParam(value = "file", required = false) MultipartFile file,
 			String examType, String subjectType, HttpSession session) {
 		try {
+			if(examTypeServiceImpl.getExamtypeEntity(examType)==null||subjectTypeServiceImpl.getSubjecttypeEntity(subjectType)==null){
+				throw new RuntimeException("请选择有效的业务分类和题库分类 !");
+			}
 			// 校验数据有效性
 			CommonsMultipartFile cmfile = (CommonsMultipartFile) file;
 			if (cmfile.getSize() >= 10000000) {
@@ -512,7 +517,7 @@ public class PaperController extends WebUtils {
 			}
 			InputStream is = cmfile.getInputStream();
 			try {
-				WtsPaperBean bean = PaperJsonBeanUtils.readFromFile(is);
+				WtsPaperBean bean = WtsPaperBeanUtils.readFromFile(is);
 				paperServiceImpl.importByWtsPaperBean(bean, examType, subjectType, getCurrentUser(session));
 			} finally {
 				is.close();

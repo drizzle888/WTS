@@ -204,13 +204,23 @@ public interface RoomServiceInter {
 	public List<String> getPapers(String roomid);
 
 	/**
-	 * 答卷是否支持在线练习(防止为发布为练习题的答卷被练习)
+	 * 答卷是否支持在线练习(防止未发布答卷被越权查看)
 	 * 
 	 * @param roomid
 	 * @param paperid
 	 * @return
 	 */
 	public boolean testAble(String roomid, String paperid);
+	/**
+	 * 答卷是否支持在线学习(防止未发布答卷被越权查看)
+	 * 
+	 * @param roomid
+	 * @param paperid
+	 * @return
+	 */
+	public boolean learnAble(String roomid, String paperid);
+	
+	
 
 	/**
 	 * 通过roomid和paperid获得保存别名的roompaper对象

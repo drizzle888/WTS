@@ -110,12 +110,12 @@ public interface CardServiceInter {
 	public void loadCardVal(PaperUnit paper, Card card);
 
 	/**
-	 * 答题卡是否可以答题（在答题时间内）
+	 * 答题卡是否在答题时间内
 	 * 
 	 * @param card
 	 * @return
 	 */
-	public boolean isAnswerAble(Card card);
+	public boolean isTheTimeAble(Card card);
 
 	/**
 	 * 裝載考場考卷答題人數和縂人數
@@ -284,4 +284,10 @@ public interface CardServiceInter {
 	 * @param currentUser
 	 */
 	public void clearRoomCard(String roomid, LoginUser currentUser);
+
+	/**重新判卷，將答題卡回復到提交狀態
+	 * @param cardId
+	 * @param currentUser
+	 */
+	public void reAdjudge(String id, LoginUser currentUser);
 }

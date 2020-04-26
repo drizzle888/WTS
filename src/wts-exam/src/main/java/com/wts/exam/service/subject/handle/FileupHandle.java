@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.time.TimeTool;
+import com.farm.doc.domain.FarmDocfile;
 import com.farm.doc.server.FarmFileManagerInter;
 import com.farm.util.spring.BeanFactory;
 import com.wts.exam.dao.SubjectDaoInter;
@@ -23,7 +24,7 @@ import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.subject.SubjectTipHandle;
 
 /**
- * 填空题的逻辑处理
+ * 附件题的逻辑处理
  * 
  * @author macpl
  *
@@ -97,7 +98,12 @@ public class FileupHandle implements SubjectTipHandle {
 			if (nuit.getVersion().getId().equals(val.getVersionid())) {
 				if (StringUtils.isNotBlank(val.getValstr())) {
 					nuit.setVal(val.getValstr());
-					nuit.setValtitle(fileServerIMP.getFile(val.getValstr()).getName());
+					FarmDocfile dfile=	fileServerIMP.getFile(val.getValstr());
+					if(dfile!=null){
+						nuit.setValtitle(fileServerIMP.getFile(val.getValstr()).getName());
+					}else{
+						nuit.setValtitle("未发现附件记录");    
+					}
 					fileServerIMP.submitFile(val.getValstr(), "附件题答案");
 					nuit.setFinishIs(true);
 				}

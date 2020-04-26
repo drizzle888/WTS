@@ -49,7 +49,7 @@ import com.wts.exam.service.SubjectAnswerServiceInter;
 import com.wts.exam.service.SubjectServiceInter;
 import com.wts.exam.service.SubjectTypeServiceInter;
 import com.wts.exam.service.SubjectVersionServiceInter;
-import com.wts.exam.utils.PaperJsonBeanUtils;
+import com.wts.exam.utils.WtsPaperBeanUtils;
 import com.wts.exam.utils.WordPaperCreator;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
@@ -634,7 +634,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 			jsonfiles.add(jfile);
 		}
 		paperj.setFiles(jsonfiles);
-		PaperJsonBeanUtils.writeToFile(papaerFile, paperj);
+		WtsPaperBeanUtils.writeToFile(papaerFile, paperj);
 		return papaerFile;
 	}
 

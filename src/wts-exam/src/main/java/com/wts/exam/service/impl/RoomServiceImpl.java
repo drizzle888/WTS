@@ -404,7 +404,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public void deleteRoomEntity(String id, LoginUser user) {
 		Room room = roomDaoImpl.getEntity(id);
 		// 1新建，0停用，2发布，3结束，4归档
-		if (room.getPstate().equals("1") || room.getPstate().equals("4") || room.getPstate().equals("0")) {
+		if (room.getPstate().equals("1")|| room.getPstate().equals("3") || room.getPstate().equals("4")) {
 			// 删除参考人员和考场试卷
 			roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 			roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
@@ -413,7 +413,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 			roomDaoImpl.deleteEntity(roomDaoImpl.getEntity(id));
 			farmFileManagerImpl.cancelFilesByApp(id);
 		} else {
-			throw new RuntimeException("只有新建、归档、停用状态的答题室可删除!");
+			throw new RuntimeException("只有新建、结束、归档状态的答题室可删除!");
 		}
 	}
 
@@ -440,14 +440,14 @@ public class RoomServiceImpl implements RoomServiceInter {
 		}
 		if (state.equals("3")) {
 			// 3结束(发布可结束)
-			if (!entity2.getPstate().equals("2")) {
-				throw new RuntimeException("只有发布状态可结束!");
+			if (!entity2.getPstate().equals("2")&&!entity2.getPstate().equals("0")) {
+				throw new RuntimeException("只有发布和停用状态可结束!");
 			}
 		}
 		if (state.equals("4")) {
 			// 4归档(结束和停用可归档)
-			if (!entity2.getPstate().equals("0") && !entity2.getPstate().equals("3")) {
-				throw new RuntimeException("只有结束和停用状态可归档!");
+			if (!entity2.getPstate().equals("3")) {
+				throw new RuntimeException("只有结束状态可归档!");
 			}
 		}
 		entity2.setPstate(state);
@@ -518,6 +518,27 @@ public class RoomServiceImpl implements RoomServiceInter {
 		// 房间是否练习间
 		Room entity = roomDaoImpl.getEntity(roomid);
 		if (!entity.getPshowtype().equals("3")) {
+			return false;
+		}
+		// 答卷是否在房间中
+		List<Paper> papers = getLivePapers(roomid);
+		for (Paper paper : papers) {
+			if (paper.getId().equals(paperid.trim())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	@Override
+	@Transactional
+	public boolean learnAble(String roomid, String paperid) {
+		// 房间id和答卷id是否为空
+		if (StringUtils.isBlank(roomid) || StringUtils.isBlank(paperid)) {
+			return false;
+		}
+		// 房间是否练习间
+		Room entity = roomDaoImpl.getEntity(roomid);
+		if (!entity.getPshowtype().equals("4")) {
 			return false;
 		}
 		// 答卷是否在房间中

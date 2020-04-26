@@ -116,7 +116,25 @@ public class CardController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-
+	
+	/**
+	 * 重新阅卷
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/reAdjudge")
+	@ResponseBody
+	public Map<String, Object> reAdjudge(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				cardServiceImpl.reAdjudge(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
 	@RequestMapping("/list")
 	public ModelAndView index(String roompaperId, HttpSession session) {
 		return ViewMode.getInstance().putAttr("roompaperId", roompaperId).returnModelAndView("exam/CardResult");

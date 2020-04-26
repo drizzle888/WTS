@@ -218,6 +218,7 @@ public class CardServiceImpl implements CardServiceInter {
 				card.setPoint((float) 0);
 				card.setPstate("1");
 				card.setRoomid(roomId);
+				card.setOvertime("0");
 				card.setUserid(currentUser.getId());
 				card = cardDaoImpl.insertEntity(card);
 			}
@@ -245,6 +246,7 @@ public class CardServiceImpl implements CardServiceInter {
 			Card card = cards.get(0);
 			String endTime = card.getEndtime();
 			if (TimeTool.getTimeDate14().compareTo(endTime) >= 0 && card.getPstate().equals("1")) {
+				// 把未交卷的答题卡设置为超时未交卷
 				card.setPstate("3");
 				cardDaoImpl.editEntity(card);
 			}
@@ -634,7 +636,7 @@ public class CardServiceImpl implements CardServiceInter {
 
 	@Override
 	@Transactional
-	public boolean isAnswerAble(Card card) {
+	public boolean isTheTimeAble(Card card) {
 		String endTime = card.getEndtime();
 		if (TimeTool.getTimeDate14().compareTo(endTime) >= 0) {
 			return false;
@@ -661,14 +663,14 @@ public class CardServiceImpl implements CardServiceInter {
 			thisQuery = DataQuery.init(query,
 					"WTS_ROOM_USER a LEFT JOIN WTS_CARD b ON a.USERID = b.USERID AND a.ROOMID = b.ROOMID " + paperRule
 							+ "  LEFT JOIN alone_auth_user c ON c.ID = a.USERID LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
-					"c. NAME AS NAME,d.NAME as PAPERNAME,d.id as PAPERID,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+					"c. NAME AS NAME,d.NAME as PAPERNAME,d.id as PAPERID,b.OVERTIME as OVERTIME,b.COMPLETENUM AS COMPLETENUM,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
 			thisQuery.addRule(new DBRule("A.ROOMID", roomId, "="));
 		}
 		if (room.getWritetype().equals("0")) {
 			// 0任何人
 			thisQuery = DataQuery.init(query,
 					"WTS_CARD b  LEFT JOIN alone_auth_user c ON c.ID = b.USERID LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
-					"c. NAME AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,d.id as PAPERID,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+					"c. NAME AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,b.OVERTIME as OVERTIME,d.id as PAPERID,b.ALLNUM as ALLNUM,c.ID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS endtime, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
 			if (StringUtils.isNotBlank(paperid)) {
 				thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
 			}
@@ -677,7 +679,7 @@ public class CardServiceImpl implements CardServiceInter {
 		if (room.getWritetype().equals("2")) {
 			// 2匿名用戶（userid是一個伪id）
 			thisQuery = DataQuery.init(query, "WTS_CARD b LEFT JOIN WTS_PAPER d on d.id=b.PAPERID",
-					"b.USERID AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,d.id as PAPERID,b.ALLNUM as ALLNUM,B.USERID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
+					"b.USERID AS NAME,b.COMPLETENUM AS COMPLETENUM,d.NAME as PAPERNAME,b.OVERTIME as OVERTIME,d.id as PAPERID,b.ALLNUM as ALLNUM,B.USERID AS USERID,B.ID as CARDID, b.POINT AS point, b.ADJUDGEUSERNAME AS ADJUDGEUSERNAME, b.ADJUDGETIME AS ADJUDGETIME, b.STARTTIME AS STARTTIME, b.ENDTIME AS ENDTIME, b.PSTATE AS PSTATE, b.PSTATE AS PSTATETITLE");
 			if (StringUtils.isNotBlank(paperid)) {
 				thisQuery.addRule(new DBRule("B.PAPERID", paperid, "="));
 			}
@@ -931,13 +933,15 @@ public class CardServiceImpl implements CardServiceInter {
 	@Transactional
 	public void finishExamNoPop(String cardid, LoginUser currentUser) {
 		Card card = cardDaoImpl.getEntity(cardid);
-		if (isAnswerAble(card)) {
+		if (isTheTimeAble(card)) {
 			// 在答题时间内，手动交卷
 			card.setPstate("2");
+			card.setOvertime("1");
 			card.setEndtime(TimeTool.getTimeDate14());
 		} else {
 			// 非答题时间内，自动强制交卷
 			card.setPstate("4");
+			card.setOvertime("2");
 		}
 		{// 计算得分(回填用戶完成題的數量)
 			// autoCountCardPoint(cardid, currentUser);
@@ -955,5 +959,13 @@ public class CardServiceImpl implements CardServiceInter {
 		for (Card card : cards) {
 			deleteCardEntity(card.getId(), currentUser);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void reAdjudge(String cardid, LoginUser currentUser) {
+		Card card = cardDaoImpl.getEntity(cardid);
+		card.setPstate("2");
+		cardDaoImpl.editEntity(card);
 	}
 }

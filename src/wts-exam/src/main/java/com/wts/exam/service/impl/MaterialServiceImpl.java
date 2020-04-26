@@ -7,7 +7,10 @@ import com.farm.doc.server.FarmFileManagerInter.FILE_APPLICATION_TYPE;
 
 import org.apache.log4j.Logger;
 import com.wts.exam.dao.MaterialDaoInter;
+import com.wts.exam.dao.SubjectDaoInter;
 import com.wts.exam.service.MaterialServiceInter;
+import com.farm.core.sql.query.DBRule;
+import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DataQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,8 @@ public class MaterialServiceImpl implements MaterialServiceInter {
 	private MaterialDaoInter materialDaoImpl;
 	@Resource
 	private FarmFileManagerInter farmFileManagerImpl;
-
+	@Resource
+	private SubjectDaoInter subjectDaoImpl;
 	private static final Logger log = Logger.getLogger(MaterialServiceImpl.class);
 
 	@Override
@@ -65,6 +69,9 @@ public class MaterialServiceImpl implements MaterialServiceInter {
 	@Override
 	@Transactional
 	public void deleteMaterialEntity(String id, LoginUser user) {
+		if (subjectDaoImpl.countEntitys(DBRuleList.getInstance().add(new DBRule("MATERIALID", id, "=")).toList()) > 0) {
+			throw new RuntimeException("材料被引用无法删除!");
+		}
 		materialDaoImpl.deleteEntity(materialDaoImpl.getEntity(id));
 		farmFileManagerImpl.cancelFilesByApp(id);
 	}

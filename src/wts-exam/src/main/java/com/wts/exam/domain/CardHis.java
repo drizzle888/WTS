@@ -35,6 +35,8 @@ public class CardHis implements java.io.Serializable {
 	private String endtime;
 	@Column(name = "PSTATE", length = 2, nullable = false)
 	private String pstate;
+	@Column(name = "OVERTIME", length = 2, nullable = false)
+	private String overtime;
 	@Column(name = "PCONTENT", length = 256)
 	private String pcontent;
 	@Column(name = "STARTTIME", length = 16)
@@ -60,6 +62,14 @@ public class CardHis implements java.io.Serializable {
 	@Column(name = "PAPERNAME", length = 128, nullable = false)
 	private String papername;
 	
+	public String getOvertime() {
+		return overtime;
+	}
+
+	public void setOvertime(String overtime) {
+		this.overtime = overtime;
+	}
+
 	public String getUsername() {
 		return username;
 	}
