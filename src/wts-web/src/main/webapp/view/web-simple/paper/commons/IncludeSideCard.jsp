@@ -57,18 +57,20 @@
 			</c:forEach>
 		</c:forEach>
 	</div>
-	<div class="btn-group btn-group-justified wts-sidecard-buttons"
-		style="margin-top: 0px; border-top: 1px dashed #ccc; margin-top: 10px;"
-		role="group" aria-label="...">
-		<div class="btn-group" role="group">
-			<div class="btn wts-countdown-title" title="以服务器时间为准">
-				开始答题
-				<PF:FormatTime date="${card.starttime}" yyyyMMddHHmmss="HH:mm:ss" />
-				- 结束答题
-				<PF:FormatTime date="${card.endtime}" yyyyMMddHHmmss="HH:mm:ss" />
+	<c:if test="${flag!='learn'}">
+		<div class="btn-group btn-group-justified wts-sidecard-buttons"
+			style="margin-top: 0px; border-top: 1px dashed #ccc; margin-top: 10px;"
+			role="group" aria-label="...">
+			<div class="btn-group" role="group">
+				<div class="btn wts-countdown-title" title="以服务器时间为准">
+					开始答题
+					<PF:FormatTime date="${card.starttime}" yyyyMMddHHmmss="HH:mm:ss" />
+					- 结束答题
+					<PF:FormatTime date="${card.endtime}" yyyyMMddHHmmss="HH:mm:ss" />
+				</div>
 			</div>
 		</div>
-	</div>
+	</c:if>
 	<c:if test="${flag=='answer'||flag==null}">
 		<!-- 只有答題才限时倒计时 -->
 		<div class="btn-group btn-group-justified wts-sidecard-buttons"

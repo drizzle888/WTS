@@ -33,7 +33,7 @@
 				<div class="answerInterLocutionViewBox">
 					<!-- 阅卷答案 -->
 					<textarea readonly="readonly" style="width: 100%"
-						class="interlocutionInput">${subjectu.val}</textarea>
+						class="interlocutionInput"><TIP:HtmlEscape text="${subjectu.val}" /></textarea>
 				</div>
 			</c:if>
 			<%@ include file="../includePointInput.jsp"%>

@@ -99,7 +99,8 @@
 						<th>得分</th>
 						<th>阅卷人</th>
 						<th>阅卷时间</th>
-						<th>状态</th>
+						<th>答题状态</th>
+						<th>答卷状态</th>
 						<th>操作</th>
 					</tr>
 					<c:forEach items="${result.resultList}" var="node">
@@ -119,6 +120,7 @@
 								<td>${node.POINT}</td>
 								<td>${node.ADJUDGEUSERNAME}</td>
 								<td>${node.ADJUDGETIME}</td>
+								<td>${node.OVERTIME}</td>
 								<td>
 									<!--  --> <c:if test="${node.PSTATE=='7'}">
 										<span style="font-size: 12px;" class="label label-primary">

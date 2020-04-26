@@ -191,6 +191,7 @@ public class adjudgeWebController extends WebUtils {
 			result.runformatTime("ENDTIME", "HH:mm:ss");
 			result.runformatTime("ADJUDGETIME", "yyyy-MM-dd HH:mm:ss");
 			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATETITLE");
+			result.runDictionary("0:答题,1:准时,2:超时", "OVERTIME");
 			return view.putAttr("room", room).putAttr("paper", paper).putAttr("result", result)
 					.returnModelAndView(getThemePath() + "/adjudge/paperUser");
 		} catch (Exception e) {
@@ -255,6 +256,7 @@ public class adjudgeWebController extends WebUtils {
 			result.runformatTime("ADJUDGETIME", "yyyy-MM-dd HH:mm:ss");
 			// 1.开始答题2.手动交卷3.超时未交卷,4.超时自动交卷, 5已自动阅卷 6已完成阅卷7.发布成绩
 			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩", "PSTATETITLE");
+			result.runDictionary("0:答题,1:准时,2:超时", "OVERTIME");
 			return view.putAttr("room", room).putAttr("result", result)
 					.returnModelAndView(getThemePath() + "/adjudge/roomUser");
 		} catch (Exception e) {

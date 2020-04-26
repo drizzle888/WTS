@@ -39,11 +39,12 @@
 			</c:if>
 			<c:if test="${flag=='checkup'||flag=='adjudge'}">
 				<!-- 答案检查和阅卷时显示-->
-				<div class="answerVacancyViewBox"
-					style="height: auto;">
+				<div class="answerVacancyViewBox" style="height: auto;">
 					<c:forEach items="${subjectu.answers}" var="node">
 						<div>
-							<label for="${node.answer.id}-INPUT">第${node.answer.sort}空答案：</label>${node.val}</div>
+							<label for="${node.answer.id}-INPUT">第${node.answer.sort}空答案：</label>
+							<TIP:HtmlEscape text="${node.val}" />
+						</div>
 					</c:forEach>
 				</div>
 			</c:if>

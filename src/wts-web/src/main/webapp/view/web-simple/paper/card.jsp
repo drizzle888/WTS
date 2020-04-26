@@ -130,6 +130,9 @@
 			</div>
 		</div>
 	</div>
+	<c:if test="${flag=='learn' }">
+		<jsp:include page="../adjudge/commons/includeSubjectInfoWin.jsp"></jsp:include>
+	</c:if>
 	<jsp:include page="../commons/footServer.jsp"></jsp:include>
 	<jsp:include page="../commons/foot.jsp"></jsp:include>
 	<script src="view/web-simple/paper/text/card.js"></script>

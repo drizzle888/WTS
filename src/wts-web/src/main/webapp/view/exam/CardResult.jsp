@@ -72,6 +72,11 @@
 		text : '删除答题卡',
 		iconCls : 'icon-remove',
 		handler : delDataCard
+	},{
+		id : 'reAdjudge',
+		text : '重置阅卷状态',
+		iconCls : 'icon-group_green_new',
+		handler : reAdjudge
 	} ];
 	$(function() {
 		//初始化数据表格
@@ -143,6 +148,37 @@
 					'info');
 		}
 	}
+	
+	//重置阅卷状态
+	function reAdjudge() {
+		var selectedArray = $(gridCard).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			$.messager.confirm(MESSAGE_PLAT.PROMPT,"重置后阅卷人员需要重新手工阅卷，是否继续？", function(flag) {
+				if (flag) {
+					$(gridCard).datagrid('loading');
+					$.post('card/reAdjudge.do?ids='
+							+ $.farm.getCheckedIds(gridCard, 'ID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridCard).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridCard).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	
 	//删除
 	function delDataCard() {
 		var selectedArray = $(gridCard).datagrid('getSelections');

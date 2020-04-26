@@ -48,19 +48,19 @@
 										<c:if test="${room.room.timetype=='2'}">
 											<b>答题日期:</b>${room.room.starttime}&nbsp;至&nbsp;${room.room.endtime},
 										</c:if>
-										<b>答题时长:</b>${room.room.timelen}分,
+										<b>时长限制:</b><c:if test="${room.room.pshowtype=='3'||room.room.pshowtype=='4'}">无限制</c:if><c:if test="${room.room.pshowtype=='1'||room.room.pshowtype=='2'}">${room.room.timelen}分</c:if>,
 										<c:if test="${room.room.writetype=='0'}">
-											<b>答题人:</b>任何人,
+											<b>人员限制:</b>任何人,
 										</c:if>
 										<c:if test="${room.room.writetype=='1'}">
-											<b>答题人:</b>指定人,
+											<b>人员限制:</b>指定人,
 										</c:if>
 										<c:if test="${room.room.writetype=='2'}">
-											<b>答题人:</b>匿名人,
+											<b>人员限制:</b>匿名人,
 										</c:if>
 										<b>业务分类:</b>${room.type.name}
 										<c:if
-											test="${room.room.pshowtype!='1'||room.room.ssorttype!='1'||room.room.osorttype!='1'}">
+											test="${room.room.pshowtype=='1'||room.room.pshowtype=='2'}">
 											<c:if test="${room.room.pshowtype=='2'}">
 												<code>随机答卷</code>
 											</c:if>
@@ -89,6 +89,9 @@
 					<%@ include file="commons/includeRoomPaper.jsp"%>
 				</c:if>
 				<c:if test="${room.room.pshowtype=='3'}">
+					<%@ include file="commons/includeRoomPaper3.jsp"%>
+				</c:if>
+				<c:if test="${room.room.pshowtype=='4'}">
 					<%@ include file="commons/includeRoomPaper3.jsp"%>
 				</c:if>
 			</c:forEach>

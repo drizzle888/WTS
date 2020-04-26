@@ -22,8 +22,7 @@
 				<c:if test="${pageset.operateType==0}">
 					<tr>
 						<td class="title">答题室ID:</td>
-						<td colspan="3" ><code>
-								${entity.id}</code></td>
+						<td colspan="3"><code> ${entity.id}</code></td>
 					</tr>
 				</c:if>
 				<tr>
@@ -32,7 +31,7 @@
 						class="easyui-validatebox"
 						data-options="required:true,validType:[,'maxLength[64]']"
 						id="entity_name" name="name" value="${entity.name}"></td>
-					<td rowspan="3"
+					<td rowspan="4"
 						style="border-left: 1px solid #ccc; text-align: center;"><c:if
 							test="${empty entity.imgid }">
 							<img id="iconImgId" style="width: 64px; height: 64px;" alt=""
@@ -43,12 +42,19 @@
 						</c:if></td>
 				</tr>
 				<tr>
+					<td class="title">业务分类:</td>
+					<td colspan="2"><input type="hidden" style="width: 120px;"
+						id="entity_examtypeid" name="examtypeid"
+						value="${entity.examtypeid}"><span id="lable_examtypeid">${examType.name}</span></td>
+				</tr>
+				<tr>
 					<td class="title">答卷模式:</td>
 					<td colspan="2"><select name="pshowtype" id="entity_pshowtype"
 						style="width: 120px;" val="${entity.pshowtype}">
 							<option value="1">标准答题模式</option>
-							<option value="2">抽取单套答题</option>
+							<option value="2">随机抽取模式</option>
 							<option value="3">习题练习模式</option>
+							<option value="4">只读学习模式</option>
 					</select></td>
 				</tr>
 				<tr>
@@ -112,12 +118,12 @@
 								value="1">永久</option>
 							<option value="2">限时</option>
 					</select></td>
-					<td class="title">答题时长:</td>
-					<td><input type="text" style="width: 120px;"
-						class="easyui-validatebox"
-						data-options="required:true,validType:['integer','maxLength[5]']"
-						id="entity_timelen" name="timelen" value="${entity.timelen}">
-					</td>
+					<td class="title">答题人员:</td>
+					<td><select name="writetype" id="entity_writetype"
+						style="width: 120px;" val="${entity.writetype}"><option
+								value="1">指定人员</option>
+							<option value="0">任何人员</option>
+							<option value="2">匿名答题</option></select></td>
 				</tr>
 				<tr id="tr_time" style="display: none;">
 					<td class="title">开始时间:</td>
@@ -129,39 +135,23 @@
 						style="width: 140px;" value="${entity.endtime}" type="text"
 						class="easyui-datetimebox"></input></td>
 				</tr>
-				<tr>
-					<td class="title">答题人员:</td>
-					<td><select name="writetype" id="entity_writetype"
-						style="width: 120px;" val="${entity.writetype}"><option
-								value="1">指定人员</option>
-							<option value="0">任何人员</option>
-							<option value="2">匿名答题</option></select></td>
-					<td class="title">业务分类:</td>
-					<td><input type="hidden" style="width: 120px;"
-						id="entity_examtypeid" name="examtypeid"
-						value="${entity.examtypeid}"><span id="lable_examtypeid">${examType.name}</span></td>
-				</tr>
-				<tr>
-					<!--  <td class="title">状态:</td>
-					<td><select name="pstate" id="entity_pstate"
-						val="${entity.pstate}"><option value="1">新建</option>
-							<option value="2">发布</option>
-							<option value="0">禁用</option></select></td> -->
+				<tr class="tr_doAable">
+					<!-- 考卷有效 -->
+					<td class="title">答题时长:</td>
+					<td><input type="text" style="width: 120px;"
+						class="easyui-validatebox"
+						data-options="required:true,validType:['integer','maxLength[5]']"
+						id="entity_timelen" name="timelen" value="${entity.timelen}">
+					</td>
 					<td class="title">答题次数:</td>
 					<td><select name="restarttype" id="entity_restarttype"
 						style="width: 120px;" val="${entity.restarttype}">
 							<option value="1">每人一次</option>
 							<option value="2">重复答题</option>
 					</select></td>
-					<td class="title">阅卷类型:</td>
-					<td><select name="counttype" id="entity_counttype"
-						style="width: 120px;" val="${entity.counttype}">
-							<option value="2">自动</option>
-							<option value="1">自动/人工</option>
-							<!-- <option value="3">人工</option> -->
-					</select></td>
 				</tr>
-				<tr>
+				<tr class="tr_doAable">
+					<!-- 考卷有效 -->
 					<td class="title">题目排序:</td>
 					<td><select name="ssorttype" id="entity_ssorttype"
 						style="width: 120px;" val="${entity.ssorttype}">
@@ -173,6 +163,16 @@
 						style="width: 120px;" val="${entity.osorttype}">
 							<option value="1">固定</option>
 							<option value="2">随机</option>
+					</select></td>
+				</tr>
+				<tr class="tr_doAable">
+					<!-- 考卷有效 -->
+					<td class="title">阅卷类型:</td>
+					<td colspan="3"><select name="counttype" id="entity_counttype"
+						style="width: 120px;" val="${entity.counttype}">
+							<option value="2">自动</option>
+							<option value="1">自动/人工</option>
+							<!-- <option value="3">人工</option> -->
 					</select></td>
 				</tr>
 				<tr>
@@ -241,13 +241,16 @@
 		$('#entity_timetype').change(function(e) {
 			initTimetype();
 		});
+		initShowtype();
+		$('#entity_pshowtype').change(function(e) {
+			initShowtype();
+		});
 		//新增表单
 		if (currentPageTypeRoom == '1') {
 			$('#lable_examtypeid').text($('#PARENTTITLE_RULE').val());
 			$('#entity_examtypeid').val($('#PARENTID_RULE').val());
 		}
 	});
-
 	//初始化时间类型
 	function initTimetype() {
 		var type = $('#entity_timetype').val();
@@ -267,6 +270,19 @@
 				required : true,
 				showSeconds : false
 			});
+		}
+	}
+	//初始化考试相关表单
+	function initShowtype() {
+		var type = $('#entity_pshowtype').val();
+		//12考試，34非考試（练习，学习）
+		if (type == '1'||type == '2') {
+			//隐藏
+			$('.tr_doAable').show();
+			$('#entity_timelen').val('');
+		}else{
+			$('.tr_doAable').hide();
+			$('#entity_timelen').val('60');
 		}
 	}
 //-->

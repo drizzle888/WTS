@@ -9,8 +9,13 @@
 				<div
 					style="text-align: center; border-bottom: 1px dashed #ccc; margin-bottom: 8px; padding-bottom: 0px;">
 					<c:if test="${room.room.pshowtype=='3'}">
-						<!--练习题标志-->
+						<!--练习标志-->
 						<img alt="" src="<PF:basePath/>text/img/testTag.png"
+							style="width: 64px; height: 64px; position: absolute; left: 8px; top: 0px;">
+					</c:if>
+					<c:if test="${room.room.pshowtype=='4'}">
+						<!--学习标志-->
+						<img alt="" src="<PF:basePath/>text/img/leanTag.png"
 							style="width: 64px; height: 64px; position: absolute; left: 8px; top: 0px;">
 					</c:if>
 					<c:if test="${room.room.timetype=='1'}">
@@ -36,9 +41,9 @@
 				</div>
 				<div class="media-body">
 					<div style="margin-left: 4px;" class="pull-left">
-						<div class="side_unit_info">答题时长：${room.room.timelen}分</div>
+						<div class="side_unit_info">时长限制：<c:if test="${room.room.pshowtype=='1'||room.room.pshowtype=='2'}">${room.room.timelen}分</c:if><c:if test="${room.room.pshowtype=='3'||room.room.pshowtype=='4'}">无限制</c:if></div>
 						<div class="side_unit_info">
-							答题人：
+							人员限制：
 							<c:if test="${room.room.writetype=='0'}">任何人</c:if>
 							<c:if test="${room.room.writetype=='1'}">指定人</c:if>
 							<c:if test="${room.room.writetype=='2'}">匿名</c:if>
@@ -56,6 +61,8 @@
 								<c:if test="${room.room.osorttype=='2'}">
 									<code>题序</code>
 								</c:if>
+								<c:if test="${room.room.pshowtype=='3'}"><code>题序</code></c:if>
+								<c:if test="${room.room.pshowtype!='3'&&room.room.pshowtype!='2'&&room.room.ssorttype!='2'&&room.room.osorttype!='2'}"><code>无</code></c:if>
 							</div>
 						</c:if>
 						<div class="side_unit_info">业务分类：${room.type.name}</div>
@@ -69,37 +76,32 @@
 							<div class="btn-group  btn-group-xs" role="group">
 								<c:if test="${room.room.writetype=='2'}">
 									<a href="exam/Pubroompage.do?roomid=${room.room.id}"
-										type="button" class="btn btn-success">进入答题室(匿名)</a>
+										type="button" class="btn btn-success">进入(匿名)</a>
 								</c:if>
 								<c:if test="${room.room.writetype!='2'}">
 									<a href="exam/roompage.do?roomid=${room.room.id}" type="button"
-										class="btn btn-success">进入答题室</a>
+										class="btn btn-success">进入</a>
 								</c:if>
 							</div>
 						</c:if>
 						<c:if test="${room.room.pstate=='3'}">
 							<div class="btn-group  btn-group-xs" role="group" title="结束状态">
-								<a type="button" class="btn btn-warning" disabled="disabled">答题室已关闭</a>
+								<a type="button" class="btn btn-warning" disabled="disabled">已关闭</a>
 							</div>
 						</c:if>
 						<c:if test="${room.currentUserAble&&!room.currentTimeAble}">
 							<div class="btn-group  btn-group-xs" role="group">
-								<a type="button" class="btn btn-warning" disabled="disabled">无效答题时间</a>
+								<a type="button" class="btn btn-warning" disabled="disabled">无效时间</a>
 							</div>
 						</c:if>
 						<c:if test="${room.currentMngpopAble||room.currentAdjudgepopAble}">
-							<c:if test="${room.room.pshowtype!='3'}">
+							<c:if test="${room.room.pshowtype=='1'||room.room.pshowtype=='2'}">
 								<div class="btn-group  btn-group-xs" role="group">
 									<a href="adjudge/roompage.do?roomid=${room.room.id}"
 										type="button" class="btn btn-info">成绩管理</a>
 								</div>
 							</c:if>
 						</c:if>
-						<!-- 
-						<div class="btn-group" role="group">
-							<a href="exam/roompage.do?roomid=${room.room.id}" type="button"
-								class="btn btn-info">成绩</a>
-						</div> -->
 					</div>
 				</div>
 			</div>

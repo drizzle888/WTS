@@ -3,6 +3,11 @@
 <%@ taglib uri="/view/conf/farmtag.tld" prefix="PF"%>
 <%@ taglib uri="/view/conf/tip.tld" prefix="TIP"%>
 <!-- 显示答案，显示分数 -->
+<c:if test="${flag=='learn'}">
+	<!-- 学习答卷时先只展示按钮，点击后再展示答案-->
+	<div class="answerRightViewBox" subjectId="${subjectu.subject.id}"
+		style="height: auto;text-align: center;">查看本题解析</div>
+</c:if>
 <c:if
 	test="${(flag=='adjudge'&&(subjectu.cardSubject.complete=='0'||subjectu.cardSubject.complete=='1'))||flag==null}">
 	<!-- 阅卷時顯示标准答案-->
@@ -23,8 +28,9 @@
 				<!-- 判断题/单选题/多选题正确答案 -->
 				<c:if test="${node.answer.rightanswer=='1'}">
 					<div>
-						<label for="${node.answer.id}-INPUT">正确选项：<TIP:WordCode
-								code="${status.index+1}" />.${node.answer.answer}
+						<label for="${node.answer.id}-INPUT">正确选项：<c:if
+								test="${subjectu.version.tiptype!='4' }">
+								<TIP:WordCode code="${status.index+1}" />.</c:if>${node.answer.answer}
 						</label>
 					</div>
 				</c:if>
@@ -32,14 +38,15 @@
 			<c:if test="${subjectu.version.tiptype=='5'}">
 				<!-- 問答題正确答案 -->
 				<div>
-					<label for="${node.answer.id}-INPUT">关键字：${node.answer.answer} </label>
-					<label style="color: #666;font-size: 14px;font-weight: 200;">&nbsp;(得分权重:${node.answer.pointweight})</label>
+					<label for="${node.answer.id}-INPUT">关键字：${node.answer.answer}
+					</label> <label style="color: #666; font-size: 14px; font-weight: 200;">&nbsp;(得分权重:${node.answer.pointweight})</label>
 				</div>
 			</c:if>
 			<c:if test="${subjectu.version.tiptype=='6'}">
 				<!-- 問答題正确答案 -->
 				<div>
-					<label for="${node.answer.id}-INPUT">评价标准：${node.answer.answer} </label>
+					<label for="${node.answer.id}-INPUT">评价标准：${node.answer.answer}
+					</label>
 				</div>
 			</c:if>
 		</c:forEach>

@@ -175,7 +175,7 @@ public class PaperWebController extends WebUtils {
 				}
 			}
 			Card card = cardServiceImpl.loadCard(paperid, roomid, user.getId());
-			if (!cardServiceImpl.isAnswerAble(card)) {
+			if (!cardServiceImpl.isTheTimeAble(card)) {
 				return ViewMode.getInstance().setError("OUTTIME", new RuntimeException("答題卡超時，强制提交！")).returnObjMode();
 			}
 			boolean isAnswer = cardServiceImpl.saveCardVal(card, versionid, answerid, value);
@@ -210,7 +210,7 @@ public class PaperWebController extends WebUtils {
 				user = roomServiceImpl.getAnonymous(session);
 			}
 			Card card = cardServiceImpl.loadCard(paperid, roomid, user.getId());
-			if (!cardServiceImpl.isAnswerAble(card)) {
+			if (!cardServiceImpl.isTheTimeAble(card)) {
 				return ViewMode.getInstance().setError("OUTTIME", new RuntimeException("答題卡超時，强制提交！")).returnObjMode();
 			}
 			for (JsonElement obj : jsonArray) {
@@ -334,6 +334,34 @@ public class PaperWebController extends WebUtils {
 			return page.putAttr("num", bookNum).putAttr("isBook", isBook).returnObjMode();
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 学习答卷
+	 * 
+	 * @param roomId
+	 * @param paperid
+	 * @param query
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/Publearnpage")
+	public ModelAndView learnPage(String roomid, String paperid, HttpServletRequest request, HttpSession session) {
+		try {
+			ViewMode view = ViewMode.getInstance();
+			Room room = roomServiceImpl.getRoomEntity(roomid);
+			if (!roomServiceImpl.learnAble(roomid, paperid)) {
+				throw new RuntimeException("当前答卷不支持在线学习!");
+			}
+			// 从答题卡中加载用户答案
+			PaperUnit paper = paperServiceImpl.getPaperUnit(paperid);
+			// 加载考卷的得分到试卷中，判卷的时候会用
+			return view.putAttr("paper", paper).putAttr("flag", "learn").putAttr("room", room)
+					.returnModelAndView(ThemesUtil.getThemePage("pager-cardPage", request));
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnModelAndView(getThemePath() + "/error");
 		}
 	}
 }

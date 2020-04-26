@@ -11,7 +11,12 @@
 					style="text-align: center; border-bottom: 1px dashed #ccc; margin-bottom: 8px; padding-bottom: 0px;">
 					<div class="doc_node_title_box"
 						style="font-size: 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-						<code style="float: left;">练习</code>
+						<c:if test="${room.room.pshowtype=='3'}">
+							<code style="float: left;">练习</code>
+						</c:if>
+						<c:if test="${room.room.pshowtype=='4'}">
+							<code style="float: left;">学习</code>
+						</c:if>
 						&nbsp;
 						<c:if test="${empty paper.roomPaper.name}">${paper.info.name}</c:if>
 						<c:if test="${not empty paper.roomPaper.name}">${paper.roomPaper.name}</c:if>
@@ -26,7 +31,7 @@
 						class="pull-left">
 						<div class="side_unit_info"
 							style="max-height: 38px; overflow: hidden;">
-							<b>练习题不限时</b> &nbsp; <b>题量</b>：共${paper.subjectNum}道题 &nbsp; <b>随机出题</b>
+							<b>题量</b>：共${paper.subjectNum}道题
 						</div>
 						<div style="margin-left: -6px;">
 							<%@ include
@@ -39,10 +44,7 @@
 						aria-label="...">
 						<div class="btn-group" role="group">
 							<a data-toggle="modal" data-target="#${paper.info.id}-win"
-								type="button" class="btn btn-success"> <c:if
-									test="${paper.room.writetype=='2'}">匿名练习&nbsp;Go!</c:if> <c:if
-									test="${paper.room.writetype!='2'}">开始练习&nbsp;Go!</c:if>
-							</a>
+								type="button" class="btn btn-success">开始&nbsp;Go!</a>
 						</div>
 					</div>
 				</div>
@@ -63,24 +65,33 @@
 				<h4 class="modal-title" id="myModalLabel">《${paper.info.name}》</h4>
 			</div>
 			<div class="modal-body">
-				<div class="doc_node_title_box" style="font-size: 16px;">开始答题后，需要在${room.room.timelen}分钟内完成答题，确认是否开始?</div>
+				<div class="doc_node_title_box" style="font-size: 16px;">确认是否开始?</div>
 				<c:if test="${paper.room.writetype!='2'}">
 					<div class="doc_node_title_box"
-						style="font-size: 16px; color: #d13133;">答题人：${USEROBJ.name}</div>
+						style="font-size: 16px; color: #d13133;">当前人员：${USEROBJ.name}</div>
 				</c:if>
 				<c:if test="${paper.room.writetype=='2'}">
 					<div class="doc_node_title_box"
-						style="font-size: 16px; color: #d13133;">答题人：匿名</div>
+						style="font-size: 16px; color: #d13133;">当前人员：匿名</div>
 				</c:if>
-				<div class="side_unit_info" style="font-size: 14px;">
-					共<b>${paper.subjectNum}</b>道题,系统将按照随机顺序依次出题,可随时终止答题。
-				</div>
+				<c:if test="${room.room.pshowtype=='3'}">
+					<div class="side_unit_info" style="font-size: 14px;">
+						共<b>${paper.subjectNum}</b>道题,系统将按照随机顺序依次出题,可随时终止答题。
+					</div>
+				</c:if>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				<a
-					href="websubject/PubRandomSubject.do?paperid=${paper.info.id}&roomid=${room.room.id}"
-					class="btn btn-primary">立即开始Go!</a>
+				<c:if test="${room.room.pshowtype=='3'}">
+					<a
+						href="websubject/PubRandomSubject.do?paperid=${paper.info.id}&roomid=${room.room.id}"
+						class="btn btn-primary">立即开始Go!</a>
+				</c:if>
+				<c:if test="${room.room.pshowtype=='4'}">
+					<a
+						href="webpaper/Publearnpage.do?paperid=${paper.info.id}&roomid=${room.room.id}"
+						class="btn btn-primary">立即开始Go!</a>
+				</c:if>
 			</div>
 		</div>
 	</div>
