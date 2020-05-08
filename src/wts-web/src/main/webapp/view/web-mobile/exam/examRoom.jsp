@@ -83,6 +83,10 @@
 					<%@ include
 						file="/view/web-simple/exam/commons/includeRoomPaper3.jsp"%>
 				</c:if>
+				<c:if test="${room.room.pshowtype=='4'}">
+					<%@ include
+						file="/view/web-simple/exam/commons/includeRoomPaper3.jsp"%>
+				</c:if>
 			</c:forEach>
 		</div>
 	</div>

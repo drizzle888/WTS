@@ -49,7 +49,7 @@
 					<td class="title">题目:</td>
 					<td colspan="3"><textarea rows="3" style="width: 355px;"
 							class="easyui-validatebox"
-							data-options="validType:[,'maxLength[128]']"
+							data-options="validType:[,'maxLength[256]']"
 							id="entity_tipstr" name="tipstr">${subjectu.version.tipstr}</textarea></td>
 				</tr>
 				<tr>

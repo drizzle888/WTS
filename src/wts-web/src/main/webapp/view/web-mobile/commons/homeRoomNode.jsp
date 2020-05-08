@@ -13,6 +13,11 @@
 						<img alt="" src="<PF:basePath/>text/img/testTag.png"
 							style="width: 64px; height: 64px; position: absolute; left: 8px; top: 0px;">
 					</c:if>
+					<c:if test="${room.room.pshowtype=='4'}">
+						<!--学习标志-->
+						<img alt="" src="<PF:basePath/>text/img/leanTag.png"
+							style="width: 64px; height: 64px; position: absolute; left: 8px; top: 0px;">
+					</c:if>
 					<c:if test="${room.room.timetype=='1'}"> 
 						<div class="side_unit_info">永久有效</div>
 					</c:if>

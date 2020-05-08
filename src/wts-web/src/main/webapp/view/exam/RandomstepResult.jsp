@@ -13,8 +13,9 @@
 					<th field="SORT" data-options="sortable:true" width="20">排序</th>
 					<th field="SUBPOINT" data-options="sortable:true" width="20">得分</th>
 					<th field="SUBNUM" data-options="sortable:true" width="20">数量</th>
-					<th field="PCONTENT" data-options="sortable:true" width="80">备注</th>
-				</tr>
+					<th field="PCONTENT" data-options="sortable:true" width="60">备注</th>
+					<th field="ITEMNAME" data-options="sortable:true" width="80">规则名称</th>
+				</tr> 
 			</thead>
 		</table>
 	</div>
@@ -22,7 +23,7 @@
 <script type="text/javascript">
 	var url_delActionRandomstep = "randomstep/del.do";//删除URL
 	var url_formActionRandomstep = "randomstep/form.do";//增加、修改、查看URL
-	var url_searchActionRandomstep = "randomstep/query.do?itemid=${itemid}";//查询URL
+	var url_searchActionRandomstep = "randomstep/query.do?itemids=${itemids}";//查询URL
 	var title_windowRandomstep = "答卷随机步骤管理";//功能名称
 	var gridRandomstep;//数据表格对象
 	var searchRandomstep;//条件查询组件对象
@@ -80,7 +81,7 @@
 	}
 	//新增
 	function addDataRandomstep() {
-		var url = url_formActionRandomstep + '?operateType=' + PAGETYPE.ADD+"&itemid=${itemid}";
+		var url = url_formActionRandomstep + '?operateType=' + PAGETYPE.ADD+"&itemids=${itemids}";
 		$.farm.openWindow({
 			id : 'winRandomstep',
 			width : 600,

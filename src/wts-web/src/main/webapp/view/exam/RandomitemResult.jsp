@@ -35,9 +35,10 @@
 			<thead>
 				<tr>
 					<th data-options="field:'ck',checkbox:true"></th>
-					<th field="NAME" data-options="sortable:true" width="20">名称</th>
-					<th field="PCONTENT" data-options="sortable:true" width="80">备注</th>
+					<th field="NAME" data-options="sortable:true" width="50">名称</th>
+					<th field="PCONTENT" data-options="sortable:true" width="50">备注</th>
 					<th field="PSTATE" data-options="sortable:true" width="20">状态</th>
+					<th field="SUBNUM" data-options="sortable:true" width="20">题量</th>
 					<th field="NUM" data-options="sortable:true" width="20">规则数量</th>
 				</tr>
 			</thead>
@@ -149,12 +150,12 @@
 					'info');
 		}
 	}
-	
+
 	//配置随机项的步骤
 	function editSteps() {
 		var selectedArray = $(gridRandomitem).datagrid('getSelections');
-		if (selectedArray.length == 1) {
-			var url =  'randomitem/steps.do?itemid=' + selectedArray[0].ID;
+		if (selectedArray.length > 0) {
+			var url = 'randomitem/steps.do?itemids=' +  $.farm.getCheckedIds(gridRandomitem, 'ID');
 			$.farm.openWindow({
 				id : 'winRandomitem',
 				width : 800,
@@ -164,12 +165,11 @@
 				title : '规则步骤'
 			});
 		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
 					'info');
 		}
 	}
-	
-	
+
 	//删除
 	function delDataRandomitem() {
 		var selectedArray = $(gridRandomitem).datagrid('getSelections');

@@ -57,6 +57,17 @@
 			</c:forEach>
 		</c:forEach>
 	</div>
+	<c:if test="${flag=='learn'}">
+		<div class="btn-group btn-group-justified wts-sidecard-buttons"
+			style="margin-top: 0px; border-top: 1px dashed #ccc; margin-top: 10px;"
+			role="group" aria-label="...">
+			<div class="btn-group" role="group">
+				<div class="btn wts-countdown-title" >
+					当前答卷学习模式
+				</div>
+			</div>
+		</div>
+	</c:if>
 	<c:if test="${flag!='learn'}">
 		<div class="btn-group btn-group-justified wts-sidecard-buttons"
 			style="margin-top: 0px; border-top: 1px dashed #ccc; margin-top: 10px;"

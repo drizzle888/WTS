@@ -14,7 +14,7 @@
 		<form id="dom_formRandomstep">
 			<input type="hidden" id="entity_id" name="id" value="${entity.id}">
 			<input type="hidden" id="itemid_id" name="itemid"
-				value="${itemid}${entity.itemid}">
+				value="${itemids}${entity.itemid}">
 			<table class="editTable">
 				<tr>
 					<td class="title">名称:</td>

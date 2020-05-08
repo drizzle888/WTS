@@ -23,7 +23,7 @@
 		<div style="margin-left: 26px; margin-right: 26px;"
 			class="ke-content ke-content-borderbox">
 			<div style="text-align: left; font-size: 18px; font-weight: 700;">
-				<code>解析:</code>${node.pcontent}
+				<code title="${node.pcontent}">解析:</code>
 			</div>
 			<div>${node.text}</div>
 		</div>

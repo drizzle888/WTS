@@ -43,7 +43,7 @@
 				<h4 class="modal-title" id="myModalLabel">题解析</h4>
 			</div>
 			<div class="modal-body" style="padding: 0px;">
-				<div id="subjectInfoLoader"></div>
+				<div id="subjectInfoLoader" style="margin: -24px;font-size: 12px;"></div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

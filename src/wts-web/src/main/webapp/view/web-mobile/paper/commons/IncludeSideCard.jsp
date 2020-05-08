@@ -33,7 +33,14 @@
 		<img src="<PF:basePath/>/text/img/time.png"
 			style="width: 56px; height: 56px;" />
 	</div>
-	<div style="text-align: center; font-weight: 700; font-size: 12px;">倒计时</div>
+	<div style="text-align: center; font-weight: 700; font-size: 12px;">
+		<c:if test="${flag=='learn' }">
+				题目录
+		</c:if>	
+		<c:if test="${flag!='learn' }">
+				倒计时
+		</c:if>	
+	</div>
 </div>
 <!-- 考卷导航框 -->
 <div class="modal fade" id="navPaper-win" tabindex="-1" role="dialog"
@@ -130,9 +137,11 @@
 					</div>
 				</div>
 				<div style="text-align: center; padding: 20px;">
-					<button type="button" class="btn btn-default" data-dismiss="modal">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
-					<a href="javascript:gotoSubmitForm()" id="goTosubFormId"
+					<button type="button" class="btn btn-default" data-dismiss="modal">&nbsp;&nbsp;关闭&nbsp;&nbsp;</button>
+					<c:if test="${flag!='learn' }">
+						<a href="javascript:gotoSubmitForm()" id="goTosubFormId"
 						class="btn btn-danger">&nbsp;&nbsp;准备提交答卷&nbsp;&nbsp;</a>
+					</c:if>	
 				</div>
 			</div>
 		</div>

@@ -126,6 +126,9 @@
 			</div>
 		</div>
 	</div>
+	<c:if test="${flag=='learn' }">
+		<jsp:include page="/view/web-simple/adjudge/commons/includeSubjectInfoWin.jsp"></jsp:include>
+	</c:if>
 	<jsp:include page="/view/web-simple/commons/footServer.jsp"></jsp:include>
 	<jsp:include page="/view/web-simple/commons/foot.jsp"></jsp:include>
 	<script src="view/web-mobile/paper/text/mobile-card.js"></script>
