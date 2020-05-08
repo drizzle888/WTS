@@ -12,14 +12,20 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
 import com.farm.core.page.OperateType;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
+import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
+import com.farm.util.web.FarmFormatUnits;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
 
@@ -48,9 +54,9 @@ public class RandomStepController extends WebUtils {
 	 */
 	@RequestMapping("/query")
 	@ResponseBody
-	public Map<String, Object> queryall(DataQuery query, String itemid, HttpServletRequest request) {
+	public Map<String, Object> queryall(DataQuery query, String itemids, HttpServletRequest request) {
 		try {
-			query.addRule(new DBRule("ITEMID", itemid, "="));
+			query.addSqlRule(" and ITEMID in (" + DataQuerys.parseSqlValues(parseIds(itemids)) + ")");
 			query = EasyUiUtils.formatGridQuery(request, query);
 			DataResult result = randomStepServiceImpl.createRandomstepSimpleQuery(query).search();
 			result.runDictionary("1:填空,2:单选,3:多选,4:判断,5:问答,6:附件 ", "TIPTYPE");
@@ -88,10 +94,15 @@ public class RandomStepController extends WebUtils {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Map<String, Object> addSubmit(RandomStep entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
 		try {
-			entity = randomStepServiceImpl.insertRandomstepEntity(entity, getCurrentUser(session));
-			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
+			List<String> itemids = parseIds(entity.getItemid());
+			for (String itemid : itemids) {
+				entity.setItemid(itemid);
+				RandomStep newEntity = new RandomStep();
+				BeanUtils.copyProperties(newEntity, entity);
+				randomStepServiceImpl.insertRandomstepEntity(newEntity, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().setOperate(OperateType.ADD).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setOperate(OperateType.ADD).setError(e.getMessage(), e).returnObjMode();
@@ -128,7 +139,7 @@ public class RandomStepController extends WebUtils {
 	 * @return
 	 */
 	@RequestMapping("/form")
-	public ModelAndView view(RequestMode pageset, String ids, String itemid) {
+	public ModelAndView view(RequestMode pageset, String ids, String itemids) {
 		try {
 			switch (pageset.getOperateType()) {
 			case (0): {// 查看
@@ -137,7 +148,7 @@ public class RandomStepController extends WebUtils {
 						.returnModelAndView("exam/RandomstepForm");
 			}
 			case (1): {// 新增
-				return ViewMode.getInstance().putAttr("pageset", pageset).putAttr("itemid", itemid)
+				return ViewMode.getInstance().putAttr("pageset", pageset).putAttr("itemids", itemids)
 						.returnModelAndView("exam/RandomstepForm");
 			}
 			case (2): {// 修改

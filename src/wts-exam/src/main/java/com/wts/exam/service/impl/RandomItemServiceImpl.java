@@ -81,8 +81,8 @@ public class RandomItemServiceImpl implements RandomItemServiceInter {
 	@Transactional
 	public DataQuery createRandomitemSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
-				"(select a.ID as ID,a.NAME as NAME,a.PCONTENT as PCONTENT,a.PSTATE as PSTATE,a.CUSER as CUSER,a.CTIME as CTIME,count(b.id) as NUM from WTS_RANDOM_ITEM a left join WTS_RANDOM_STEP b on b.itemid=a.id group by a.id) t ",
-				"ID,NAME,PCONTENT,PSTATE,CUSER,CTIME,NUM");
+				"(select a.ID as ID,a.NAME as NAME,a.PCONTENT as PCONTENT,a.PSTATE as PSTATE,a.CUSER as CUSER,a.CTIME as CTIME,count(b.id) as NUM,sum(b.subnum) as SUBNUM from WTS_RANDOM_ITEM a left join WTS_RANDOM_STEP b on b.itemid=a.id group by a.id) t ",
+				"ID,NAME,PCONTENT,PSTATE,CUSER,CTIME,NUM,SUBNUM");
 		return dbQuery;
 	}
 

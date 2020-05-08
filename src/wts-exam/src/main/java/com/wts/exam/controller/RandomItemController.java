@@ -116,8 +116,8 @@ public class RandomItemController extends WebUtils {
 	}
 
 	@RequestMapping("/steps")
-	public ModelAndView steps(String itemid, HttpSession session) {
-		return ViewMode.getInstance().putAttr("itemid", itemid).returnModelAndView("exam/RandomstepResult");
+	public ModelAndView steps(String itemids, HttpSession session) {
+		return ViewMode.getInstance().putAttr("itemids", itemids).returnModelAndView("exam/RandomstepResult");
 	}
 
 	/**

@@ -83,8 +83,8 @@ public class RandomStepServiceImpl implements RandomStepServiceInter {
 	@Override
 	@Transactional
 	public DataQuery createRandomstepSimpleQuery(DataQuery query) {
-		DataQuery dbQuery = DataQuery.init(query, "WTS_RANDOM_STEP a left join WTS_SUBJECT_TYPE b on a.typeid=b.id",
-				"a.ID as ID,a.ITEMID as ITEMID,b.name as typename,a.PCONTENT as PCONTENT,a.NAME as NAME,a.SORT as SORT,a.SUBPOINT as SUBPOINT,a.SUBNUM as SUBNUM,a.TIPTYPE as TIPTYPE,a.TYPEID as TYPEID");
+		DataQuery dbQuery = DataQuery.init(query, "WTS_RANDOM_STEP a left join WTS_SUBJECT_TYPE b on a.typeid=b.id left join WTS_RANDOM_ITEM c on c.id=a.ITEMID",
+				"a.ID as ID,a.ITEMID as ITEMID,c.name as ITEMNAME,b.name as typename,a.PCONTENT as PCONTENT,a.NAME as NAME,a.SORT as SORT,a.SUBPOINT as SUBPOINT,a.SUBNUM as SUBNUM,a.TIPTYPE as TIPTYPE,a.TYPEID as TYPEID");
 		dbQuery.addDefaultSort(new DBSort("a.sort", "asc"));
 		return dbQuery;
 	}
