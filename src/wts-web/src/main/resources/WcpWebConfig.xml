@@ -17,11 +17,11 @@
 			<describe>首页显示未读消息的数量</describe>
 		</parameter>
 	</group>
-	<group describe="知识" name="question">
-		<parameter name="config.kindeditor.media.able">
+	<!--考试 -->
+	<group describe="考试" name="exams">
+		<parameter name="config.exam.user.grade.queryable">
 			<val>false</val>
-			<describe>是否在文档知识超文本编辑器中启用mp4、mp3上传播放功能 (部分移动端浏览器和safari浏览器不支持)
-			</describe>
+			<describe>是否允许用户前台查询成绩true|false</describe>
 		</parameter>
 	</group>
 	<group describe="用户权限，用户信息修改 " name="user">

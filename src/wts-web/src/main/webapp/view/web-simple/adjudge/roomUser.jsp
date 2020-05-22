@@ -152,7 +152,7 @@
 								</c:if> 
 								<c:if test="${node.PSTATE=='6'}">
 									<a class="btn btn-danger btn-xs" id="autoPointRunId"
-										href="javascript:confirmRemoteFunction('adjudge/publicPoint.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
+										href="javascript:confirmRemoteFunction('adjudge/publicPointBackRoomUser.do?cardId=${node.CARDID}','得分发布后将无法变更，是否发布该得分?')">发布成绩</a>
 								</c:if>
 								<!---->
 								<c:if test="${node.PSTATE=='5'||node.PSTATE=='6'||node.PSTATE=='7'}">

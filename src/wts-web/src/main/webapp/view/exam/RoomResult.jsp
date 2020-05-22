@@ -100,7 +100,9 @@
 				data-options="menu:'#mm7',iconCls:'icon-networking'">发布</a>
 			<div id="mm7" style="width: 150px;">
 				<div onclick="examPublic()">发布</div>
+				<div class="menu-sep"></div>
 				<div onclick="examValidate()">校验</div>
+				<div onclick="loadSubjects()">预加载题目缓存</div>
 			</div>
 			<!-- <a class="easyui-linkbutton"
 				data-options="iconCls:'icon-move_to_folder',plain:true,onClick:delDataRoom">添加答卷
@@ -409,7 +411,25 @@
 					'info');
 		}
 	}
-
+	//预加载题目缓存
+	function loadSubjects() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			var url = 'room/loadSubjectform.do?operateType=' + PAGETYPE.EDIT + '&ids='
+					+ $.farm.getCheckedIds(gridRoom, 'ID');
+			$.farm.openWindow({
+				id : 'winLoadSubjects',
+				width : 600,
+				height : 170,
+				modal : true,
+				url : url,
+				title : '加载题目缓存'
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
 	function doExamPublic() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length == 1) {

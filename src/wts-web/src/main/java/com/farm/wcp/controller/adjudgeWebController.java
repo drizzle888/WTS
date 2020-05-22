@@ -377,6 +377,14 @@ public class adjudgeWebController extends WebUtils {
 		}
 	}
 
+	@RequestMapping("/publicPointBackRoomUser")
+	public ModelAndView publicPointBackRoomUser(String cardId, HttpSession session) {
+		Card card = cardServiceImpl.getCardEntity(cardId);
+		publicPoint(cardId, session);
+		return ViewMode.getInstance().returnRedirectOnlyUrl(
+				"/adjudge/roomUser.do?roomId="+card.getRoomid());
+	}
+
 	/**
 	 * 结束阅卷，提交分数
 	 * 

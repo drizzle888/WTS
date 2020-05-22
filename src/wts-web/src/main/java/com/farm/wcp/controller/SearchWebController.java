@@ -58,6 +58,10 @@ public class SearchWebController extends WebUtils {
 	@RequestMapping("/pointSearch")
 	public ModelAndView index(Integer page, String word, HttpServletRequest request, HttpSession session) {
 		try {
+			if(!FarmParameterService.getInstance().getParameterBoolean("config.exam.user.grade.queryable")){
+				log.warn("环境配置禁止用户查询得分!");
+				throw new RuntimeException("当前环境禁止用户查询得分!");
+			}
 			if (page == null) {
 				page = 1;
 			}

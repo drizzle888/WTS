@@ -8,6 +8,7 @@
 			<tr>
 				<th style="width: 50%;">答卷名称</th>
 				<th>答题时间</th>
+				
 				<th>完成情況</th>
 				<th>操作</th>
 			</tr>
@@ -18,9 +19,13 @@
 					<td>${node.PAPERNAME}</td>
 					<td><PF:FormatTime date="${node.CTIME }"
 							yyyyMMddHHmmss="yyyy-MM-dd HH:mm" /></td>
-					<td><c:if test="${node.SCORE>=0}">${node.SCORE }分</c:if> <c:if
-							test="${node.RPCENT>=0}">${node.RPCENT }%</c:if> <c:if
-							test="${node.RPCENT<0&&node.SCORE<0}">${node.CARDSTATE}</c:if></td>
+					<td>
+					<PF:IfParameterEquals key="config.exam.user.grade.queryable" val="true">
+						<c:if test="${node.SCORE>=0}">${node.SCORE }分|</c:if> 
+					</PF:IfParameterEquals>
+					<c:if test="${node.RPCENT>=0}">${node.RPCENT}%|</c:if> 
+					${node.CARDSTATE}
+					</td>
 					<td><a href="javascript:delPaperByAll('${node.ID}',true)">刪除</a>
 					</td>
 				</tr>

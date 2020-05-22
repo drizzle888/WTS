@@ -35,7 +35,8 @@
 					<th field="USERNAME" data-options="sortable:true" width="30">答题人</th>
 					<th field="STARTTIME" data-options="sortable:true" width="50">开始时间</th>
 					<th field="ENDTIME" data-options="sortable:true" width="30">交卷时间</th>
-					<th field="POINT" data-options="sortable:true" width="20">得分</th>
+					<th field="COMPLETENUM" data-options="sortable:true" width="15">完成</th>
+					<th field="ALLNUM" data-options="sortable:true" width="15">总量</th>
 					<th field="ADJUDGETIME" data-options="sortable:true" width="50">阅卷时间</th>
 					<th field="ADJUDGEUSERNAME" data-options="sortable:true" width="30">阅卷人</th>
 					<th field="PSTATE" data-options="sortable:true" width="40">状态</th>
@@ -47,7 +48,7 @@
 <script type="text/javascript">
 	var url_delActionCard = "card/del.do";//删除URL
 	var url_formActionCard = "card/form.do";//增加、修改、查看URL
-	var url_searchActionCard = "card/query.do?roompaperId=${roompaperId}";//查询URL
+	var url_searchActionCard = "card/query.do?roompaperIds=${roompaperIds}";//查询URL
 	var title_windowCard = "答题卡管理";//功能名称
 	var gridCard;//数据表格对象
 	var searchCard;//条件查询组件对象
@@ -77,7 +78,12 @@
 		text : '重置阅卷状态',
 		iconCls : 'icon-group_green_new',
 		handler : reAdjudge
-	} ];
+	},{
+		id : 'pubPoint',
+		text : '发布得分',
+		iconCls : 'icon-blog--arrow',
+		handler : pubPoint
+	}  ];
 	$(function() {
 		//初始化数据表格
 		gridCard = $('#dataCardGrid').datagrid({
@@ -178,7 +184,35 @@
 					'info');
 		}
 	}
-	
+	//发布得分
+	function pubPoint() {
+		var selectedArray = $(gridCard).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			$.messager.confirm(MESSAGE_PLAT.PROMPT,"完成自动阅卷的得分将被发布，发布后不可撤回，是否继续？", function(flag) {
+				if (flag) {
+					$(gridCard).datagrid('loading');
+					$.post('card/pubPoint.do?ids='
+							+ $.farm.getCheckedIds(gridCard, 'ID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridCard).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridCard).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
 	//删除
 	function delDataCard() {
 		var selectedArray = $(gridCard).datagrid('getSelections');

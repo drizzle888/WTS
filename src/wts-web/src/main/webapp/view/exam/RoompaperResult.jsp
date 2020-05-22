@@ -134,9 +134,9 @@
 	//用户答题卡管理
 	function UsercardMng() {
 		var selectedArray = $(gridRoompaper).datagrid('getSelections');
-		if (selectedArray.length == 1) {
+		if (selectedArray.length > 0) {
 			var url = url_CardMng + '?operateType=' + PAGETYPE.EDIT
-					+ '&roompaperId=' + selectedArray[0].ID;
+					+ '&roompaperIds=' +  $.farm.getCheckedIds(gridRoompaper, 'ID');
 			$.farm.openWindow({
 				id : 'winUsercardMng',
 				width : 750,
@@ -146,8 +146,7 @@
 				title : '用户答题卡'
 			});
 		} else {
-			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-					'info');
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,'info');
 		}
 	}
 

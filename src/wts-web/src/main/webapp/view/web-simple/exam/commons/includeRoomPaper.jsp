@@ -82,7 +82,13 @@
 							<c:if test="${paper.card.pstate=='7'}">
 								<div class="btn-group" role="group">
 									<a type="button" class="btn btn-success" disabled="disabled">
-										得分：${paper.card.point}分&nbsp;<span title="判卷时间"
+									<PF:IfParameterEquals key="config.exam.user.grade.queryable" val="true">
+										得分：${paper.card.point}分</PF:IfParameterEquals>
+										<PF:IfParameterNoEquals key="config.exam.user.grade.queryable" val="true">
+										已完成
+										</PF:IfParameterNoEquals>
+										&nbsp;
+										<span title="判卷时间"
 										class="exam-dotime" style="font-size: 11px;"><PF:FormatTime
 												date="${paper.card.adjudgetime}"
 												yyyyMMddHHmmss="yyyy-MM-dd HH:mm:ss" /></span>

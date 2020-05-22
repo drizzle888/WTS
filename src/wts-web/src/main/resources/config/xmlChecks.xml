@@ -10,7 +10,6 @@
 	<parameter versions='0.0.1'>config.sys.title</parameter>
 	<parameter versions='0.0.1'>config.sys.foot</parameter>
 	<parameter versions='0.0.1'>config.sys.unreadmsg.show.num</parameter>
-	<parameter versions='0.0.1'>config.kindeditor.media.able</parameter>
 	<parameter versions='0.0.1'>config.useredit.showOrg</parameter>
 	<parameter versions='0.0.1'>config.useredit.showName</parameter>
 	<parameter versions='0.0.1'>config.sys.firstlogin.message</parameter>
@@ -47,4 +46,5 @@
 	<parameter versions='0.7.0'>config.sso.title</parameter>
 	<parameter versions='0.8.0'>config.login.repet.able</parameter>
 	<parameter versions='0.9.1'>config.login.onameanduname.able</parameter>
+	<parameter versions='0.9.4'>config.exam.user.grade.queryable</parameter>
 </conf>

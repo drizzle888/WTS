@@ -42,10 +42,13 @@
 							class="glyphicon glyphicon-home"></span>&nbsp;<PF:ParameterValue
 								key="config.sso.title" /></a></li>
 				</PF:IfParameterEquals>
+				
 				<li><a href="home/Pubindex.html"><span
 						class="glyphicon glyphicon-pencil"></span>&nbsp;答题室</a></li>
+				<PF:IfParameterEquals key="config.exam.user.grade.queryable" val="true">
 				<li><a href="search/pointSearch.html"><span
 						class="glyphicon glyphicon-search"></span>&nbsp;成绩查询</a></li>
+				</PF:IfParameterEquals>
 			</ul>
 			<jsp:include page="includeToolmenu.jsp"></jsp:include>
 		</div>
