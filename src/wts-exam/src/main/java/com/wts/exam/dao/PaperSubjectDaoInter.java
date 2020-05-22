@@ -107,4 +107,12 @@ public interface PaperSubjectDaoInter {
 	 * @return
 	 */
 	public int countPaperSubjectNum(String paperid);
+
+	/**
+	 * 獲得答卷的所有題目
+	 * 
+	 * @param paperid
+	 * @return
+	 */
+	public List<String> getAllSubjectVersionids(String paperid);
 }

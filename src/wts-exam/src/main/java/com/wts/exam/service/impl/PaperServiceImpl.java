@@ -829,4 +829,10 @@ public class PaperServiceImpl implements PaperServiceInter {
 		}
 		return htmltext;
 	}
+
+	@Override
+	@Transactional
+	public List<String> getAllSubjectVersionids(String paperid) {
+		return papersubjectDaoImpl.getAllSubjectVersionids(paperid);
+	}
 }

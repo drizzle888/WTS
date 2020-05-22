@@ -17,11 +17,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
-import com.farm.core.page.RequestMode;
-import com.farm.authority.FarmAuthorityService;
 import com.farm.authority.domain.Organization;
 import com.farm.authority.service.OrganizationServiceInter;
-import com.farm.core.page.OperateType;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
@@ -91,7 +88,7 @@ public class CardQueryController extends WebUtils {
 			query = EasyUiUtils.formatGridQuery(request, query);
 			DataResult result = cardHisServiceImpl.createHisQuery(query).search();
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:自动阅卷,6:完成阅卷,7:发布成绩", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -141,9 +138,9 @@ public class CardQueryController extends WebUtils {
 			query = EasyUiUtils.formatGridQuery(request, query);
 			DataResult result = cardHisServiceImpl.createLiveQuery(query).search();
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
-			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:完成阅卷,6:发布成绩,7:历史存档", "PSTATE");
+			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:自动阅卷,6:完成阅卷,7:发布成绩", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}

@@ -130,4 +130,12 @@ public class PaperSubjectDaoImpl extends HibernateSQLTools<PaperSubject>implemen
 	public int countPaperSubjectNum(String paperid) {
 		return countEntitys(DBRuleList.getInstance().add(new DBRule("PAPERID", paperid, "=")).toList());
 	}
+
+	@Override
+	public List<String> getAllSubjectVersionids(String paperid) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select VERSIONID from WTS_PAPER_SUBJECT where PAPERID=?");
+		sqlquery.setString(0, paperid);
+		return sqlquery.list();
+	}
 }

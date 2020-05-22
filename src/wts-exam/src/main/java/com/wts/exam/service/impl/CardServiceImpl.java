@@ -164,6 +164,15 @@ public class CardServiceImpl implements CardServiceInter {
 	}
 
 	@Override
+	public DataQuery createRoomCardQuery(DataQuery query) {
+		DataQuery dbQuery = DataQuery.init(query,
+				"WTS_ROOM_PAPER p left join  WTS_CARD a on p.ROOMID=a.ROOMID and p.PAPERID=a.PAPERID left join alone_auth_user b on a.USERID=b.ID",
+				"a.ID as ID,a.USERID as USERID,a.COMPLETENUM as COMPLETENUM,a.ALLNUM as ALLNUM,b.name as USERNAME,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.POINT as POINT,a.ADJUDGETIME as ADJUDGETIME,a.ADJUDGEUSERNAME as ADJUDGEUSERNAME,a.PSTATE as PSTATE");
+		dbQuery.setDistinct(true);
+		return dbQuery;
+	}
+
+	@Override
 	@Transactional
 	public Card creatOrGetCard(String paperid, String roomId, LoginUser currentUser) {
 		// 房间是否超时，是否有答题权限
@@ -786,10 +795,12 @@ public class CardServiceImpl implements CardServiceInter {
 	@Transactional
 	public void publicPoint(String cardid, LoginUser currentUser) {
 		Card card = getCardEntity(cardid);
-		// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
-		card.setPstate("7");
-		editCardEntity(card);
-		paperUserOwnServiceImpl.refreshScore(cardid, card.getPoint());
+		if (card.getPstate().equals("5") || card.getPstate().equals("6")) {
+			// 1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:已自动阅卷,6:已完成阅卷,7:发布成绩
+			card.setPstate("7");
+			editCardEntity(card);
+			paperUserOwnServiceImpl.refreshScore(cardid, card.getPoint());
+		}
 	}
 
 	@Override

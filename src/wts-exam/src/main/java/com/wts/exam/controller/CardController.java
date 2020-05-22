@@ -12,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,8 +21,8 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
 import com.farm.core.page.OperateType;
-import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
+import com.farm.core.sql.query.DataQuerys;
 import com.farm.core.sql.result.DataResult;
 import com.farm.core.sql.result.ResultsHandle;
 import com.farm.core.page.ViewMode;
@@ -51,13 +53,12 @@ public class CardController extends WebUtils {
 	 */
 	@RequestMapping("/query")
 	@ResponseBody
-	public Map<String, Object> queryall(String roompaperId, DataQuery query, HttpServletRequest request) {
+	public Map<String, Object> queryall(String roompaperIds, DataQuery query, HttpServletRequest request) {
 		try {
-			RoomPaper roompaper = roomPaperServiceImpl.getRoompaperEntity(roompaperId);
-			query.addRule(new DBRule("A.ROOMID", roompaper.getRoomid(), "="));
-			query.addRule(new DBRule("A.PAPERID", roompaper.getPaperid(), "="));
+			List<String> roompaperidList=	parseIds(roompaperIds);
+			query.addSqlRule(" and P.ID in ("+DataQuerys.parseSqlValues(roompaperidList)+") and A.ID is not null");
 			query = EasyUiUtils.formatGridQuery(request, query);
-			DataResult result = cardServiceImpl.createCardSimpleQuery(query).search();
+			DataResult result = cardServiceImpl.createRoomCardQuery(query).search();
 			result.runHandle(new ResultsHandle() {
 				// 处理答题且超时的答题卡，设置未超时未提交的状态
 				@Override
@@ -117,6 +118,26 @@ public class CardController extends WebUtils {
 		}
 	}
 	
+	
+	/**
+	 * 删除数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/pubPoint")
+	@ResponseBody
+	public Map<String, Object> pubPoint(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				cardServiceImpl.publicPoint(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+	
 	/**
 	 * 重新阅卷
 	 * 
@@ -136,8 +157,8 @@ public class CardController extends WebUtils {
 		}
 	}
 	@RequestMapping("/list")
-	public ModelAndView index(String roompaperId, HttpSession session) {
-		return ViewMode.getInstance().putAttr("roompaperId", roompaperId).returnModelAndView("exam/CardResult");
+	public ModelAndView index(String roompaperIds, HttpSession session) {
+		return ViewMode.getInstance().putAttr("roompaperIds", roompaperIds).returnModelAndView("exam/CardResult");
 	}
 
 	/**

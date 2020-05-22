@@ -47,6 +47,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import com.farm.authority.FarmAuthorityService;
+import com.farm.authority.domain.User;
+import com.farm.authority.service.UserServiceInter;
 import com.farm.core.auth.domain.AnonymousUser;
 import com.farm.core.auth.domain.LoginUser;
 
@@ -89,6 +91,8 @@ public class RoomServiceImpl implements RoomServiceInter {
 	private SubjectUserOwnServiceInter subjectUserOwnServiceImpl;
 	@Resource
 	private CardPointDaoInter cardPointDaoImpl;
+	@Resource
+	private UserServiceInter userServiceImpl;
 	private static final Logger log = Logger.getLogger(RoomServiceImpl.class);
 
 	@Override
@@ -204,27 +208,43 @@ public class RoomServiceImpl implements RoomServiceInter {
 			// 获取用户在房间内做过的答卷id
 			List<String> paperids = cardServiceImpl.getUserPaperidsByRoom(roomid, currentUser.getId());
 			if (paperids == null || paperids.size() <= 0) {
+				// 用户没有答过就取全部的题
 				paperids = new ArrayList<>();
 				for (RoomPaper paper : papers) {
 					paperids.add(paper.getPaperid());
 				}
-			}
-			{
-				// 用用户id获得一个数字
-				Integer orderId = currentUser.getId().hashCode();
-				orderId = orderId < 0 ? -orderId : orderId;
-				orderId = orderId == 0 ? 1 : orderId;
-				// 用卷数量取余
-				int index = orderId % paperids.size();
-				if (paperids.size() > 0) {
-					onlyPaperId = paperids.get(index);
+				{// 获得随机答卷
+					// 用用户id获得一个数字
+					User user = userServiceImpl.getUserEntity(currentUser.getId());
+					int orderId = 100;
+					if (user == null) {
+						// 随机人员通过随机数获得随机答卷
+						orderId = (int) (Math.random() * (100 - 1) + 1);
+					} else {
+						// 登陆用户通过用户登陆时间获得随机数
+						try {
+							orderId = Integer.valueOf(user.getLogintime().hashCode());
+						} catch (Exception e) {
+							e.printStackTrace();
+							orderId = (int) (Math.random() * (100 - 1) + 1);
+						}
+					}
+					orderId = orderId < 0 ? -orderId : orderId;
+					orderId = orderId == 0 ? 1 : orderId;
+					// 用卷数量取余
+					int index = orderId % paperids.size();
+					if (paperids.size() > 0) {
+						onlyPaperId = paperids.get(index);
+					}
 				}
+			} else {
+				onlyPaperId = paperids.get(0);
 			}
 		}
 		for (RoomPaper paper : papers) {
 			PaperUnit paperUnit = paperServiceImpl.getPaperUnit(paper.getPaperid());
 			paperUnit.setRoomPaper(paper);
-			if (currentUser != null) {
+			if (currentUser != null && (entity.getPshowtype().equals("2") || entity.getPshowtype().equals("1"))) {
 				Card card = cardServiceImpl.loadCard(paper.getPaperid(), roomid, currentUser.getId());
 				if (card != null) {
 					paperUnit.setCard(card);

@@ -9,6 +9,7 @@ import com.wts.exam.dao.RandomStepDaoInter;
 import com.wts.exam.service.RandomItemServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
+import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +84,7 @@ public class RandomItemServiceImpl implements RandomItemServiceInter {
 		DataQuery dbQuery = DataQuery.init(query,
 				"(select a.ID as ID,a.NAME as NAME,a.PCONTENT as PCONTENT,a.PSTATE as PSTATE,a.CUSER as CUSER,a.CTIME as CTIME,count(b.id) as NUM,sum(b.subnum) as SUBNUM from WTS_RANDOM_ITEM a left join WTS_RANDOM_STEP b on b.itemid=a.id group by a.id) t ",
 				"ID,NAME,PCONTENT,PSTATE,CUSER,CTIME,NUM,SUBNUM");
+		dbQuery.setDefaultSort(new DBSort("CTIME", "ASC"));
 		return dbQuery;
 	}
 

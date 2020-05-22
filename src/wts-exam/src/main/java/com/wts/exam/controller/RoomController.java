@@ -6,13 +6,15 @@ import com.wts.exam.domain.Room;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.RoomServiceInter;
+import com.wts.exam.service.SubjectServiceInter;
+import com.wts.exam.utils.RoomSubjectLoadCacheUtils;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
-import javax.naming.spi.DirStateFactory.Result;
 
 import com.farm.web.easyui.EasyUiUtils;
 
@@ -23,7 +25,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.loader.custom.ResultRowProcessor;
 
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
@@ -54,6 +55,8 @@ public class RoomController extends WebUtils {
 	private ExamTypeServiceInter examTypeServiceImpl;
 	@Resource
 	private PaperServiceInter paperServiceImpl;
+	@Resource
+	private SubjectServiceInter subjectServiceImpl;
 
 	/**
 	 * 查询结果集合
@@ -82,7 +85,7 @@ public class RoomController extends WebUtils {
 			result.runHandle(new ResultsHandle() {
 				@Override
 				public void handle(Map<String, Object> row) {
-					if(!row.get("PSHOWTYPE").toString().equals("1")&&!row.get("PSHOWTYPE").toString().equals("2")){
+					if (!row.get("PSHOWTYPE").toString().equals("1") && !row.get("PSHOWTYPE").toString().equals("2")) {
 						row.put("TIMELEN", "-");
 						row.put("SSORTTYPE", "-");
 						row.put("OSORTTYPE", "-");
@@ -116,8 +119,8 @@ public class RoomController extends WebUtils {
 			boolean isWarning = false;
 			StringBuffer info = new StringBuffer();
 			StringBuffer warning = new StringBuffer();
-			info.append("答题室中");//《" + room.getName() + "》"); 
-			info.append("答题室中");//《" + room.getName() + "》");
+			info.append("答题室中");// 《" + room.getName() + "》");
+			info.append("答题室中");// 《" + room.getName() + "》");
 			// 检查试卷有几张
 			List<Paper> papers = roomServiceImpl.getLivePapers(roomid);
 			info.append("含" + papers.size() + "张答卷;");
@@ -239,7 +242,7 @@ public class RoomController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-	
+
 	/**
 	 * 数据归档
 	 * 
@@ -258,8 +261,7 @@ public class RoomController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-	
-	
+
 	/**
 	 * 考试禁用
 	 * 
@@ -320,6 +322,53 @@ public class RoomController extends WebUtils {
 	@RequestMapping("/list")
 	public ModelAndView index(HttpSession session) {
 		return ViewMode.getInstance().returnModelAndView("exam/RoomResult");
+	}
+
+	/**
+	 * 批量加载题目缓存页面
+	 * 
+	 * @param session
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping("/loadSubjectform")
+	public ModelAndView loadSubjectform(HttpSession session, String ids) {
+		return ViewMode.getInstance().putAttr("ids", ids).returnModelAndView("exam/RoomLoadSubsForm");
+	}
+
+	/**
+	 * 批量加载题目缓存
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/doLoadSubject")
+	@ResponseBody
+	public Map<String, Object> doLoadSubject(String ids, HttpSession session) {
+		try {
+			RoomSubjectLoadCacheUtils.doload(parseIds(ids), roomServiceImpl, paperServiceImpl, subjectServiceImpl);
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 获得加载题目缓存进度
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getLoadSubjectProcess")
+	@ResponseBody
+	public Map<String, Object> getLoadSubjectProcess(HttpSession session) {
+		try {
+			return ViewMode.getInstance().putAttr("alls", RoomSubjectLoadCacheUtils.getAllNums())
+					.putAttr("completes", RoomSubjectLoadCacheUtils.getCompleteNums())
+					.putAttr("taskstate", RoomSubjectLoadCacheUtils.getState()).returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
 	}
 
 	/**

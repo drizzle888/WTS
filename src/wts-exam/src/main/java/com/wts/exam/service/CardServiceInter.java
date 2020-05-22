@@ -290,4 +290,10 @@ public interface CardServiceInter {
 	 * @param currentUser
 	 */
 	public void reAdjudge(String id, LoginUser currentUser);
+
+	/**查询房间的答题卡
+	 * @param query
+	 * @return
+	 */
+	public DataQuery createRoomCardQuery(DataQuery query);
 }

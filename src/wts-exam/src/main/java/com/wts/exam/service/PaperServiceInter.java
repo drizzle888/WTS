@@ -203,4 +203,10 @@ public interface PaperServiceInter {
 	 * @return
 	 */
 	public String importByWtsPaperBean(WtsPaperBean bean, String examTypeId, String subjectTypeId, LoginUser user);
+
+	/**獲得答卷的所有題目id
+	 * @param id
+	 * @return
+	 */
+	public List<String> getAllSubjectVersionids(String paperid);
 }
