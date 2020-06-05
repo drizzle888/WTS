@@ -394,4 +394,12 @@ public interface UserServiceInter {
 	 * @return
 	 */
 	public List<User> getUsersByName(String username);
+
+	/**
+	 * 修改登陆名
+	 * 
+	 * @param userid
+	 * @param loginname
+	 */
+	public void editLoginName(String userid, String loginname);
 }

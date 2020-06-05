@@ -170,6 +170,24 @@ public class WebUserController extends WebUtils {
 	}
 
 	/**
+	 * 修改登錄名
+	 * 
+	 * @return
+	 */
+	@RequestMapping("editLoginname")
+	@ResponseBody
+	public Object editLoginname(HttpSession session, String loginname, String id) {
+		try {
+			//修改登陆名//初始化密码
+			userServiceImpl.editLoginName(id,loginname.trim());
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
 	 * 修改密码
 	 * 
 	 * @return
@@ -672,7 +690,7 @@ public class WebUserController extends WebUtils {
 	 * @return
 	 */
 	@RequestMapping("/addUserPost")
-	@ResponseBody 
+	@ResponseBody
 	public Map<String, Object> addUserPost(String ids, String postids, HttpSession session) {
 		try {
 			for (String userid : parseIds(ids)) {
@@ -686,7 +704,7 @@ public class WebUserController extends WebUtils {
 	}
 
 	/**
-	 * 批量删除用户岗位 
+	 * 批量删除用户岗位
 	 *
 	 * @return
 	 */

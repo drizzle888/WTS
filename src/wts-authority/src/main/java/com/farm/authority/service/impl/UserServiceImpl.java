@@ -931,4 +931,18 @@ public class UserServiceImpl implements UserServiceInter {
 				.add(new DBRule("STATE", "1", "=")).toList());
 		return users;
 	}
+
+	@Override
+	@Transactional
+	public void editLoginName(String userid, String loginname) {
+		if (!validateIsRepeatLoginName(loginname, userid)) {
+			// 修改
+			User user = userDaoImpl.getEntity(userid);
+			user.setLoginname(loginname);
+			userDaoImpl.editEntity(user);
+			initDefaultPassWord(userid, user);
+		} else {
+			throw new RuntimeException("该登陆名" + loginname + "已经存在!");
+		}
+	}
 }
