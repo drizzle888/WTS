@@ -38,6 +38,7 @@
 					<th field="TIPSTR" data-options="sortable:true" width="90">试题题目</th>
 					<th field="MTITLE" data-options="sortable:true" width="30">引用材料</th>
 					<th field="POINT" data-options="sortable:true" width="20">得分</th>
+					<th field="TYPENAME" data-options="sortable:true" width="30">题库分类</th>
 				</tr>
 			</thead>
 		</table>

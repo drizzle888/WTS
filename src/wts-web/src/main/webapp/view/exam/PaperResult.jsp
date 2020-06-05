@@ -423,7 +423,7 @@
 					+ '&paperId=' + selectedArray[0].ID;
 			$.farm.openWindow({
 				id : 'winSubjectMng',
-				width : 900,
+				width : 1000,
 				height : 500,
 				modal : true,
 				url : url,

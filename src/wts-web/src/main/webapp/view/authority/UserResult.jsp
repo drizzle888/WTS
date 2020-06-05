@@ -97,17 +97,19 @@
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-edit',plain:true,onClick:editDataUser">修改
 			</a> <a href="javascript:void(0)" id="mb" class="easyui-menubutton"
-				data-options="menu:'#mm6',iconCls:'icon-edit'">批量设置</a>
+				data-options="menu:'#mm6',iconCls:'icon-edit'">用户设置</a>
 			<div id="mm6" style="width: 150px;">
-				<div onclick="sysUser()">设置为系统用户</div>
+				<div onclick="sysUser()">批量设置系统用户</div>
 				<div class="menu-sep"></div>
-				<div onclick="setState('0')">设置为禁用</div>
-				<div onclick="setState('1')">设置为启用</div>
-				<div onclick="setState('3')">设置为待审核</div>
+				<div onclick="setState('0')">批量设置禁用</div>
+				<div onclick="setState('1')">批量设置启用</div>
+				<div onclick="setState('3')">批量设置待审核</div>
 				<div class="menu-sep"></div>
-				<div onclick="setUsersOrg()">设置组织机构</div>
-				<div onclick="addUsersPost()">添加新岗位</div>
-				<div onclick="delUsersPost()">删除原岗位</div>
+				<div onclick="setUsersOrg()">批量设置组织机构</div>
+				<div onclick="addUsersPost()">批量添加新岗位</div>
+				<div onclick="delUsersPost()">批量删除原岗位</div>
+				<div class="menu-sep"></div>
+				<div onclick="editLoginname()">修改用户登陆名</div>
 			</div>
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-remove',plain:true,onClick:delDataUser">删除
@@ -202,6 +204,39 @@
 					'info');
 		}
 	}
+	
+	//修改用户登陆名
+	function editLoginname() {
+		var selectedArray = $(gridUser).datagrid('getSelections');
+		if (selectedArray.length == 1) {
+			var userid= selectedArray[0].ID;
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, "修改用户登陆名后用户密码将被重置，是否继续？", function(flag) {
+				if(flag){
+				$.messager.prompt('提示信息', '请输入新的登陆名：', function(r){
+					if (r){
+						$(gridUser).datagrid('loading');
+						$.post('user/editLoginname.do', {id:userid,loginname:r},
+								function(flag) {
+									var jsonObject = JSON.parse(flag, null);
+									$(gridUser).datagrid('loaded');
+									if (jsonObject.STATE == 0) {
+										$(gridUser).datagrid('reload');
+									} else {
+										var str = MESSAGE_PLAT.ERROR_SUBMIT
+												+ flag.pageset.message;
+										$.messager.alert(MESSAGE_PLAT.ERROR, str,
+												'error');
+									}
+								});
+					}
+				});}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+	
 	//新增
 	function addDataUser() {
 		var url = url_formActionUser + '?ids=123123132&operateType='

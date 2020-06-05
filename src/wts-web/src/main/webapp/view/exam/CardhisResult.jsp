@@ -77,17 +77,22 @@
 	</div>
 </body>
 <script type="text/javascript">
-	var url_delActionCardhis = "cardquery/del.do";//删除URL
+	var url_delActionCardhis = "cardquery/hisdel.do";//删除URL
 	var url_formActionCardhis = "cardquery/form.do";//增加、修改、查看URL
 	var url_searchActionCardhis = "cardquery/hisQuery.do";//查询URL
 	var title_windowCardhis = "答题卡历史记录管理";//功能名称
 	var gridCardhis;//数据表格对象
 	var searchCardhis;//条件查询组件对象
 	var toolBarCardhis = [ {
-		id : 'del',
+		id : 'export',
 		text : '成绩导出',
 		iconCls : 'icon-blogs',
 		handler : excelExport
+	}, {
+		id : 'del',
+		text : '成绩删除',
+		iconCls : 'icon-remove',
+		handler : delDataExamstat
 	} ];
 	$(function() {
 		//初始化数据表格
@@ -130,6 +135,36 @@
 		$.messager.alert('报表加载中...', '请等待,不要关闭本窗口直至报表导出完成... ...');
 		$('#ruleTextId').val(searchCardhis.arrayStr());
 		$('#reportForm').submit();
+	}
+	//删除
+	function delDataExamstat() {
+		var selectedArray = $(gridCardhis).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			var str = selectedArray.length + MESSAGE_PLAT.SUCCESS_DEL_NEXT_IS;
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
+				if (flag) {
+					$(gridCardhis).datagrid('loading');
+					$.post('cardquery/hisdel.do?ids='
+							+ $.farm.getCheckedIds(gridCardhis, 'CARDID'), {},
+							function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridCardhis).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+									$(gridCardhis).datagrid('reload');
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
 	}
 </script>
 </html>

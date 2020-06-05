@@ -99,10 +99,11 @@
 			<a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
 				data-options="menu:'#mm7',iconCls:'icon-networking'">发布</a>
 			<div id="mm7" style="width: 150px;">
-				<div onclick="examPublic()">发布</div>
+				<div onclick="examPublic()">校验后发布</div>
+				<div onclick="doExamPublic()">批量发布</div>
 				<div class="menu-sep"></div>
-				<div onclick="examValidate()">校验</div>
-				<div onclick="loadSubjects()">预加载题目缓存</div>
+				<div onclick="examValidate()">校验答题室</div>
+				<div onclick="loadSubjects()">加载题目缓存</div>
 			</div>
 			<!-- <a class="easyui-linkbutton"
 				data-options="iconCls:'icon-move_to_folder',plain:true,onClick:delDataRoom">添加答卷
@@ -430,9 +431,10 @@
 					'info');
 		}
 	}
+	//发布答卷
 	function doExamPublic() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
-		if (selectedArray.length == 1) {
+		if (selectedArray.length > 0) {
 			// 有数据执行操作
 			var str = selectedArray.length + "条数据将被发布，是否继续?";
 			$.messager.confirm(MESSAGE_PLAT.PROMPT, str, function(flag) {
@@ -456,7 +458,7 @@
 			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-					'info');
+			'info');
 		}
 	}
 
