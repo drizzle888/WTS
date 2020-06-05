@@ -75,4 +75,10 @@ public interface CardHisServiceInter {
 	 * @return
 	 */
 	public DataQuery createUserCardQuery(DataQuery query);
+
+	/**删除某条成绩
+	 * @param hiscardid
+	 * @param currentUser
+	 */
+	public void deleteCardhis(String cardhisid, LoginUser currentUser);
 }

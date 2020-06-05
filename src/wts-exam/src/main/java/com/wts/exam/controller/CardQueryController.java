@@ -185,7 +185,24 @@ public class CardQueryController extends WebUtils {
 			log.error(e.getMessage());
 		}
 	}
-
+	/**
+	 * 删除数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/hisdel")
+	@ResponseBody
+	public Map<String, Object> delSubmit(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				cardHisServiceImpl.deleteCardhis(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
 	@RequestMapping("/hislist")
 	public ModelAndView index(HttpSession session) {
 		return ViewMode.getInstance().returnModelAndView("exam/CardhisResult");

@@ -189,4 +189,12 @@ public class CardhisServiceImpl implements CardHisServiceInter {
 		return dbQuery;
 	}
 
+	@Override
+	@Transactional
+	public void deleteCardhis(String cardhisid, LoginUser currentUser) {
+		cardanswerhisDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", cardhisid, "=")).toList());
+		cardpointhisDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CARDID", cardhisid, "=")).toList());
+		cardhisDaoImpl.deleteEntity(cardhisDaoImpl.getEntity(cardhisid));
+	}
+
 }

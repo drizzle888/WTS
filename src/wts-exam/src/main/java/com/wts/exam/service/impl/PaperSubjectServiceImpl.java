@@ -84,8 +84,8 @@ public class PaperSubjectServiceImpl implements PaperSubjectServiceInter {
 	@Transactional
 	public DataQuery createPapersubjectSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
-				"WTS_PAPER_SUBJECT a left join WTS_PAPER_CHAPTER b on a.CHAPTERID=b.ID LEFT JOIN WTS_SUBJECT_VERSION c on a.VERSIONID=c.ID left join WTS_SUBJECT d on a.subjectid=d.id left join WTS_MATERIAL e on d.MATERIALID =e.id",
-				"a.ID AS ID, a.POINT AS POINT, a.SORT AS SORT, c.TIPTYPE AS TIPTYPE, c.TIPSTR AS TIPSTR,e.title as MTITLE");
+				"WTS_PAPER_SUBJECT a left join WTS_PAPER_CHAPTER b on a.CHAPTERID=b.ID LEFT JOIN WTS_SUBJECT_VERSION c on a.VERSIONID=c.ID left join WTS_SUBJECT d on a.subjectid=d.id left join WTS_MATERIAL e on d.MATERIALID =e.id left join wts_subject_type f on f.id=d.typeid",
+				"a.ID AS ID, a.POINT AS POINT, a.SORT AS SORT, c.TIPTYPE AS TIPTYPE, c.TIPSTR AS TIPSTR,e.title as MTITLE,f.name as TYPENAME");
 		return dbQuery;
 	}
 

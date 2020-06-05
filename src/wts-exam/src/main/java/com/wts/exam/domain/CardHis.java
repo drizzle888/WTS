@@ -23,8 +23,6 @@ public class CardHis implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GenericGenerator(name = "systemUUID", strategy = "uuid")
-	@GeneratedValue(generator = "systemUUID")
 	@Column(name = "ID", length = 32, insertable = true, updatable = true, nullable = false)
 	private String id;
 	@Column(name = "ALLNUM", length = 10)
@@ -61,7 +59,7 @@ public class CardHis implements java.io.Serializable {
 	private String paperid;
 	@Column(name = "PAPERNAME", length = 128, nullable = false)
 	private String papername;
-	
+
 	public String getOvertime() {
 		return overtime;
 	}
