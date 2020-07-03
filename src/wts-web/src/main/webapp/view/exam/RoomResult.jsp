@@ -32,9 +32,20 @@
 							id="PARENTID_RULE" name="b.TREECODE:like" type="hidden"></td>
 						<td class="title">答题室名称:</td>
 						<td><input name="a.NAME:like" type="text"></td>
+
+						<td class="title">状态:</td>
+						<td>
+						<select name="A.PSTATE:=">
+								<option value="">~全部~</option>
+								<option value="0">停用</option>
+								<option value="1">新建</option>
+								<option value="2">发布</option>
+								<option value="3">结束</option>
+								<option value="4">归档</option>
+						</select></td>
 					</tr>
 					<tr style="text-align: center;">
-						<td colspan="4"><a id="a_search" href="javascript:void(0)"
+						<td colspan="6"><a id="a_search" href="javascript:void(0)"
 							class="easyui-linkbutton" iconCls="icon-search">查询</a> <a
 							id="a_reset" href="javascript:void(0)" class="easyui-linkbutton"
 							iconCls="icon-reload">清除条件</a></td>
@@ -44,23 +55,29 @@
 		</div>
 		<div data-options="region:'center',border:false">
 			<table id="dataRoomGrid">
-				<thead>
+				<thead data-options="frozen:true">
 					<tr>
 						<th data-options="field:'ck',checkbox:true"></th>
-						<th field="NAME" data-options="sortable:true" width="40">答题室名称</th>
-						<th field="PSHOWTYPE" data-options="sortable:true" width="20">答卷模式</th>
-						<th field="TIMETYPE" data-options="sortable:true" width="20">时间类型</th>
-						<th field="STARTTIME" data-options="sortable:true" width="35">开始时间</th>
-						<th field="WRITETYPETITLE" data-options="sortable:true" width="20">答题人员</th>
-						<th field="USERNUM" data-options="sortable:true" width="20">答题人数</th>
-						<th field="TIMELEN" data-options="sortable:true" width="20">答题时长</th>
+						<th field="NAME" data-options="sortable:true" width="120">答题室名称</th>
+					</tr>
+				</thead>
+				<thead>
+					<tr>
+						<th field="PSHOWTYPE" data-options="sortable:true" width="70">答卷模式</th>
+						<th field="RESTARTTYPE" data-options="sortable:true" width="70">重复答题</th>
+						<th field="TIMETYPE" data-options="sortable:true" width="70">时间类型</th>
+						<th field="STARTTIME" data-options="sortable:true" width="120">开始时间</th>
+						<th field="WRITETYPETITLE" data-options="sortable:true" width="70">答题人员</th>
+						<th field="USERNUM" data-options="sortable:true" width="70">指定人数</th>
+						<th field="ANSERSNUM" data-options="sortable:false" width="70">答题人数</th>
+						<th field="TIMELEN" data-options="sortable:true" width="70">答题时长</th>
 						<!-- WRITETYPE -->
-						<th field="SSORTTYPE" data-options="sortable:true" width="20">题目顺序</th>
-						<th field="OSORTTYPE" data-options="sortable:true" width="20">选项顺序</th>
-						<th field="COUNTTYPE" data-options="sortable:true" width="20">阅卷类型</th>
-						<th field="TYPENAME" data-options="sortable:true" width="40">业务分类</th>
-						<th field="PSTATETITLE" data-options="sortable:true" width="20">状态</th>
-						<th field="UUID" data-options="sortable:true" width="20">UUID</th>
+						<th field="SSORTTYPE" data-options="sortable:true" width="70">题目顺序</th>
+						<th field="OSORTTYPE" data-options="sortable:true" width="70">选项顺序</th>
+						<th field="COUNTTYPE" data-options="sortable:true" width="70">阅卷类型</th>
+						<th field="TYPENAME" data-options="sortable:true" width="120">业务分类</th>
+						<th field="PSTATETITLE" data-options="sortable:true" width="70">状态</th>
+						<th field="UUID" data-options="sortable:true" width="120">UUID</th>
 						<!-- PSTATE -->
 					</tr>
 				</thead>
@@ -75,9 +92,17 @@
 			</div>
 			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-add',plain:true,onClick:addDataRoom">新增
-			</a> <a class="easyui-linkbutton"
-				data-options="iconCls:'icon-edit',plain:true,onClick:editDataRoom">修改
-			</a> <a class="easyui-linkbutton"
+			</a> <a href="javascript:void(0)" id="mbEdit" class="easyui-menubutton"
+				data-options="menu:'#mmEdit',iconCls:'icon-edit'">編輯</a>
+			<div id="mmEdit" style="width: 150px;">
+				<div onclick="editDataRoom()">修改答题室</div>
+				<div class="menu-sep"></div>
+				<div onclick="editReStartAble(true)">设置可重复答题</div>
+				<div onclick="editReStartAble(false)">设置只答题一次</div>
+				<div class="menu-sep"></div>
+				<div onclick="editAnswerTime()">设置答题时间</div>
+			</div>
+			<a class="easyui-linkbutton"
 				data-options="iconCls:'icon-communication',plain:true,onClick:moveTypetree">设置分类
 			</a> <a href="javascript:void(0)" id="mb" class="easyui-menubutton"
 				data-options="menu:'#mm6',iconCls:'icon-group_green_edit'">人员设置</a>
@@ -94,7 +119,8 @@
 				<div class="menu-sep"></div>
 				<div onclick="examPrivate()">停用/暂停</div>
 				<div class="menu-sep"></div>
-				<div onclick="delDataRoom()">删除</div>
+				<div onclick="delDataRoom()">删除答题室</div>
+				<div onclick="clearDataRoom()">清理答题卡</div>
 			</div>
 			<a href="javascript:void(0)" id="mb7" class="easyui-menubutton"
 				data-options="menu:'#mm7',iconCls:'icon-networking'">发布</a>
@@ -124,7 +150,7 @@
 		gridRoom = $('#dataRoomGrid').datagrid({
 			url : url_searchActionRoom,
 			fit : true,
-			fitColumns : true,
+			fitColumns : false,
 			'toolbar' : '#roomToolbar',
 			pagination : true,
 			closable : true,
@@ -235,6 +261,121 @@
 					'info');
 		}
 	}
+
+	//修改答题时间
+	function editAnswerTime() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE == '2') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "答卷已经发布，请取消发布后进行修改!",
+						'info');
+				return;
+			}
+			var url = 'room/editDoTime.do?ids='
+					+ $.farm.getCheckedIds(gridRoom, 'ID');
+			$.farm.openWindow({
+				id : 'winDotimeRoom',
+				width : 600,
+				height : 270,
+				modal : true,
+				url : url,
+				title : '修改有效时间'
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//设置是否可重复答题
+	function editReStartAble(isAble) {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE == '2') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "答卷已经发布，请取消发布后进行修改!",
+						'info');
+				return;
+			}
+			// 有数据执行操作
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, "确认修改重复答题类型？", function(
+					flag) {
+				if (flag) {
+					$(gridRoom).datagrid('loading');
+					$.post('room/editRestartAble.do', {
+						'ableType' : isAble,
+						'ids' : $.farm.getCheckedIds(gridRoom, 'ID')
+					}, function(flag) {
+						var jsonObject = JSON.parse(flag, null);
+						$(gridRoom).datagrid('loaded');
+						if (jsonObject.STATE == 0) {
+							$(gridRoom).datagrid('reload');
+						} else {
+							var str = MESSAGE_PLAT.ERROR_SUBMIT
+									+ jsonObject.MESSAGE;
+							$.messager.alert(MESSAGE_PLAT.ERROR, str, 'error');
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+
+	//清理答题室
+	function clearDataRoom() {
+		var selectedArray = $(gridRoom).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			if (selectedArray[0].PSTATE != '3') {
+				$.messager.alert(MESSAGE_PLAT.PROMPT, "答卷非结束状态，结束答题后进行清理!",
+						'info');
+				return;
+			}
+			// 有数据执行操作
+			$.messager
+					.confirm(
+							MESSAGE_PLAT.PROMPT,
+							'清理答题卡后用户答题信息将不可恢复，确认继续吗?',
+							function(flag) {
+								if (flag) {
+									$(gridRoom).datagrid('loading');
+									$
+											.post(
+													'room/clearAllRoomCard.do'
+															+ '?ids='
+															+ $.farm
+																	.getCheckedIds(
+																			gridRoom,
+																			'ID'),
+													{},
+													function(flag) {
+														var jsonObject = JSON
+																.parse(flag,
+																		null);
+														$(gridRoom).datagrid(
+																'loaded');
+														if (jsonObject.STATE == 0) {
+															$(gridRoom)
+																	.datagrid(
+																			'reload');
+														} else {
+															var str = MESSAGE_PLAT.ERROR_SUBMIT
+																	+ jsonObject.MESSAGE;
+															$.messager
+																	.alert(
+																			MESSAGE_PLAT.ERROR,
+																			str,
+																			'error');
+														}
+													});
+								}
+							});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
+	}
+
 	//删除
 	function delDataRoom() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
@@ -416,8 +557,8 @@
 	function loadSubjects() {
 		var selectedArray = $(gridRoom).datagrid('getSelections');
 		if (selectedArray.length > 0) {
-			var url = 'room/loadSubjectform.do?operateType=' + PAGETYPE.EDIT + '&ids='
-					+ $.farm.getCheckedIds(gridRoom, 'ID');
+			var url = 'room/loadSubjectform.do?operateType=' + PAGETYPE.EDIT
+					+ '&ids=' + $.farm.getCheckedIds(gridRoom, 'ID');
 			$.farm.openWindow({
 				id : 'winLoadSubjects',
 				width : 600,
@@ -458,7 +599,7 @@
 			});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
-			'info');
+					'info');
 		}
 	}
 
@@ -558,7 +699,7 @@
 			}
 			$.farm.openWindow({
 				id : 'winRoom',
-				width : 600,
+				width : 700,
 				height : 400,
 				modal : true,
 				url : 'roomuser/list.do?roomid=' + selectedArray[0].ID,

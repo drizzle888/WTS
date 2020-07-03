@@ -44,9 +44,14 @@
 	var searchAction;//条件查询组件对象
 	var toolBarAction = [ {
 		id : 'blankList',
-		text : '加入黑名单',
+		text : '加入IP黑名单',
 		iconCls : 'icon-exclamation-red-frame',
-		handler : addBlankList
+		handler : addIpBlankList
+	}, {
+		id : 'blankList',
+		text : '加入用戶黑名单',
+		iconCls : 'icon-exclamation-red-frame',
+		handler : addLoginNameBlankList
 	}, {
 		id : 'viewbList',
 		text : '查看黑名单',
@@ -76,7 +81,7 @@
 		});
 	});
 	//添加到黑名单
-	function addBlankList() {
+	function addIpBlankList() {
 		var selectedArray = $(gridAction).datagrid('getSelections');
 		if (selectedArray.length > 0) {
 			// 有数据执行操作
@@ -114,6 +119,36 @@
 													});
 								}
 							});
+		} else {
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
+					'info');
+		}
+	}
+	//添加到黑名单
+	function addLoginNameBlankList() {
+		var selectedArray = $(gridAction).datagrid('getSelections');
+		if (selectedArray.length > 0) {
+			// 有数据执行操作
+			$.messager.confirm(MESSAGE_PLAT.PROMPT, "该用戶加入黑名单后将无法继续访问系统，是否继续?",
+					function(flag) {
+						if (flag) {
+							$(gridAction).datagrid('loading');
+							$.post('user/addUserBlank.do', {
+								loginnames : $.farm.getCheckedIds(gridAction,
+										'LOGINNAME')
+							}, function(flag) {
+								var jsonObject = JSON.parse(flag, null);
+								$(gridAction).datagrid('loaded');
+								if (jsonObject.STATE == 0) {
+								} else {
+									var str = MESSAGE_PLAT.ERROR_SUBMIT
+											+ jsonObject.MESSAGE;
+									$.messager.alert(MESSAGE_PLAT.ERROR, str,
+											'error');
+								}
+							});
+						}
+					});
 		} else {
 			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE,
 					'info');

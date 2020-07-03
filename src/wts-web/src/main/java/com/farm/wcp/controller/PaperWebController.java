@@ -34,6 +34,7 @@ import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.PaperUserOwnServiceInter;
 import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.RoomServiceInter;
+import com.wts.exam.utils.CheatUtils;
 
 /**
  * 考试
@@ -114,7 +115,9 @@ public class PaperWebController extends WebUtils {
 			}
 			// 按照答题室配置打乱题得顺序
 			if (room.getSsorttype().equals("2") || room.getOsorttype().equals("2")) {
-				roomServiceImpl.disorganizePaper(paper, roomId);
+				if (!CheatUtils.isNoRandomPaper(roomId, paperid)) {
+					roomServiceImpl.disorganizePaper(paper, roomId);
+				}
 			}
 			// 创建答题卡
 			Card card = cardServiceImpl.creatOrGetCard(paperid, roomId, user);
@@ -167,6 +170,9 @@ public class PaperWebController extends WebUtils {
 				value = AntiXSS.replaceHtmlCode(value);
 			}
 			Room room = roomServiceImpl.getRoomEntity(roomid);
+			if (!room.getPstate().equals("2")) {
+				return ViewMode.getInstance().setError("答题室非发布状态，禁止答题", new RuntimeException("答题室非发布状态，禁止答题")).returnObjMode();
+			}
 			if (room.getWritetype().equals("2")) {
 				user = roomServiceImpl.getAnonymous(session);
 			} else {
@@ -175,6 +181,9 @@ public class PaperWebController extends WebUtils {
 				}
 			}
 			Card card = cardServiceImpl.loadCard(paperid, roomid, user.getId());
+			if (card == null) {
+				throw new RuntimeException("当前答题卡失效,请重新进入答题室!");
+			}
 			if (!cardServiceImpl.isTheTimeAble(card)) {
 				return ViewMode.getInstance().setError("OUTTIME", new RuntimeException("答題卡超時，强制提交！")).returnObjMode();
 			}

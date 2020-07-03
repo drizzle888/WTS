@@ -5,7 +5,7 @@
 <html>
 <head>
 <base href="<PF:basePath/>">
-<title>答题卡历史记录数据管理</title>
+<title>答题卡非归档数据查询</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <jsp:include page="/view/conf/include.jsp"></jsp:include>
 </head>
@@ -39,14 +39,29 @@
 						<td class="title">考卷名称:</td>
 						<td><input name="E.NAME:like" type="text"></td>
 						<td class="title">考试时间起始:</td>
-						<td><input name="STARTTIME:like" class="easyui-datebox" type="text"></td>
+						<td><input name="STARTTIME:like" class="easyui-datebox"
+							type="text"></td>
 						<td class="title">考试时间结束:</td>
-						<td><input name="ENDTIME:like" class="easyui-datebox" type="text"></td>
+						<td><input name="ENDTIME:like" class="easyui-datebox"
+							type="text"></td>
 					</tr>
-					<tr style="text-align: center;">
-						<td colspan="6"><a id="a_search" href="javascript:void(0)"
-							class="easyui-linkbutton" iconCls="icon-search">查询</a> <a
-							id="a_reset" href="javascript:void(0)" class="easyui-linkbutton"
+
+					<tr>
+						<td class="title">状态:</td>
+						<td><select name="A.PSTATE:=">
+								<option value="">~全部~</option>
+								<option value="1">开始答题</option>
+								<option value="2">手动交卷</option>
+								<option value="3">超时未交卷</option>
+								<option value="4">超时自动交卷</option>
+								<option value="5">自动阅卷</option>
+								<option value="6">完成阅卷</option>
+								<option value="7">发布成绩</option>
+						</select></td>
+						<td colspan="4" style="text-align: center"><a id="a_search"
+							href="javascript:void(0)" class="easyui-linkbutton"
+							iconCls="icon-search">查询</a> <a id="a_reset"
+							href="javascript:void(0)" class="easyui-linkbutton"
 							iconCls="icon-reload">清除条件</a></td>
 					</tr>
 				</table>
@@ -67,24 +82,29 @@
 					</tr>
 				</thead>
 			</table>
-			<form method="post" action="cardquery/exportLiveExcel.do" id="reportForm">
+			<form method="post" action="cardquery/exportLiveExcel.do"
+				id="reportForm">
 				<input type="hidden" name="ruleText" id="ruleTextId" />
 			</form>
 		</div>
 	</div>
-</body> 
+</body>
 <script type="text/javascript">
 	var url_searchActionCardhis = "cardquery/liveQuery.do";//查询URL
 	var title_windowCardhis = "答题卡历史记录管理";//功能名称
 	var gridCardhis;//数据表格对象
 	var searchCardhis;//条件查询组件对象
-	var toolBarCardhis = [{
+	var toolBarCardhis = [ {
 		id : 'del',
 		text : '成绩导出',
 		iconCls : 'icon-blogs',
 		handler : excelExport
-	}
-	];
+	}, {
+		id : 'info',
+		text : '答题信息',
+		iconCls : 'icon-my-account',
+		handler : cardinfo
+	} ];
 	$(function() {
 		//初始化数据表格
 		gridCardhis = $('#dataCardhisGrid').datagrid({
@@ -123,9 +143,23 @@
 	});
 	//导出
 	function excelExport() {
-		$.messager.alert('报表加载中...','请等待,不要关闭本窗口直至报表导出完成... ...');
+		$.messager.alert('报表加载中...', '请等待,不要关闭本窗口直至报表导出完成... ...');
 		$('#ruleTextId').val(searchCardhis.arrayStr());
 		$('#reportForm').submit();
+	}
+	//答题卡信息
+	function cardinfo() {
+		var selectedArray = $(gridCardhis).datagrid('getSelections');
+		if (selectedArray.length == 1) {
+			$.post('cardquery/liveCardInfo.do', {
+				'id' : selectedArray[0].CARDID
+			}, function(flag) {
+				alert(flag.info);
+			}, 'json');
+		} else { 
+			$.messager.alert(MESSAGE_PLAT.PROMPT, MESSAGE_PLAT.CHOOSE_ONE_ONLY,
+					'info');
+		}
 	}
 </script>
 </html>

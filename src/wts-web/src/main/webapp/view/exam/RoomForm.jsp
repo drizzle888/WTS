@@ -277,10 +277,11 @@
 		var type = $('#entity_pshowtype').val();
 		//12考試，34非考試（练习，学习）
 		if (type == '1'||type == '2') {
-			//隐藏
+			//考试
 			$('.tr_doAable').show();
-			$('#entity_timelen').val('');
+			//$('#entity_timelen').val('');
 		}else{
+			//隐藏
 			$('.tr_doAable').hide();
 			$('#entity_timelen').val('60');
 		}

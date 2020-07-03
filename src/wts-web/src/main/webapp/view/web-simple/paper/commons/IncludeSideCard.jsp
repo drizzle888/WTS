@@ -102,23 +102,23 @@
 				<button id="sideCardSaveButton" type="button" class="btn btn-info">保存</button>
 			</div>-->
 			<div class="btn-group" role="group">
-				<button id="sideCardRefreshButton" type="button"
-					class="btn btn-info">刷新</button>
-			</div>
-			<div class="btn-group" role="group">
 				<button data-toggle="modal" data-target="#submitPaper-win"
 					type="button" class="btn btn-danger">完成交卷</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button id="sideCardRefreshButton" type="button"
+					class="btn btn-info">刷新</button>
 			</div>
 		</c:if>
 		<c:if test="${flag=='checkup'}">
 			<!-- 检查答卷 -->
 			<div class="btn-group" role="group">
-				<button id="sideBackPaperButton" type="button"
-					class="btn btn-success">返回答题</button>
-			</div>
-			<div class="btn-group" role="group">
 				<button data-toggle="modal" data-target="#submitPaper-win"
 					type="button" class="btn btn-danger">完成交卷</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button id="sideBackPaperButton" type="button"
+					class="btn btn-success">返回答题</button>
 			</div>
 		</c:if>
 

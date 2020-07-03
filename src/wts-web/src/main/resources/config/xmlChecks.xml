@@ -47,4 +47,6 @@
 	<parameter versions='0.8.0'>config.login.repet.able</parameter>
 	<parameter versions='0.9.1'>config.login.onameanduname.able</parameter>
 	<parameter versions='0.9.4'>config.exam.user.grade.queryable</parameter>
+	<parameter versions='0.9.6'>config.exam.cheat.roomrandom.onlypaper</parameter>
+	<parameter versions='0.9.6'>config.exam.cheat.hiscard.del.able</parameter>
 </conf>

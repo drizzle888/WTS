@@ -7,9 +7,9 @@
 			<table class="editTable">
 				<tr>
 					<td class="title">人员姓名:</td>
-					<td><input name="B.NAME:like" type="text"></td>
+					<td><input name="B.NAME:like" type="text" style="width: 120px;"></td>
 					<td class="title">机构姓名:</td>
-					<td><input name="E.NAME:like" type="text"></td>
+					<td><input name="E.NAME:like" type="text" style="width: 120px;"></td>
 				</tr>
 				<tr style="text-align: center;">
 					<td colspan="4"><a id="a_search" href="javascript:void(0)"
@@ -25,9 +25,11 @@
 			<thead>
 				<tr>
 					<th data-options="field:'ck',checkbox:true"></th>
-					<th field="USERNAME" data-options="sortable:true" width="60">姓名</th>
-					<th field="ORGNAME" data-options="sortable:true" width="60">组织机构</th>
-					<th field="ROOMNAME" data-options="sortable:true" width="60">答题室名称</th>
+					<th field="USERNAME" data-options="sortable:true" width="30">姓名</th>
+					<th field="ORGNAME" data-options="sortable:true" width="50">组织机构</th>
+					<th field="PAPERNAME" data-options="sortable:true" width="50">答卷名称</th>
+					<th field="STARTTIME" data-options="sortable:true" width="60">答题时间</th>
+					<th field="OVERTIME" data-options="sortable:true" width="40">答题状态</th>
 				</tr>
 			</thead>
 		</table>

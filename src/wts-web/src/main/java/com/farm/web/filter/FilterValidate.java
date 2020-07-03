@@ -55,8 +55,12 @@ public class FilterValidate implements Filter {
 	 * @param ip
 	 * @return
 	 */
-	private boolean isBlankList(String ip) {
+	private boolean isBlankList(String ip, HttpSession httpSession) {
 		Map<String, String> blankList = FarmParameterService.getInstance().getDictionary("ONLINE_BLANKLIST");
+		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
+		if (user != null && user.getLoginname() != null && blankList.keySet().contains(user.getLoginname())) {
+			return true;
+		}
 		return blankList.keySet().contains(ip);
 	}
 
@@ -78,8 +82,8 @@ public class FilterValidate implements Filter {
 		AuthKey authkey = null;
 		{
 			// 全部资源流量控制（静态和动态）
-			if (!FarmDoLimits.isVisiteAble(WebUtils.getCurrentIp(request), formatUrl)
-					|| isBlankList(WebUtils.getCurrentIp(request))) {
+			if (!FarmDoLimits.isVisiteAble(WebUtils.getCurrentIp(request), session, formatUrl)
+					|| isBlankList(WebUtils.getCurrentIp(request), session)) {
 				response.sendError(405, "当前用户访问受限(FarmDoLimits)!");
 				return;
 			}

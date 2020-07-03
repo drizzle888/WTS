@@ -36,7 +36,8 @@ public class FilterXss implements Filter {
 			chain.doFilter(arg0, arg1);
 			return;
 		}
-		if (requestUrl.indexOf("saveSubjectVal") >= 0 || requestUrl.indexOf("savePaperVal") >= 0||requestUrl.indexOf("countPoint") >= 0) {
+		if (requestUrl.indexOf("saveSubjectVal") >= 0 || requestUrl.indexOf("savePaperVal") >= 0
+				|| requestUrl.indexOf("countPoint") >= 0) {
 			// 答题过程中保存中间答案,因为有json的数据
 			chain.doFilter(arg0, arg1);
 			return;
@@ -46,10 +47,20 @@ public class FilterXss implements Filter {
 			chain.doFilter(arg0, arg1);
 			return;
 		}
+		if (requestUrl.indexOf("subject/edit") >= 0) {
+			// 题目正文提交
+			chain.doFilter(arg0, arg1);
+			return;
+		}
+		if (requestUrl.indexOf("subjectanswer/edit") >= 0) {
+			// 题目选项提交
+			chain.doFilter(arg0, arg1);
+			return;
+		}
 		chain.doFilter(new XssHttpServletRequestWrapper((HttpServletRequest) arg0), arg1);
 	}
 
+
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
 	}
 }

@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.page.ViewMode;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBSort;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.time.TimeTool;
 import com.farm.doc.server.UsermessageServiceInter;
 import com.farm.wcp.util.ThemesUtil;
 import com.farm.wcp.util.ZxingTowDCode;
@@ -93,6 +95,20 @@ public class HomeWebController extends WebUtils {
 	@RequestMapping("/index")
 	public ModelAndView index(HttpServletRequest request, HttpSession session) {
 		return pubindex(request, session);
+	}
+
+	/**
+	 * 获得当前用户信息
+	 * 
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/PubCTime")
+	@ResponseBody
+	public Map<String, Object> ctime(HttpSession session) {
+		return ViewMode.getInstance()
+				.putAttr("time", TimeTool.getFormatTimeDate12(TimeTool.getTimeDate14(), "yyyy-MM-dd HH:mm:ss"))
+				.returnObjMode();
 	}
 
 	/**

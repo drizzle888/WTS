@@ -239,9 +239,23 @@ function enCodeFormInput(docObj) {
 	var jsonStr = JSON.stringify(subjectAnswer);
 	return jsonStr;
 }
+//清空答案
+function clearVersion(versionId){
+	try{
+	$('#' + versionId + "-NAVI div").removeClass("selected");
+	$('#' + versionId + "-NAVIID").removeClass("active");
+	$('#' + versionId + "-NAVI [type='checkbox']").removeAttr("checked");
+	$('#' + versionId + "-NAVI [type='radio']").removeAttr("checked");
+	$('#' + versionId + "-NAVI [type='text']").val("");
+	$('#' + versionId + "-NAVI textarea").val("");
+	}catch(e){}
+}
+
 // 提交保存一道題的答案
 function submitSubject(jsonStr, versionId) {
 	var timeout_post = setTimeout(function() {
+		//如果远程服务器响应异常就不用回显答案，避免用户误以为答案正确提交
+		clearVersion(versionId);
 		alert("数据提交异常,请及时检查网络或联系管理员[p1]!");
 	}, 60000);
 	$.post('webpaper/PubsaveSubjectVal.do', {
@@ -272,6 +286,7 @@ function submitSubject(jsonStr, versionId) {
 			} else {
 				// 失敗 //alert('失敗');
 				$('#' + versionId + "-NAVIID").removeClass("active");
+				clearVersion(versionId);
 				alert(flag.MESSAGE);
 			}
 		}

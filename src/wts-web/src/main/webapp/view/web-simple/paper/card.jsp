@@ -32,7 +32,7 @@
 		<div
 			style="background-color: #ffffff; border-bottom: 1px solid #cccccc;">
 			<div class="container" style="padding: 4px;">
-				<div class="col-md-9" style="padding: 4px;">
+				<div class="col-xs-9" style="padding: 4px;">
 					<div style="text-align: center;">
 						<!-- 卷头部 -->
 						<h1>
@@ -124,7 +124,7 @@
 						</c:forEach>
 					</div>
 				</div>
-				<div class="col-md-3">
+				<div class="col-xs-3">
 					<jsp:include page="commons/IncludeSideCard.jsp"></jsp:include>
 				</div>
 			</div>

@@ -24,6 +24,17 @@
 			<describe>是否允许用户前台查询成绩true|false</describe>
 		</parameter>
 	</group>
+	<!--作弊模式 -->
+	<group describe="超越模式" name="cheat">
+		<parameter name="config.exam.cheat.roomrandom.onlypaper">
+			<val>NONE</val>
+			<describe>在随机答题室模式中固定抽取答卷,格式为（roomid:papaerid）,多组间用逗号分隔</describe>
+		</parameter>
+		<parameter name="config.exam.cheat.hiscard.del.able">
+			<val>false</val>
+			<describe>归档数据是否可以刪除，true/false</describe>
+		</parameter>
+	</group>
 	<group describe="用户权限，用户信息修改 " name="user">
 		<parameter name="config.useredit.showOrg">
 			<val>false</val>

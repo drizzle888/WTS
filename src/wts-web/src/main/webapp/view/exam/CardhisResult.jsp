@@ -77,59 +77,6 @@
 	</div>
 </body>
 <script type="text/javascript">
-	var url_delActionCardhis = "cardquery/hisdel.do";//删除URL
-	var url_formActionCardhis = "cardquery/form.do";//增加、修改、查看URL
-	var url_searchActionCardhis = "cardquery/hisQuery.do";//查询URL
-	var title_windowCardhis = "答题卡历史记录管理";//功能名称
-	var gridCardhis;//数据表格对象
-	var searchCardhis;//条件查询组件对象
-	var toolBarCardhis = [ {
-		id : 'export',
-		text : '成绩导出',
-		iconCls : 'icon-blogs',
-		handler : excelExport
-	}, {
-		id : 'del',
-		text : '成绩删除',
-		iconCls : 'icon-remove',
-		handler : delDataExamstat
-	} ];
-	$(function() {
-		//初始化数据表格
-		gridCardhis = $('#dataCardhisGrid').datagrid({
-			url : url_searchActionCardhis,
-			fit : true,
-			fitColumns : true,
-			'toolbar' : toolBarCardhis,
-			pagination : true,
-			closable : true,
-			checkOnSelect : true,
-			border : false,
-			striped : true,
-			rownumbers : true,
-			ctrlSelect : true
-		});
-		//初始化条件查询
-		searchCardhis = $('#searchCardhisForm').searchForm({
-			gridObj : gridCardhis
-		});
-		$('#MessageconsoleTree').tree({
-			url : 'organization/organizationTree.do',
-			onSelect : function(node) {
-				$('#PARENTID_RULE').val(node.id);
-				$('#PARENTTITLE_RULE').val(node.text);
-				searchCardhis.dosearch({
-					'ruleText' : searchCardhis.arrayStr()
-				});
-			}
-		});
-		$('#MessageconsoleTreeReload').bind('click', function() {
-			$('#MessageconsoleTree').tree('reload');
-		});
-		$('#MessageconsoleTreeOpenAll').bind('click', function() {
-			$('#MessageconsoleTree').tree('expandAll');
-		});
-	});
 	//导出
 	function excelExport() {
 		$.messager.alert('报表加载中...', '请等待,不要关闭本窗口直至报表导出完成... ...');
@@ -166,5 +113,77 @@
 					'info');
 		}
 	}
+</script>
+<PF:IfParameterEquals key="config.exam.cheat.hiscard.del.able"
+	val="true">
+	<script type="text/javascript">
+		var toolBarCardhis = [ {
+			id : 'export',
+			text : '成绩导出',
+			iconCls : 'icon-blogs',
+			handler : excelExport
+		}, {
+			id : 'del',
+			text : '成绩删除',
+			iconCls : 'icon-remove',
+			handler : delDataExamstat
+		} ];
+	</script>
+</PF:IfParameterEquals>
+<PF:IfParameterNoEquals key="config.exam.cheat.hiscard.del.able"
+	val="true">
+	<script type="text/javascript">
+		var toolBarCardhis = [ {
+			id : 'export',
+			text : '成绩导出',
+			iconCls : 'icon-blogs',
+			handler : excelExport
+		} ];
+	</script>
+</PF:IfParameterNoEquals>
+<script type="text/javascript">
+	var url_delActionCardhis = "cardquery/hisdel.do";//删除URL
+	var url_formActionCardhis = "cardquery/form.do";//增加、修改、查看URL
+	var url_searchActionCardhis = "cardquery/hisQuery.do";//查询URL
+	var title_windowCardhis = "答题卡历史记录管理";//功能名称
+	var gridCardhis;//数据表格对象
+	var searchCardhis;//条件查询组件对象
+
+	$(function() {
+		//初始化数据表格
+		gridCardhis = $('#dataCardhisGrid').datagrid({
+			url : url_searchActionCardhis,
+			fit : true,
+			fitColumns : true,
+			'toolbar' : toolBarCardhis,
+			pagination : true,
+			closable : true,
+			checkOnSelect : true,
+			border : false,
+			striped : true,
+			rownumbers : true,
+			ctrlSelect : true
+		});
+		//初始化条件查询
+		searchCardhis = $('#searchCardhisForm').searchForm({
+			gridObj : gridCardhis
+		});
+		$('#MessageconsoleTree').tree({
+			url : 'organization/organizationTree.do',
+			onSelect : function(node) {
+				$('#PARENTID_RULE').val(node.id);
+				$('#PARENTTITLE_RULE').val(node.text);
+				searchCardhis.dosearch({
+					'ruleText' : searchCardhis.arrayStr()
+				});
+			}
+		});
+		$('#MessageconsoleTreeReload').bind('click', function() {
+			$('#MessageconsoleTree').tree('reload');
+		});
+		$('#MessageconsoleTreeOpenAll').bind('click', function() {
+			$('#MessageconsoleTree').tree('expandAll');
+		});
+	});
 </script>
 </html>
