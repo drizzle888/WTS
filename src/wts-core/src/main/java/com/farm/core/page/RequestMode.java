@@ -18,7 +18,7 @@ public class RequestMode implements java.io.Serializable {
 	static final Logger log = Logger.getLogger(RequestMode.class);
 	private Map<String, String> data;
 	/**
-	 * 页面类型
+	 * 页面类型 pageType-展示:0 新增:1 修改:2 删除:4 其他:3
 	 */
 	private int operateType;
 	/**

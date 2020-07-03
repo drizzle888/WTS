@@ -19,9 +19,16 @@ public interface OnlineUserOpInter {
 	static final Map<String, Map<String, Object>> onlineUserTable = new HashMap<String, Map<String, Object>>();
 
 	/**
-	 * 用户登陆ip记录表（最新登陆的ip为用户的当前ip）
+	 * 用户登陆ip记录表（最新登陆的ip为用户的当前ip）<loginname,ip>
 	 */
-	static final Map<String, String> onlineUserLiveTable = new HashMap<String, String>();
+	static final Map<String, String> onlineIpLiveTable = new HashMap<String, String>();
+	
+	/**
+	 * 用户登陆session记录表（最新登陆的sessionid为用户的当前sessionid）<loginname,sessionId>
+	 */
+	static final Map<String, String> onlineSessionLiveTable = new HashMap<String, String>();
+	
+	
 	/**
 	 * 最近访问时间
 	 */
@@ -42,12 +49,12 @@ public interface OnlineUserOpInter {
 	 * 用户登录时间
 	 */
 	static final String key_LOGINTIME = "LOGINTIME";
-	
+
 	/**
 	 * 用户初次访问时间
 	 */
 	static final String key_STARTTIME = "STARTTIME";
-	
+
 	/**
 	 * 登录时长
 	 */
@@ -55,7 +62,7 @@ public interface OnlineUserOpInter {
 	/**
 	 * 在线用户判超时时间 （分）
 	 */
-	static final long onlineVilaMinute = 20;
+	static final long onlineVilaMinute = 10;
 	/**
 	 * 最大缓存数，超越就清空缓存
 	 */

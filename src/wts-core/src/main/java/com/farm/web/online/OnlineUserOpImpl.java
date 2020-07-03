@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.farm.core.auth.domain.LoginUser;
 import com.farm.core.sql.result.DataResult;
 import com.farm.util.limit.FarmDoLimits;
@@ -41,6 +43,8 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 			Date date = (Date) OnlineUserOpInter.onlineUserTable.get(key).get(OnlineUserOpInter.key_TIME);
 			// 登录时间
 			Date visitdate = (Date) OnlineUserOpInter.onlineUserTable.get(key).get(OnlineUserOpInter.key_STARTTIME);
+
+			String ip = (String) OnlineUserOpInter.onlineUserTable.get(key).get(OnlineUserOpInter.key_IP);
 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			SimpleDateFormat curentDayf = new SimpleDateFormat("yyyy-MM-dd");
@@ -86,12 +90,16 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 					sdf.format(OnlineUserOpInter.onlineUserTable.get(key).get(OnlineUserOpInter.key_STARTTIME))
 							.replace(curentDayf.format(new Date()), "今天"));
 			if (!repetAble && user != null && user.getLoginname() != null
-					&& onlineUserLiveTable.get(user.getLoginname()) != null
-					&& !onlineUserLiveTable.get(user.getLoginname()).equals(key)) {
+					&& onlineIpLiveTable.get(user.getLoginname()) != null
+					&& !onlineIpLiveTable.get(user.getLoginname()).equals(ip)) {
 				continue;
 			} else {
 				// 填充ip资源请求数量
-				map.put("LASTCOUNT", FarmDoLimits.getVisiteCountBylast3Hours(key));
+				if (user != null) {
+					map.put("LASTCOUNT", FarmDoLimits.getVisiteCountBylast3Hours(ip, user.getLoginname()));
+				} else {
+					map.put("LASTCOUNT", FarmDoLimits.getVisiteCountBylast3Hours(ip, null));
+				}
 				list.add(map);
 			}
 		}
@@ -109,14 +117,27 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 		return result;
 	}
 
+	/**
+	 * 获得单条记录key
+	 * 
+	 * @return
+	 */
+	private String getTableKey() {
+		if (StringUtils.isBlank(getCLoginName())) {
+			return ip;
+		} else {
+			return ip + getCLoginName();
+		}
+	}
+
 	@Override
 	public void userVisitHandle() {
 		// 注册用户
 		if (httpSession != null && ip != null) {
 			Map<String, Object> userMap = null;
-			if (OnlineUserOpInter.onlineUserTable.get(ip) != null) {
+			if (OnlineUserOpInter.onlineUserTable.get(getTableKey()) != null) {
 				// 已经访问过
-				userMap = OnlineUserOpInter.onlineUserTable.get(ip);
+				userMap = OnlineUserOpInter.onlineUserTable.get(getTableKey());
 			} else {
 				// 第一次访问
 				userMap = new HashMap<String, Object>();
@@ -135,13 +156,24 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 				userMap.put(OnlineUserOpInter.key_USEROBJ, null);
 			}
 			// 将用户注册在在线表中
-			OnlineUserOpInter.onlineUserTable.put(ip, userMap);
+			OnlineUserOpInter.onlineUserTable.put(getTableKey(), userMap);
 		} else {
 			throw new RuntimeException("参数错误");
 		}
 		if (OnlineUserOpInter.onlineUserTable.size() > OnlineUserOpInter.usersMaxSize) {
 			OnlineUserOpInter.onlineUserTable.clear();
 		}
+	}
+
+	private String getCLoginName() {
+		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
+		if (user == null) {
+			return "";
+		}
+		if (StringUtils.isBlank(user.getLoginname())) {
+			return "";
+		}
+		return user.getLoginname();
 	}
 
 	// ----------get/set------------------------------------------------
@@ -171,17 +203,26 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 
 	@Override
 	public void userlogin() {
-		if (OnlineUserOpInter.onlineUserLiveTable.size() > OnlineUserOpInter.usersMaxSize) {
-			OnlineUserOpInter.onlineUserLiveTable.clear();
+		if (OnlineUserOpInter.onlineIpLiveTable.size() > OnlineUserOpInter.usersMaxSize) {
+			OnlineUserOpInter.onlineIpLiveTable.clear();
 		}
+
+		if (OnlineUserOpInter.onlineSessionLiveTable.size() > OnlineUserOpInter.usersMaxSize) {
+			OnlineUserOpInter.onlineSessionLiveTable.clear();
+		}
+
 		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
-		onlineUserLiveTable.put(user.getLoginname(), ip);
+		onlineIpLiveTable.put(user.getLoginname(), ip);
+		onlineSessionLiveTable.put(user.getLoginname(), httpSession.getId());
 	}
 
 	@Override
 	public void userlogout() {
 		LoginUser user = (LoginUser) httpSession.getAttribute(FarmConstant.SESSION_USEROBJ);
-		onlineUserLiveTable.remove(user.getLoginname());
+		if (user != null) {
+			onlineSessionLiveTable.remove(user.getLoginname());
+			onlineIpLiveTable.remove(user.getLoginname());
+		}
 	}
 
 	@Override
@@ -190,11 +231,12 @@ public class OnlineUserOpImpl implements OnlineUserOpInter {
 		if (user == null || user.getLoginname() == null) {
 			return false;
 		}
-		String liveip = onlineUserLiveTable.get(user.getLoginname());
-		if (liveip == null || ip == null) {
+		String liveip = onlineIpLiveTable.get(user.getLoginname());
+		String livesessionId = onlineSessionLiveTable.get(user.getLoginname());
+		if (liveip == null || ip == null || httpSession == null || livesessionId == null) {
 			return false;
 		}
-		if (!liveip.equals(ip)) {
+		if (!liveip.equals(ip) || !livesessionId.equals(httpSession.getId())) {
 			// 最新登錄的ip不是當前ip，説明重複登錄了
 			return true;
 		} else {
