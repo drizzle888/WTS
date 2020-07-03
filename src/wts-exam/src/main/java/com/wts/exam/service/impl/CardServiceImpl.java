@@ -215,6 +215,19 @@ public class CardServiceImpl implements CardServiceInter {
 					throw new RuntimeException("时间格式化错误！");
 				}
 				Date endtime = TimeTool.getTimeDate12ForMinute(room.getTimelen(), date);
+				// 1永久/2限时
+				if (room.getTimetype().equals("2") && StringUtils.isNotBlank(room.getEndtime())) {
+					// 2020-07-02 10:00
+					try {
+						Date room_endtime = TimeTool.parseDate(
+								room.getEndtime().replace(" ", "").replace("-", "").replace(":", ""), "yyyyMMddHHmm");
+						if (room_endtime.compareTo(endtime) < 0) {
+							endtime = room_endtime;
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
 				endTime = format.format(endtime);
 			}
 			Card card = new Card();
@@ -928,6 +941,9 @@ public class CardServiceImpl implements CardServiceInter {
 		Card card = cardDaoImpl.getEntity(cardId);
 		{
 			// 数据校验
+			if(currentUser==null){
+				throw new RuntimeException("未登陆当前用户!");
+			}
 			if (!card.getUserid().equals(currentUser.getId())
 					&& examPopsServiceImpl.isNotJudger(card.getRoomid(), currentUser)) {
 				throw new RuntimeException("答题卡用户非当前用户和判卷人!");
@@ -954,12 +970,12 @@ public class CardServiceImpl implements CardServiceInter {
 			card.setPstate("4");
 			card.setOvertime("2");
 		}
+		cardDaoImpl.editEntity(card);
 		{// 计算得分(回填用戶完成題的數量)
 			// autoCountCardPoint(cardid, currentUser);
 			// 改为异步计算
 			CardPointAutoCounter.submitTask(cardid);
 		}
-		cardDaoImpl.editEntity(card);
 	}
 
 	@Override
@@ -978,5 +994,20 @@ public class CardServiceImpl implements CardServiceInter {
 		Card card = cardDaoImpl.getEntity(cardid);
 		card.setPstate("2");
 		cardDaoImpl.editEntity(card);
+	}
+
+	@Override
+	@Transactional
+	public int getCardCompleteNum(String cardid) {
+		try {
+			DataQuery query = DataQuery.getInstance(1,
+					"select VERSIONID,CUSER from WTS_CARD_ANSWER where CARDID='" + cardid + "'");
+			query.setPagesize(1000);
+			query.setNoCount();
+			query.setDistinct(true);
+			return query.search().getResultList().size();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

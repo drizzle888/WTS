@@ -17,6 +17,7 @@ import com.farm.web.easyui.EasyUiUtils;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
@@ -71,6 +72,7 @@ public class SubjecTanswerController extends WebUtils {
 							&& StringUtils.isNotBlank((String) row.get("ANSWERNOTE"))) {
 						row.put("ANSWER", HtmlUtils.HtmlRemoveTagAndMarkImg((String) row.get("ANSWERNOTE")));
 					}
+					row.put("ANSWER",StringEscapeUtils.escapeHtml4((String)row.get("ANSWER")));
 				}
 			});
 			result.runDictionary("1:正确答案,0:错误答案", "RIGHTANSWER");

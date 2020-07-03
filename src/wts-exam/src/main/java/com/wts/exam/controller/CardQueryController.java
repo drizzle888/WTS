@@ -1,8 +1,11 @@
 package com.wts.exam.controller;
 
-import com.wts.exam.domain.CardHis;
+import com.wts.exam.domain.Card;
+import com.wts.exam.domain.Paper;
+import com.wts.exam.domain.ex.PaperUnit;
 import com.wts.exam.service.CardHisServiceInter;
 import com.wts.exam.service.CardServiceInter;
+import com.wts.exam.service.PaperServiceInter;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,8 @@ import com.farm.authority.service.OrganizationServiceInter;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DataQuery;
 import com.farm.core.sql.result.DataResult;
+import com.farm.core.time.TimeTool;
+import com.farm.parameter.FarmParameterService;
 import com.farm.report.FarmReport;
 import com.farm.core.page.ViewMode;
 import com.farm.web.WebUtils;
@@ -45,6 +50,8 @@ public class CardQueryController extends WebUtils {
 	private CardServiceInter cardServiceImpl;
 	@Resource
 	private OrganizationServiceInter organizationServiceImpl;
+	@Resource
+	private PaperServiceInter paperServiceImpl;
 
 	/**
 	 * 归档成绩查询结果集合
@@ -97,6 +104,33 @@ public class CardQueryController extends WebUtils {
 	}
 
 	/**
+	 * 未归档答题卡信息
+	 * 
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/liveCardInfo")
+	@ResponseBody
+	public Map<String, Object> liveCardInfo(String id, HttpServletRequest request) {
+		try {
+			Card card = cardServiceImpl.getCardEntity(id);
+			if (card == null) {
+				return ViewMode.getInstance().putAttr("info", "当前答题卡不存在！").returnObjMode();
+			}
+			int completenum = cardServiceImpl.getCardCompleteNum(card.getId());
+			Paper paper = paperServiceImpl.getPaperEntity(card.getPaperid());
+			String msg = "开始答题时间：" + TimeTool.getFormatTimeDate12(card.getStarttime(), "yyyy-MM-dd HH:mm:ss")
+					+ "，结束答题时间：" + TimeTool.getFormatTimeDate12(card.getEndtime(), " HH:mm:ss") + "，完成题目数量："
+					+ completenum + "/" + paper.getSubjectnum();
+			return ViewMode.getInstance().putAttr("info", msg).returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
 	 * 当前成绩查询结果集合
 	 * 
 	 * @return
@@ -140,7 +174,7 @@ public class CardQueryController extends WebUtils {
 			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
 			result.runDictionary("1:开始答题,2:手动交卷,3:超时未交卷,4:超时自动交卷,5:自动阅卷,6:完成阅卷,7:发布成绩", "PSTATE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
@@ -185,6 +219,7 @@ public class CardQueryController extends WebUtils {
 			log.error(e.getMessage());
 		}
 	}
+
 	/**
 	 * 删除数据
 	 * 
@@ -194,8 +229,10 @@ public class CardQueryController extends WebUtils {
 	@ResponseBody
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
-			for (String id : parseIds(ids)) {
-				cardHisServiceImpl.deleteCardhis(id, getCurrentUser(session));
+			if (FarmParameterService.getInstance().getParameterBoolean("config.exam.cheat.hiscard.del.able")) {
+				for (String id : parseIds(ids)) {
+					cardHisServiceImpl.deleteCardhis(id, getCurrentUser(session));
+				}
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -203,6 +240,7 @@ public class CardQueryController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
+
 	@RequestMapping("/hislist")
 	public ModelAndView index(HttpSession session) {
 		return ViewMode.getInstance().returnModelAndView("exam/CardhisResult");

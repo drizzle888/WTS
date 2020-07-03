@@ -31,6 +31,7 @@ import com.wts.exam.service.ExamPopsServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.RoomServiceInter;
 import com.wts.exam.service.SubjectUserOwnServiceInter;
+import com.wts.exam.utils.CheatUtils;
 import com.farm.core.sql.query.DBRule;
 import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.sql.query.DataQuery;
@@ -40,8 +41,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -119,6 +122,22 @@ public class RoomServiceImpl implements RoomServiceInter {
 
 	@Override
 	@Transactional
+	public void editDoTimes(String roomid, String timetype, String starttime, String endtime) {
+		Room entity2 = roomDaoImpl.getEntity(roomid);
+		if (timetype.equals("1")) {
+			entity2.setStarttime(null);
+			entity2.setEndtime(null);
+		} else {
+			entity2.setStarttime(starttime);
+			entity2.setEndtime(endtime);
+		}
+
+		entity2.setTimetype(timetype);
+		roomDaoImpl.editEntity(entity2);
+	}
+
+	@Override
+	@Transactional
 	public Room editRoomEntity(Room entity, LoginUser user) {
 		Room entity2 = roomDaoImpl.getEntity(entity.getId());
 		String oldtext = entity2.getRoomnote();
@@ -126,9 +145,17 @@ public class RoomServiceImpl implements RoomServiceInter {
 		entity2.setRoomnote(entity.getRoomnote());
 		entity2.setTimelen(entity.getTimelen());
 		entity2.setWritetype(entity.getWritetype());
-		entity2.setStarttime(entity.getStarttime());
-		entity2.setEndtime(entity.getEndtime());
-		entity2.setTimetype(entity.getTimetype());
+		{
+			// 处理答题室有效时间
+			entity2.setTimetype(entity.getTimetype());
+			if (entity2.getTimetype().equals("1")) {
+				entity2.setStarttime(null);
+				entity2.setEndtime(null);
+			} else {
+				entity2.setStarttime(entity.getStarttime());
+				entity2.setEndtime(entity.getEndtime());
+			}
+		}
 		entity2.setName(entity.getName());
 		entity2.setExamtypeid(entity.getExamtypeid());
 		entity2.setEtime(TimeTool.getTimeDate14());
@@ -172,7 +199,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public DataQuery createRoomSimpleQuery(DataQuery query) {
 		DataQuery dbQuery = DataQuery.init(query,
 				"WTS_ROOM a left join WTS_EXAM_TYPE b on a.EXAMTYPEID=b.id left join (select COUNT(*) NUM,ROOMID from WTS_ROOM_USER GROUP BY ROOMID )  ROOMUSERNUM on ROOMUSERNUM.ROOMID=a.ID",
-				"a.SSORTTYPE as SSORTTYPE,a.UUID as UUID,a.OSORTTYPE as OSORTTYPE,a.PSHOWTYPE as PSHOWTYPE,a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
+				"a.SSORTTYPE as SSORTTYPE,a.RESTARTTYPE as RESTARTTYPE,a.UUID as UUID,a.OSORTTYPE as OSORTTYPE,a.PSHOWTYPE as PSHOWTYPE,a.ID as ID,a.NAME as NAME,a.COUNTTYPE as COUNTTYPE,a.ROOMNOTE as ROOMNOTE,a.TIMELEN as TIMELEN,a.WRITETYPE as WRITETYPETITLE,a.WRITETYPE as WRITETYPE,a.STARTTIME as STARTTIME,a.ENDTIME as ENDTIME,a.TIMETYPE as TIMETYPE,a.EXAMTYPEID as EXAMTYPEID,a.CUSER as CUSER,a.CUSERNAME as CUSERNAME,a.ETIME as ETIME,a.CTIME as CTIME,a.EUSERNAME as EUSERNAME,a.EUSER as EUSER,a.PSTATE as PSTATETITLE,a.PSTATE as PSTATE,a.DUSERNAME as DUSERNAME,a.PCONTENT as PCONTENT,a.DTIME as DTIME,a.DUSER as DUSER,b.name as TYPENAME,ROOMUSERNUM.NUM as USERNUM");
 		return dbQuery;
 	}
 
@@ -199,8 +226,12 @@ public class RoomServiceImpl implements RoomServiceInter {
 		roomunit.setType(examtype);
 		List<RoomPaper> papers = roompaperDaoImpl
 				.selectEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", roomid, "=")).toList());
+		// 房间内可用答卷id集合
+		Set<String> allPaperSet = new HashSet<>();
+		for (RoomPaper rpaper : papers) {
+			allPaperSet.add(rpaper.getPaperid());
+		}
 		List<PaperUnit> paperUnits = new ArrayList<>();
-
 		// 如果是随机抽卷则该ID不为空
 		String onlyPaperId = null;
 		if (entity.getPshowtype().equals("2") && isShuffle) {
@@ -239,6 +270,12 @@ public class RoomServiceImpl implements RoomServiceInter {
 				}
 			} else {
 				onlyPaperId = paperids.get(0);
+			}
+			{// 可通过配置作弊参数，固定答题室中得随机答卷
+				String cheatPaperId = CheatUtils.getOnlyCheatPaper(roomid, allPaperSet);
+				if (cheatPaperId != null) {
+					onlyPaperId = cheatPaperId;
+				}
 			}
 		}
 		for (RoomPaper paper : papers) {
@@ -424,7 +461,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	public void deleteRoomEntity(String id, LoginUser user) {
 		Room room = roomDaoImpl.getEntity(id);
 		// 1新建，0停用，2发布，3结束，4归档
-		if (room.getPstate().equals("1")|| room.getPstate().equals("3") || room.getPstate().equals("4")) {
+		if (room.getPstate().equals("1") || room.getPstate().equals("3") || room.getPstate().equals("4")) {
 			// 删除参考人员和考场试卷
 			roompaperDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
 			roomuserDaoImpl.deleteEntitys(DBRuleList.getInstance().add(new DBRule("ROOMID", id, "=")).toList());
@@ -460,7 +497,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 		}
 		if (state.equals("3")) {
 			// 3结束(发布可结束)
-			if (!entity2.getPstate().equals("2")&&!entity2.getPstate().equals("0")) {
+			if (!entity2.getPstate().equals("2") && !entity2.getPstate().equals("0")) {
 				throw new RuntimeException("只有发布和停用状态可结束!");
 			}
 		}
@@ -549,6 +586,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 		}
 		return false;
 	}
+
 	@Override
 	@Transactional
 	public boolean learnAble(String roomid, String paperid) {
@@ -581,4 +619,19 @@ public class RoomServiceImpl implements RoomServiceInter {
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional
+	public void editRestartAble(String id, Boolean ableType) {
+		Room entity2 = roomDaoImpl.getEntity(id);
+		entity2.setRestarttype(ableType ? "2" : "1");
+		roomDaoImpl.editEntity(entity2);
+	}
+
+	@Override
+	@Transactional
+	public int getRoomAnsersNum(String roomid) {
+		return roomDaoImpl.getRoomAnsersNum( roomid);
+	}
+
 }

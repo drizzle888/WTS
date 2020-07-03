@@ -285,15 +285,27 @@ public interface CardServiceInter {
 	 */
 	public void clearRoomCard(String roomid, LoginUser currentUser);
 
-	/**重新判卷，將答題卡回復到提交狀態
+	/**
+	 * 重新判卷，將答題卡回復到提交狀態
+	 * 
 	 * @param cardId
 	 * @param currentUser
 	 */
 	public void reAdjudge(String id, LoginUser currentUser);
 
-	/**查询房间的答题卡
+	/**
+	 * 查询房间的答题卡
+	 * 
 	 * @param query
 	 * @return
 	 */
 	public DataQuery createRoomCardQuery(DataQuery query);
+
+	/**
+	 * 獲得用戶完成的答題數量
+	 * 
+	 * @param cardid
+	 * @return
+	 */
+	public int getCardCompleteNum(String cardid);
 }

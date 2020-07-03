@@ -44,8 +44,10 @@ public class RoomUserController extends WebUtils {
 	public Map<String, Object> queryall(DataQuery query, String roomid, HttpServletRequest request) {
 		try {
 			query = EasyUiUtils.formatGridQuery(request, query);
-			query.addRule(new DBRule("ROOMID", roomid, "="));
+			query.addRule(new DBRule("A.ROOMID", roomid, "="));
 			DataResult result = roomUserServiceImpl.createRoomuserSimpleQuery(query).search();
+			result.runformatTime("STARTTIME", "yyyy-MM-dd HH:mm");
+			result.runDictionary("0:开始答题,1:按时交卷,2:答题超时", "OVERTIME");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());

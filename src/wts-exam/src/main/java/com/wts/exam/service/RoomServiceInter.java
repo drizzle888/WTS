@@ -211,6 +211,7 @@ public interface RoomServiceInter {
 	 * @return
 	 */
 	public boolean testAble(String roomid, String paperid);
+
 	/**
 	 * 答卷是否支持在线学习(防止未发布答卷被越权查看)
 	 * 
@@ -219,8 +220,6 @@ public interface RoomServiceInter {
 	 * @return
 	 */
 	public boolean learnAble(String roomid, String paperid);
-	
-	
 
 	/**
 	 * 通过roomid和paperid获得保存别名的roompaper对象
@@ -230,4 +229,30 @@ public interface RoomServiceInter {
 	 * @return
 	 */
 	public RoomPaper getRoomPaper(String roomId, String paperid);
+
+	/**
+	 * 修改答题室的重复答题类型
+	 * 
+	 * @param id
+	 * @param ableType
+	 */
+	public void editRestartAble(String id, Boolean ableType);
+
+	/**
+	 * 修改有效时间
+	 * 
+	 * @param roomid
+	 * @param timetype
+	 * @param starttime
+	 * @param endtime
+	 */
+	public void editDoTimes(String roomid, String timetype, String starttime, String endtime);
+
+	/**
+	 * 获得某个答题室的答题人数
+	 * 
+	 * @param roomid
+	 * @return
+	 */
+	public int getRoomAnsersNum(String roomid);
 }

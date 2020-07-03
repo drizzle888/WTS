@@ -132,4 +132,12 @@ public class RoomDaoImpl extends HibernateSQLTools<Room>implements RoomDaoInter 
 	protected SessionFactory getSessionFactory() {
 		return sessionFatory;
 	}
+
+	@Override
+	public int getRoomAnsersNum(String roomid) {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select count(distinct USERID) from wts_card where  ROOMID=?");
+		BigInteger num = (BigInteger) sqlquery.setString(0, roomid).list().get(0);
+		return num.intValue();
+	}
 }

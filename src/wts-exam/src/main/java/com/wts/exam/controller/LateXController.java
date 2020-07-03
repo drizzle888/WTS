@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,7 @@ public class LateXController extends WebUtils {
 	@RequestMapping(value = "/valid")
 	@ResponseBody
 	public Map<String, Object> valid(String latex, HttpServletRequest request, HttpSession session) {
+		latex=StringEscapeUtils.unescapeHtml4(latex);
 		int error;
 		log.debug("go to ImgUpload");
 		String message;
@@ -81,6 +83,7 @@ public class LateXController extends WebUtils {
 	 */
 	@RequestMapping("/view")
 	public void loadimg(String latex, HttpServletRequest request, HttpServletResponse response) {
+		latex=StringEscapeUtils.unescapeHtml4(latex);
 		FileDownloadUtils.simpleDownloadFile(LatexUtils.latex2Bytes(latex), "科学公式.png", "application/octet-stream",
 				response);
 	}
@@ -95,6 +98,7 @@ public class LateXController extends WebUtils {
 	public Map<String, Object> downLoadLateXpng(String latex, HttpServletRequest request, HttpSession session) {
 		int error;
 		log.debug("go to ImgUpload");
+		latex=StringEscapeUtils.unescapeHtml4(latex);
 		String message;
 		String url = null;
 		String id = null;

@@ -3,6 +3,7 @@ package com.wts.exam.controller;
 import com.wts.exam.domain.ExamType;
 import com.wts.exam.domain.Paper;
 import com.wts.exam.domain.Room;
+import com.wts.exam.service.CardServiceInter;
 import com.wts.exam.service.ExamTypeServiceInter;
 import com.wts.exam.service.PaperServiceInter;
 import com.wts.exam.service.RoomServiceInter;
@@ -57,6 +58,8 @@ public class RoomController extends WebUtils {
 	private PaperServiceInter paperServiceImpl;
 	@Resource
 	private SubjectServiceInter subjectServiceImpl;
+	@Resource
+	private CardServiceInter cardServiceImpl;
 
 	/**
 	 * 查询结果集合
@@ -91,6 +94,7 @@ public class RoomController extends WebUtils {
 						row.put("OSORTTYPE", "-");
 						row.put("COUNTTYPE", "-");
 					}
+					row.put("ANSERSNUM", roomServiceImpl.getRoomAnsersNum((String) row.get("ID")));
 				}
 			});
 			result.runDictionary("1:固定,2:随机", "SSORTTYPE");
@@ -99,6 +103,7 @@ public class RoomController extends WebUtils {
 			result.runDictionary("1:永久,2:限时", "TIMETYPE");
 			result.runDictionary("1:指定人员,0:任何人员,2:匿名答题", "WRITETYPETITLE");
 			result.runDictionary("1:自动/人工,2:自动,3:人工", "COUNTTYPE");
+			result.runDictionary("1:一次完成,2:重复答题", "RESTARTTYPE");
 			result.runDictionary("1:新建,2:发布,0:停用,3:结束,4:归档", "PSTATETITLE");
 			return ViewMode.getInstance().putAttrs(EasyUiUtils.formatGridData(result)).returnObjMode();
 		} catch (Exception e) {
@@ -177,7 +182,6 @@ public class RoomController extends WebUtils {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Map<String, Object> editSubmit(Room entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
 		try {
 			entity = roomServiceImpl.editRoomEntity(entity, getCurrentUser(session));
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
@@ -216,6 +220,48 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.deleteRoomEntity(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 批量清理房间答题卡
+	 * 
+	 * @param ids
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/clearAllRoomCard")
+	@ResponseBody
+	public Map<String, Object> clearAllRoomCard(String ids, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				cardServiceImpl.clearRoomCard(id, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
+
+	/**
+	 * 修改重复答题类型
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/editRestartAble")
+	@ResponseBody
+	public Map<String, Object> editRestartAble(String ids, Boolean ableType, HttpSession session) {
+		try {
+			for (String id : parseIds(ids)) {
+				if (ableType != null) {
+					roomServiceImpl.editRestartAble(id, ableType);
+				}
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -405,6 +451,42 @@ public class RoomController extends WebUtils {
 			return ViewMode.getInstance().returnModelAndView("exam/RoomForm");
 		} catch (Exception e) {
 			return ViewMode.getInstance().setError(e + e.getMessage(), e).returnModelAndView("exam/RoomForm");
+		}
+	}
+
+	/**
+	 * 批量修改答题时间
+	 *
+	 * @return
+	 */
+	@RequestMapping("/editDoTime")
+	public ModelAndView editDoTime(String ids) {
+		try {
+			List<String> idlist = parseIds(ids);
+			return ViewMode.getInstance().putAttr("idlist", idlist).putAttr("ids", ids)
+					.returnModelAndView("exam/RoomDotimesForm");
+		} catch (Exception e) {
+			return ViewMode.getInstance().setError(e + e.getMessage(), e).returnModelAndView("exam/RoomDotimesForm");
+		}
+	}
+
+	/**
+	 * 批量修改答题时间
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/doTimeSubmit")
+	@ResponseBody
+	public Map<String, Object> doTimeSubmit(String ids, String timetype, String starttime, String endtime,
+			HttpSession session) {
+		try {
+			for (String roomid : parseIds(ids)) {
+				roomServiceImpl.editDoTimes(roomid, timetype, starttime, endtime);
+			}
+			return ViewMode.getInstance().setOperate(OperateType.ADD).returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setOperate(OperateType.ADD).setError(e.getMessage(), e).returnObjMode();
 		}
 	}
 

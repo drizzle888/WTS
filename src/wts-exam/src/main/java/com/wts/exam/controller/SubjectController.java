@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
 import com.farm.core.page.RequestMode;
@@ -94,6 +95,7 @@ public class SubjectController extends WebUtils {
 						// 如果题目为空就用描述填充题目
 						row.put("TIPSTR", "[无题目:显示描述]" + HtmlUtils.HtmlRemoveTagAndMarkImg((String) row.get("TIPNOTE")));
 					}
+					row.put("TIPSTR",StringEscapeUtils.escapeHtml4((String)row.get("TIPSTR")));
 				}
 			});
 			result.runDictionary(TipType.getDictionary(), "TIPTYPE");
