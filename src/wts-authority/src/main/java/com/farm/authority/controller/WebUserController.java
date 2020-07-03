@@ -264,6 +264,22 @@ public class WebUserController extends WebUtils {
 			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
 		}
 	}
+	
+	@RequestMapping("/addUserBlank")
+	@ResponseBody
+	public Map<String, Object> addUserBlank(String loginnames, HttpServletRequest request, HttpSession session) {
+		try {
+			AloneDictionaryEntity dictionary = dictionaryEntityServiceImpl.initEntity("ONLINE_BLANKLIST", "访问黑名单", "1",
+					getCurrentUser(session));
+			for (String loginname : parseIds(loginnames)) {
+				dictionaryEntityServiceImpl.addType(dictionary.getId(), loginname, loginname, getCurrentUser(session));
+			}
+			return ViewMode.getInstance().returnObjMode();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ViewMode.getInstance().setError(e.getMessage(), e).returnObjMode();
+		}
+	}
 
 	/**
 	 * 查询组织机构用户结果集合
