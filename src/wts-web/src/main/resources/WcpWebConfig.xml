@@ -20,7 +20,7 @@
 	<!--考试 -->
 	<group describe="考试" name="exams">
 		<parameter name="config.exam.user.grade.queryable">
-			<val>false</val>
+			<val>true</val>
 			<describe>是否允许用户前台查询成绩true|false</describe>
 		</parameter>
 	</group>
