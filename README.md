@@ -140,7 +140,7 @@
 1. maven部署源码（**主模块：WTS/src/wts-web** ）编译顺序：wts-core > wts-parameter > wts-report > wts-authority > wts-quartz > wts-doc > wts-exam > wts-tag > wts-web
 2. 创建数据库，数据库脚本在 WTS/resource/db-sql目录下
 3. 修改数据库配置文件 WTS/src/wts-web/src/main/resources/jdbc.properties
-4. 修改附件存储地址 WTS/src/wts-web/src/main/resources/WcpWebConfig.xml (第102行)
+4. 修改附件存储地址 WTS/src/wts-web/src/main/resources/WcpWebConfig.xml (修改参数“config.doc.dir”配置附件的存储路径)
 5. 项目编译后可直接部署于tomcat7，mysql5.x中运行，支持jdk7/jdk8，如要使用tomcat8及以上版本可能会有报错，请自行修正（所以建议第一次运行在tomcat7中）
 
 #### 注意事项
