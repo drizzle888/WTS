@@ -183,3 +183,5 @@
 > WDA:文件转换组件（附件在线预览）[https://gitee.com/macplus/WDA](https://gitee.com/macplus/WDA)
 
 > WTS:在线答题系统 [https://gitee.com/macplus/WTS](https://gitee.com/macplus/WTS)
+
+> WLP:在线学习系统 [https://gitee.com/macplus/WLP](https://gitee.com/macplus/WLP)
