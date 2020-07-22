@@ -1,4 +1,4 @@
-package  com.farm.parameter.dao.impl;
+package com.farm.parameter.dao.impl;
 
 import java.math.BigInteger;
 
@@ -19,69 +19,73 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-/**系统日志
+/**
+ * 系统日志
+ * 
  * @author MAC_wd
  * 
  */
 @Repository
-public class AloneApplogDao implements  AloneApplogDaoInter {
+public class AloneApplogDao extends HibernateSQLTools<AloneApplog>implements AloneApplogDaoInter {
 	@Resource(name = "sessionFactory")
 	private SessionFactory sessionFatory;
-	private HibernateSQLTools<AloneApplog> sqlTools ;
 
 	public void deleteEntity(AloneApplog entity) {
-		Session session=sessionFatory.getCurrentSession();
+		Session session = sessionFatory.getCurrentSession();
 		session.delete(entity);
 	}
-	public int getAllListNum(){
-		Session session= sessionFatory.getCurrentSession();
-		SQLQuery sqlquery= session.createSQLQuery("select count(*) from alone_applog");
-		BigInteger num=(BigInteger)sqlquery.list().get(0);
-		return num.intValue() ;
+
+	public int getAllListNum() {
+		Session session = sessionFatory.getCurrentSession();
+		SQLQuery sqlquery = session.createSQLQuery("select count(*) from alone_applog");
+		BigInteger num = (BigInteger) sqlquery.list().get(0);
+		return num.intValue();
 	}
+
 	public AloneApplog getEntity(String id) {
-		Session session= sessionFatory.getCurrentSession();
-		return (AloneApplog)session.get(AloneApplog.class, id);
+		Session session = sessionFatory.getCurrentSession();
+		return (AloneApplog) session.get(AloneApplog.class, id);
 	}
+
 	public AloneApplog insertEntity(AloneApplog entity) {
-		Session session= sessionFatory.getCurrentSession();
+		Session session = sessionFatory.getCurrentSession();
 		session.save(entity);
 		return entity;
 	}
+
 	public void editEntity(AloneApplog entity) {
-		Session session= sessionFatory.getCurrentSession();
+		Session session = sessionFatory.getCurrentSession();
 		session.update(entity);
 	}
-	
+
 	@Override
 	public Session getSession() {
 		return sessionFatory.getCurrentSession();
 	}
-	public DataResult runSqlQuery(DataQuery query){
+
+	public DataResult runSqlQuery(DataQuery query) {
 		try {
 			return query.search(sessionFatory.getCurrentSession());
 		} catch (Exception e) {
 			return null;
 		}
 	}
+
 	@Override
 	public void deleteEntitys(List<DBRule> rules) {
-		sqlTools.deleteSqlFromFunction(sessionFatory.getCurrentSession(), rules);
+		deleteSqlFromFunction(sessionFatory.getCurrentSession(), rules);
 	}
 
 	@Override
 	public List<AloneApplog> selectEntitys(List<DBRule> rules) {
-		return sqlTools.selectSqlFromFunction(
-				sessionFatory.getCurrentSession(), rules);
+		return selectSqlFromFunction(sessionFatory.getCurrentSession(), rules);
 	}
 
 	@Override
 	public void updataEntitys(Map<String, Object> values, List<DBRule> rules) {
-		sqlTools.updataSqlFromFunction(sessionFatory.getCurrentSession(),
-				values, rules);
+		updataSqlFromFunction(sessionFatory.getCurrentSession(), values, rules);
 	}
-	
-	
+
 	public SessionFactory getSessionFatory() {
 		return sessionFatory;
 	}
@@ -89,10 +93,14 @@ public class AloneApplogDao implements  AloneApplogDaoInter {
 	public void setSessionFatory(SessionFactory sessionFatory) {
 		this.sessionFatory = sessionFatory;
 	}
-	public HibernateSQLTools<AloneApplog> getSqlTools() {
-		return sqlTools;
+
+	@Override
+	protected Class<?> getTypeClass() {
+		return AloneApplog.class;
 	}
-	public void setSqlTools(HibernateSQLTools<AloneApplog> sqlTools) {
-		this.sqlTools = sqlTools;
+
+	@Override
+	protected SessionFactory getSessionFactory() {
+		return sessionFatory;
 	}
 }

@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.farm.parameter.dao.AloneApplogDaoInter;
 import com.farm.parameter.domain.AloneApplog;
 import com.farm.core.auth.domain.LoginUser;
+import com.farm.core.sql.query.DBRule;
+import com.farm.core.sql.query.DBRuleList;
 import com.farm.core.time.TimeTool;
 import com.farm.parameter.service.AloneApplogServiceInter;
 
@@ -46,7 +48,7 @@ public class AloneApplogServiceImpl implements AloneApplogServiceInter {
 	public void deleteEntity(String entity, LoginUser user) {
 		aloneApplogDao.deleteEntity(aloneApplogDao.getEntity(entity));
 	}
-	
+
 	@Transactional
 	public AloneApplog getEntity(String id) {
 		if (id == null) {
@@ -66,11 +68,18 @@ public class AloneApplogServiceImpl implements AloneApplogServiceInter {
 
 	@Override
 	@Transactional
-	public AloneApplog log(String describes, String appuser, String level,
-			String method, String classname, String ip) {
-		return aloneApplogDao.insertEntity(new AloneApplog(TimeTool
-				.getTimeDate14(), describes, appuser, level, method, classname,
-				ip));
+	public AloneApplog log(String describes, String appuser, String level, String method, String classname, String ip) {
+		return aloneApplogDao.insertEntity(
+				new AloneApplog(TimeTool.getTimeDate14(), describes, appuser, level, method, classname, ip));
 	}
 
+	@Override
+	@Transactional
+	public void deleteByDate(String ctime, String etime) {
+		if (ctime.length() != 14 || etime.length() != 14) {
+			throw new RuntimeException("时间参数格式错误！" + ctime + "/" + etime);
+		}
+		aloneApplogDao.deleteEntitys(DBRuleList.getInstance().add(new DBRule("CTIME", ctime, ">"))
+				.add(new DBRule("CTIME", etime, "<")).toList());
+	}
 }

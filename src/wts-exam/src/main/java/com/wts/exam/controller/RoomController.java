@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,6 +184,7 @@ public class RoomController extends WebUtils {
 	@ResponseBody
 	public Map<String, Object> editSubmit(Room entity, HttpSession session) {
 		try {
+			WcpLog.info("修改答题室["+entity.getId()+"]:表单提交",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			entity = roomServiceImpl.editRoomEntity(entity, getCurrentUser(session));
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
 
@@ -202,6 +204,7 @@ public class RoomController extends WebUtils {
 	public Map<String, Object> addSubmit(Room entity, HttpSession session) {
 		try {
 			entity = roomServiceImpl.insertRoomEntity(entity, getCurrentUser(session));
+			WcpLog.info("创建答题室["+entity.getId()+"]:表单提交",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -220,6 +223,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.deleteRoomEntity(id, getCurrentUser(session));
+				WcpLog.info("刪除答题室["+id+"]:表单提交",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -241,6 +245,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				cardServiceImpl.clearRoomCard(id, getCurrentUser(session));
+				WcpLog.info("修改答题室["+id+"]:批量清理答题卡",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -261,6 +266,7 @@ public class RoomController extends WebUtils {
 			for (String id : parseIds(ids)) {
 				if (ableType != null) {
 					roomServiceImpl.editRestartAble(id, ableType);
+					WcpLog.info("修改答题室["+id+"]:批量修改重复答题类型",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				}
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -281,6 +287,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.finishRoom(id, getCurrentUser(session));
+				WcpLog.info("答题室状态变更["+id+"]:批量结束答题",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -300,6 +307,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.backupRoom(id, getCurrentUser(session));
+				WcpLog.info("答题室状态变更["+id+"]:数据归档",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -319,6 +327,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.editState(id, "0", getCurrentUser(session));
+				WcpLog.info("答题室状态变更["+id+"]:禁用",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -338,6 +347,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.editState(id, "2", getCurrentUser(session));
+				WcpLog.info("答题室状态变更["+id+"]:发布",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -357,6 +367,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String id : parseIds(ids)) {
 				roomServiceImpl.examTypeSetting(id, examtypeId, getCurrentUser(session));
+				WcpLog.info("修改答题室["+id+"]:设置分类",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -482,6 +493,7 @@ public class RoomController extends WebUtils {
 		try {
 			for (String roomid : parseIds(ids)) {
 				roomServiceImpl.editDoTimes(roomid, timetype, starttime, endtime);
+				WcpLog.info("修改答题室["+roomid+"]:批量修改答题时间",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().setOperate(OperateType.ADD).returnObjMode();
 		} catch (Exception e) {

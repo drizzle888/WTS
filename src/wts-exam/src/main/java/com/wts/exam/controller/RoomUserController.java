@@ -1,5 +1,6 @@
 package com.wts.exam.controller;
 
+import com.wts.exam.domain.RoomUser;
 import com.wts.exam.service.RoomuUserServiceInter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
+
 import java.util.Map;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
@@ -66,6 +69,8 @@ public class RoomUserController extends WebUtils {
 		try {
 			for (String userid : parseIds(userids)) {
 				roomUserServiceImpl.insertRoomUser(roomid, userid, getCurrentUser(session));
+				WcpLog.info("修改答题室[" + roomid + "]:表单添加答题人", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().setOperate(OperateType.ADD).returnObjMode();
 		} catch (Exception e) {
@@ -84,6 +89,9 @@ public class RoomUserController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				RoomUser roomuser = roomUserServiceImpl.getRoomuserEntity(id);
+				WcpLog.info("修改答题室[" + roomuser.getRoomid() + "]:表单刪除答题人", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				roomUserServiceImpl.deleteRoomuserEntity(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();

@@ -742,9 +742,9 @@ public class PaperServiceImpl implements PaperServiceInter {
 		}
 		// // --答卷3张表
 		// 1.答卷
+		Paper paper = bean.getPaper();
 		{
 			{
-				Paper paper = bean.getPaper();
 				String oid = paper.getId();
 				paper.setExamtypeid(examTypeId);
 				paper.setCuser(user.getId());
@@ -808,7 +808,7 @@ public class PaperServiceImpl implements PaperServiceInter {
 				}
 			}
 		}
-		return null;
+		return paper.getId();
 	}
 
 	/**

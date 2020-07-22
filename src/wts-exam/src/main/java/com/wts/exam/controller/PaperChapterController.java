@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 
 import com.farm.web.easyui.EasyUiTreeNode;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +119,8 @@ public class PaperChapterController extends WebUtils {
 		// TODO 自动生成代码,修改后请去除本注释
 		try {
 			entity = paperChapterServiceImpl.editPaperchapterEntity(entity, getCurrentUser(session));
+			WcpLog.info("修改答卷[" + entity.getPaperid() + "]:章节修改", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
 
 		} catch (Exception e) {
@@ -136,6 +139,8 @@ public class PaperChapterController extends WebUtils {
 	public Map<String, Object> addSubmit(PaperChapter entity, HttpSession session) {
 		try {
 			entity = paperChapterServiceImpl.insertPaperchapterEntity(entity, getCurrentUser(session));
+			WcpLog.info("修改答卷[" + entity.getPaperid() + "]:章节創建", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -153,6 +158,9 @@ public class PaperChapterController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				PaperChapter chapter = paperChapterServiceImpl.getPaperchapterEntity(id);
+				WcpLog.info("修改答卷[" + chapter.getPaperid() + "]:章节刪除", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperChapterServiceImpl.deletePaperchapterEntity(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -174,6 +182,8 @@ public class PaperChapterController extends WebUtils {
 	public Map<String, Object> sortUp(String paperSubjectIds, HttpSession session) {
 		try {
 			for (String id : parseIds(paperSubjectIds)) {
+				
+				
 				paperChapterServiceImpl.subjectSortUp(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -274,6 +284,8 @@ public class PaperChapterController extends WebUtils {
 				paperChapterServiceImpl.addSubject(id, chapterId, getCurrentUser(session));
 			}
 			PaperChapter chapter = paperChapterServiceImpl.getPaperchapterEntity(chapterId);
+			WcpLog.info("修改答卷[" + chapter.getPaperid() + "]:添加题目", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			paperServiceImpl.refreshSubjectNum(chapter.getPaperid());
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {

@@ -69,6 +69,7 @@ public class PaperController extends WebUtils {
 	private RandomItemServiceInter randomItemServiceImpl;
 	@Resource
 	private SubjectTypeServiceInter subjectTypeServiceImpl;
+
 	/**
 	 * 查询结果集合
 	 * 
@@ -142,8 +143,9 @@ public class PaperController extends WebUtils {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Map<String, Object> editSubmit(Paper entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
 		try {
+			WcpLog.info("修改答卷[" + entity.getId() + "]:表单提交", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			entity = paperServiceImpl.editPaperEntity(entity, getCurrentUser(session));
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
 
@@ -216,9 +218,10 @@ public class PaperController extends WebUtils {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Map<String, Object> addSubmit(Paper entity, HttpSession session) {
-		// TODO 自动生成代码,修改后请去除本注释
 		try {
 			entity = paperServiceImpl.insertPaperEntity(entity, getCurrentUser(session));
+			WcpLog.info("创建答卷[" + entity.getId() + "]:表单创建", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -236,6 +239,8 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("刪除答卷[" + id + "]:表单刪除", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.deletePaperEntity(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -280,6 +285,8 @@ public class PaperController extends WebUtils {
 				warn = warn + paperServiceImpl.addRandomSubjects(paperid, typeid, tiptype, subnum, point,
 						getCurrentUser(session));
 				paperServiceImpl.refreshSubjectNum(paperid);
+				WcpLog.info("修改答卷[" + paperid + "]:添加随机题", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().putAttr("warn", warn).returnObjMode();
 		} catch (Exception e) {
@@ -294,6 +301,8 @@ public class PaperController extends WebUtils {
 		try {
 			String warn = "";
 			for (String paperid : parseIds(ids)) {
+				WcpLog.info("修改答卷[" + paperid + "]:清空答卷所有题目", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.clearPaper(paperid);
 				paperServiceImpl.refreshSubjectNum(paperid);
 			}
@@ -349,6 +358,8 @@ public class PaperController extends WebUtils {
 					entity.setPstate("1");
 					entity.setName(name + "-" + (n + 1));
 					entity = paperServiceImpl.insertPaperEntity(entity, getCurrentUser(session));
+					WcpLog.info("创建答卷[" + entity.getId() + "]:创建随机答卷[规则ITEMID" + itemid + "]",
+							getCurrentUser(session).getName(), getCurrentUser(session).getId());
 					for (RandomStep step : steps) {
 						String warnMessage = paperServiceImpl.addRandomSubjects(entity.getId(), step.getTypeid(),
 								step.getTiptype(), step.getSubnum(), step.getSubpoint(), getCurrentUser(session));
@@ -432,6 +443,8 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> examPrivate(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("答卷状态变更[" + id + "]:禁用", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.editState(id, "0", getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -451,6 +464,8 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> examPublic(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("答卷状态变更[" + id + "]:发布", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.editState(id, "2", getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -470,6 +485,8 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> examtypeSetting(String ids, String examtypeId, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("修改答卷[" + id + "]:修改分类", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.examTypeSetting(id, examtypeId, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -504,7 +521,8 @@ public class PaperController extends WebUtils {
 	public Map<String, Object> doUserImport(@RequestParam(value = "file", required = false) MultipartFile file,
 			String examType, String subjectType, HttpSession session) {
 		try {
-			if(examTypeServiceImpl.getExamtypeEntity(examType)==null||subjectTypeServiceImpl.getSubjecttypeEntity(subjectType)==null){
+			if (examTypeServiceImpl.getExamtypeEntity(examType) == null
+					|| subjectTypeServiceImpl.getSubjecttypeEntity(subjectType) == null) {
 				throw new RuntimeException("请选择有效的业务分类和题库分类 !");
 			}
 			// 校验数据有效性
@@ -518,7 +536,10 @@ public class PaperController extends WebUtils {
 			InputStream is = cmfile.getInputStream();
 			try {
 				WtsPaperBean bean = WtsPaperBeanUtils.readFromFile(is);
-				paperServiceImpl.importByWtsPaperBean(bean, examType, subjectType, getCurrentUser(session));
+				String paperid = paperServiceImpl.importByWtsPaperBean(bean, examType, subjectType,
+						getCurrentUser(session));
+				WcpLog.info("创建答卷[" + paperid + "]:wtsp文件导入", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 			} finally {
 				is.close();
 			}

@@ -12,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
+
 import java.util.Map;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
@@ -83,6 +85,8 @@ public class RoomPaperController extends WebUtils {
 		// TODO 自动生成代码,修改后请去除本注释
 		try {
 			entity = roomPaperServiceImpl.editRoompaperEntity(entity, getCurrentUser(session));
+			WcpLog.info("修改答题室[" + entity.getRoomid() + "]:表单修改答卷", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
 
 		} catch (Exception e) {
@@ -115,7 +119,7 @@ public class RoomPaperController extends WebUtils {
 	public Map<String, Object> clearOtherName(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
-				roomPaperServiceImpl.clearOtherName(id,getCurrentUser(session));
+				roomPaperServiceImpl.clearOtherName(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).returnObjMode();
 		} catch (Exception e) {
@@ -123,7 +127,7 @@ public class RoomPaperController extends WebUtils {
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
 		}
 	}
-	
+
 	/**
 	 * 提交新增数据
 	 * 
@@ -135,6 +139,8 @@ public class RoomPaperController extends WebUtils {
 		// TODO 自动生成代码,修改后请去除本注释
 		try {
 			entity = roomPaperServiceImpl.insertRoompaperEntity(entity, getCurrentUser(session));
+			WcpLog.info("修改答题室[" + entity.getRoomid() + "]:表单添加答卷", getCurrentUser(session).getName(),
+					getCurrentUser(session).getId());
 			return ViewMode.getInstance().setOperate(OperateType.ADD).putAttr("entity", entity).returnObjMode();
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -152,6 +158,9 @@ public class RoomPaperController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				RoomPaper roomPaper = roomPaperServiceImpl.getRoompaperEntity(id);
+				WcpLog.info("修改答题室[" + roomPaper.getRoomid() + "]:刪除答卷", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				roomPaperServiceImpl.deleteRoompaperEntity(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();
@@ -173,6 +182,8 @@ public class RoomPaperController extends WebUtils {
 			for (String id : parseIds(ids)) {
 				RoomPaper roomPaper = roomPaperServiceImpl.getRoompaperEntity(id);
 				cardServiceImpl.clearRoomCard(roomPaper.getRoomid(), roomPaper.getPaperid(), getCurrentUser(session));
+				WcpLog.info("修改答题室[" + roomPaper.getRoomid() + "]:清空试卷的所有答题卡", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {
@@ -228,6 +239,8 @@ public class RoomPaperController extends WebUtils {
 		try {
 			for (String paperid : parseIds(paperids)) {
 				roomPaperServiceImpl.addRoomPaper(roomid, paperid, getCurrentUser(session));
+				WcpLog.info("修改答题室[" + roomid + "]:添加答卷", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 			}
 			return ViewMode.getInstance().returnObjMode();
 		} catch (Exception e) {

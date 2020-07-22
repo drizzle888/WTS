@@ -532,21 +532,23 @@ public class RoomServiceImpl implements RoomServiceInter {
 	@Override
 	@Transactional
 	public void backupRoom(String roomid, LoginUser currentUser) throws Exception {
-		// 将用户答题信息进行统计汇总 POINT,MPOINT,SUBJECTID,USERID
-		List<Map<String, Object>> cardPoints = cardPointDaoImpl.getAllRoomCardPoints(roomid);
-		for (Map<String, Object> node : cardPoints) {
-			try {// 统计答题记录，题记录和用户记录
-				int point = (int) node.get("POINT");
-				int mpoint = (int) node.get("MPOINT");
-				subjectUserOwnServiceImpl.addFinishStandardSubject((String) node.get("SUBJECTID"),
-						(point == mpoint && mpoint > 0),
-						FarmAuthorityService.getInstance().getUserById((String) node.get("USERID")));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 		// 归档状态
 		editState(roomid, "4", currentUser);
+		// 将用户答题信息进行统计汇总 POINT,MPOINT,SUBJECTID,USERID
+		{
+			List<Map<String, Object>> cardPoints = cardPointDaoImpl.getAllRoomCardPoints(roomid);
+			for (Map<String, Object> node : cardPoints) {
+				try {// 统计答题记录，题记录和用户记录
+					int point = (int) node.get("POINT");
+					int mpoint = (int) node.get("MPOINT");
+					subjectUserOwnServiceImpl.addFinishStandardSubject((String) node.get("SUBJECTID"),
+							(point == mpoint && mpoint > 0),
+							FarmAuthorityService.getInstance().getUserById((String) node.get("USERID")));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		// 归档用户成绩
 		cardHisServiceImpl.backup(roomid, currentUser);
 		// 清理用户答题卡
@@ -631,7 +633,7 @@ public class RoomServiceImpl implements RoomServiceInter {
 	@Override
 	@Transactional
 	public int getRoomAnsersNum(String roomid) {
-		return roomDaoImpl.getRoomAnsersNum( roomid);
+		return roomDaoImpl.getRoomAnsersNum(roomid);
 	}
 
 }

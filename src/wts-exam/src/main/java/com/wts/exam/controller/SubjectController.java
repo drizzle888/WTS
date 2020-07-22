@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
 
 import java.util.List;
 import java.util.Map;
@@ -118,6 +119,7 @@ public class SubjectController extends WebUtils {
 	public Map<String, Object> bindMaterial(String subjectIds, String materialId, HttpSession session) {
 		try {
 			for (String id : parseIds(subjectIds)) {
+				WcpLog.info("修改题目["+id+"]:绑定材料",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				subjectServiceImpl.bindMaterial(id, materialId, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).returnObjMode();
@@ -132,6 +134,7 @@ public class SubjectController extends WebUtils {
 	public Map<String, Object> clearMaterial(String subjectIds, HttpSession session) {
 		try {
 			for (String id : parseIds(subjectIds)) {
+				WcpLog.info("修改题目["+id+"]:清空材料绑定",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				subjectServiceImpl.clearMaterial(id, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).returnObjMode();
@@ -150,9 +153,9 @@ public class SubjectController extends WebUtils {
 	@ResponseBody
 	public Map<String, Object> editSubmit(SubjectVersion entity, String tipanalysis, HttpSession session) {
 		try {
+			WcpLog.info("修改题目["+entity.getId()+"]:表单提交",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 			entity = subjectServiceImpl.editSubjectEntity(entity, tipanalysis, getCurrentUser(session));
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("entity", entity).returnObjMode();
-
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).setError(e.getMessage(), e).returnObjMode();
@@ -195,6 +198,7 @@ public class SubjectController extends WebUtils {
 		try {
 			List<SubjectUnit> lists = subjectServiceImpl.addTextSubjects(typeid, texts, getCurrentUser(session));
 			for (SubjectUnit unit : lists) {
+				WcpLog.info("创建题目["+unit.getSubject().getId()+"]:批量创建",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				subjectServiceImpl.refrashAnalysisnum(unit.getSubject().getId());
 			}
 			return ViewMode.getInstance().setOperate(OperateType.UPDATE).putAttr("lists", lists).returnObjMode();
@@ -214,6 +218,7 @@ public class SubjectController extends WebUtils {
 	public Map<String, Object> delSubmit(String ids, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("刪除题目["+id+"]:表单刪除",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				if (!subjectTypeServiceImpl.isHavePop(subjectServiceImpl.getSubjectEntity(id).getTypeid(), "2",
 						getCurrentUser(session).getId())) {
 					throw new RuntimeException("当前用户无该分类题库编辑权限!");
@@ -332,6 +337,7 @@ public class SubjectController extends WebUtils {
 				}
 				TipType tip = TipType.getTipType(tiptype);
 				subjectUnit = subjectServiceImpl.initSubjectUnit(tip, typeid, getCurrentUser(session));
+				WcpLog.info("创建题目["+subjectUnit.getSubject().getId()+"]:表单临时创建",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				break;
 			}
 			case (2): {// 修改
@@ -363,6 +369,7 @@ public class SubjectController extends WebUtils {
 	public Map<String, Object> examtypeSetting(String ids, String typeId, HttpSession session) {
 		try {
 			for (String id : parseIds(ids)) {
+				WcpLog.info("修改题目["+id+"]:移动分类",getCurrentUser(session).getName(),getCurrentUser(session).getId());
 				subjectServiceImpl.subjectTypeSetting(id, typeId, getCurrentUser(session));
 			}
 			return ViewMode.getInstance().returnObjMode();

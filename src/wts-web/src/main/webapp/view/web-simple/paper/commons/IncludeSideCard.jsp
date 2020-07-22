@@ -149,8 +149,8 @@
 				<c:if test="${flag=='answer'}">
 					<!-- 答卷頁面 -->
 					<c:if test="${room.writetype!='2'}">
-						<!--答题人员类型: ${room.writetype} -->
-						<a id="sideCardCheckupButton" class="btn btn-success">检查答卷!</a>
+						<!--答题人员类型: ${room.writetype} 
+						<a id="sideCardCheckupButton" class="btn btn-success">检查答卷!</a>-->
 					</c:if>
 					<c:if test="${room.writetype=='2'}">
 						<!-- 匿名答题室 -->

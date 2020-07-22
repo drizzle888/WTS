@@ -31,7 +31,7 @@ public class TimeStopWatch {
 	 */
 	public TimeStopWatch endPrintInfo(String showflag) {
 		endTime = System.currentTimeMillis(); // 获取结束时间
-		log.info(showflag+"-程序运行时间：" + (endTime - startTime) + "ms");
+		log.warn(showflag+"-程序运行时间：" + (endTime - startTime) + "ms");
 		return this;
 	}
 

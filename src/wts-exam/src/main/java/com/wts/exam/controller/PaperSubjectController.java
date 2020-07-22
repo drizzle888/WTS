@@ -11,6 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
 import com.farm.web.easyui.EasyUiUtils;
+import com.farm.web.log.WcpLog;
+
 import java.util.Map;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpSession;
@@ -95,6 +97,8 @@ public class PaperSubjectController extends WebUtils {
 		try {
 			for (String id : parseIds(paperSubjectIds)) {
 				PaperSubject psub = paperSubjectServiceImpl.getPapersubjectEntity(id);
+				WcpLog.info("修改答卷[" + psub.getPaperid() + "]:设置题目得分", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperServiceImpl.editPoint(psub.getPaperid(), psub.getChapterid(), psub.getSubjectid(), point,
 						getCurrentUser(session));
 			}
@@ -135,6 +139,8 @@ public class PaperSubjectController extends WebUtils {
 			String paperId = null;
 			for (String id : parseIds(ids)) {
 				paperId = paperSubjectServiceImpl.getPapersubjectEntity(id).getPaperid();
+				WcpLog.info("修改答卷[" + paperId + "]:移除题目", getCurrentUser(session).getName(),
+						getCurrentUser(session).getId());
 				paperSubjectServiceImpl.deletePapersubjectEntity(id, getCurrentUser(session));
 			}
 			paperServiceImpl.refreshSubjectNum(paperId);

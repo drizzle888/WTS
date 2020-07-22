@@ -31,6 +31,7 @@ import com.farm.core.auth.util.Urls;
 import com.farm.parameter.FarmParameterService;
 import com.farm.util.spring.BeanFactory;
 import com.farm.web.WebUtils;
+import com.farm.web.log.WcpLog;
 import com.farm.web.online.OnlineUserOpImpl;
 
 public class FarmAuthorityService implements AuthorityService {
@@ -78,6 +79,7 @@ public class FarmAuthorityService implements AuthorityService {
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			log.warn("loginIntoSession:set User Ip:" + e.getMessage());
 		}
+		WcpLog.info("用户登陆:" + note, user.getName(), user.getId());
 		webutils.setCurrentUser(user, session);
 		webutils.setLoginTime(session);
 		// 开始写入session用户权限

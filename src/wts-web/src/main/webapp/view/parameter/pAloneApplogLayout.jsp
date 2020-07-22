@@ -88,7 +88,17 @@
 		text : '查看',
 		iconCls : 'icon-tip',
 		handler : viewDataLog
-	}];
+	}, {
+		id : 'del',
+		text : '批量删除日志',
+		iconCls : 'icon-remove',
+		handler : delDataLog
+	}, {
+		id : 'down',
+		text : '下载log4j日志文件',
+		iconCls : 'icon-invoice',
+		handler : downloadLog
+	} ];
 	$(function() {
 		//初始化数据表格
 		gridLog = $('#dataLogGrid').datagrid( {
@@ -113,6 +123,28 @@
 		return "<span class='" + row.ICONCLASS
 				+ "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>" + value;
 	}
+	
+	function downloadLog() {
+		$.messager.confirm(MESSAGE_PLAT.PROMPT, "下载过程需要持续一段时间，是否继续?", function(flag) {
+			if (flag) {
+				$.messager.alert('下载日志','日志下载中....(完成后手动关闭此窗口)');    
+				window.location = "log/downloadlog.do";
+			}
+		});
+	}
+
+	//批量删除日志
+	function delDataLog() {
+		$.farm.openWindow({
+			id : 'winDelLog',
+			width : 400,
+			height : 200,
+			modal : true,
+			url : "log/delform.do",
+			title : '批量刪除'
+		});
+	}
+	
 	//查看
 	function viewDataLog() {
 		var selectedArray = $(gridLog).datagrid('getSelections');
