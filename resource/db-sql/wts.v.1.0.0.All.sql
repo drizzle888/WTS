@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50155
 File Encoding         : 65001
 
-Date: 2020-04-28 19:59:11
+Date: 2020-07-22 10:53:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -36,7 +36,12 @@ INSERT INTO `alone_app_version` VALUES ('v0.7.0', '2020-03-20 12:30:03', 'USERNA
 INSERT INTO `alone_app_version` VALUES ('v0.8.0', '2020-03-26 18:12:21', 'USERNAME');
 INSERT INTO `alone_app_version` VALUES ('v0.9.0', '2020-04-18 10:13:42', 'USERNAME');
 INSERT INTO `alone_app_version` VALUES ('v0.9.1', '2020-04-18 10:14:08', 'USERNAME');
-INSERT INTO `alone_app_version` VALUES ('v0.9.2', '2020-04-28 19:58:42', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v0.9.2', '2020-07-22 10:52:14', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v0.9.3', '2020-07-22 10:52:23', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v0.9.4', '2020-07-22 10:52:29', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v0.9.5', '2020-07-22 10:52:35', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v0.9.6', '2020-07-22 10:52:41', 'USERNAME');
+INSERT INTO `alone_app_version` VALUES ('v1.0.0', '2020-07-22 10:52:46', 'USERNAME');
 
 -- ----------------------------
 -- Table structure for `alone_applog`
@@ -58,8 +63,7 @@ CREATE TABLE `alone_applog` (
 -- ----------------------------
 -- Records of alone_applog
 -- ----------------------------
-INSERT INTO `alone_applog` VALUES ('402880e8719067e00171906885650000', '20200419110821', '导出JSON.wtsp答卷402881ec703338ab0170334393e40028 / 操作用户:系统管理员[40288b854a329988014a329a12f30002]', '40288b854a329988014a329a12f30002', 'INFO', 'info', 'com.farm.web.log.WcpLog', '127.0.0.1');
-INSERT INTO `alone_applog` VALUES ('402880e8719067e001719069a5890003', '20200419110934', '导出JSON.wtsp答卷402881ec703338ab0170334393e40028 / 操作用户:系统管理员[40288b854a329988014a329a12f30002]', '40288b854a329988014a329a12f30002', 'INFO', 'info', 'com.farm.web.log.WcpLog', '127.0.0.1');
+INSERT INTO `alone_applog` VALUES ('402880e773746a550173746af69b0000', '20200722104713', '用户登陆:登录页 / 操作用户:系统管理员[40288b854a329988014a329a12f30002]', 'NONE', 'INFO', 'info', 'com.farm.web.log.WcpLog', '127.0.0.1');
 
 -- ----------------------------
 -- Table structure for `alone_auth_action`
@@ -235,8 +239,6 @@ CREATE TABLE `alone_auth_organization` (
 -- ----------------------------
 -- Records of alone_auth_organization
 -- ----------------------------
-INSERT INTO `alone_auth_organization` VALUES ('402880e8718ff73301718ff846640000', '402880e8718ff73301718ff846640000', '', '机构1', '20200419090545', '20200419090545', '1', '40288b854a329988014a329a12f30002', '40288b854a329988014a329a12f30002', 'NONE', '1', '1', null);
-INSERT INTO `alone_auth_organization` VALUES ('402880e8718ff73301718ff8698f0001', '402880e8718ff73301718ff8698f0001', '', '机构2', '20200419090554', '20200419090554', '1', '40288b854a329988014a329a12f30002', '40288b854a329988014a329a12f30002', 'NONE', '2', '1', null);
 
 -- ----------------------------
 -- Table structure for `alone_auth_outuser`
@@ -347,8 +349,7 @@ CREATE TABLE `alone_auth_user` (
 -- ----------------------------
 -- Records of alone_auth_user
 -- ----------------------------
-INSERT INTO `alone_auth_user` VALUES ('40288b854a329988014a329a12f30002', '系统管理员', '45A6964B87BEC90B5B6C6414FAF397A7', '', '3', '20141210130925', '20200211155443', 'userId', '40288b854a329988014a329a12f30002', '1', 'sysadmin', '20200419110809', '2c902a8d67085e660167086948800011');
-INSERT INTO `alone_auth_user` VALUES ('402880e8718ff73301718ff89e2f0002', 'guest', 'D97D84A22A82C02F738BF9D9ED14FE4A', '', '1', '20200419090607', '20200419090607', '40288b854a329988014a329a12f30002', '40288b854a329988014a329a12f30002', '1', 'guest', '20200419090616', null);
+INSERT INTO `alone_auth_user` VALUES ('40288b854a329988014a329a12f30002', '系统管理员', '45A6964B87BEC90B5B6C6414FAF397A7', '', '3', '20141210130925', '20200211155443', 'userId', '40288b854a329988014a329a12f30002', '1', 'sysadmin', '20200722104714', '2c902a8d67085e660167086948800011');
 
 -- ----------------------------
 -- Table structure for `alone_auth_userorg`
@@ -365,7 +366,6 @@ CREATE TABLE `alone_auth_userorg` (
 -- ----------------------------
 -- Records of alone_auth_userorg
 -- ----------------------------
-INSERT INTO `alone_auth_userorg` VALUES ('402880e8718ff73301718ff89e2f0003', '402880e8718ff73301718ff89e2f0002', '402880e8718ff73301718ff846640000');
 
 -- ----------------------------
 -- Table structure for `alone_auth_userpost`
@@ -652,9 +652,6 @@ CREATE TABLE `farm_docfile` (
 -- ----------------------------
 -- Records of farm_docfile
 -- ----------------------------
-INSERT INTO `farm_docfile` VALUES ('\\2020\\04\\19\\11\\', 'd0f27565fcb9469394b49b1e73eb0025', '1', 'homelogo.png', 'png', '18100', '56c070ba7f5941528a6090739008d7fepng.file', '402880e8719067e0017190692e5e0001', '20200419110904', '20200419110908', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '答题室描述', '1', '0', '402881ec703338ab01703345479e0031');
-INSERT INTO `farm_docfile` VALUES ('\\2020\\04\\19\\11\\', 'db3b2f411b7b401299299676c8a45139', '1', 'homelogo.png', 'png', '18100', '133c33ceecad434b9b71674da6fb2f5dpng.file', '402880e8719067e00171906981790002', '20200419110925', '20200419110945', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '试卷描述', '0', '0', '402881ec703338ab0170334393e40028');
-INSERT INTO `farm_docfile` VALUES ('\\2020\\04\\19\\11\\', '393f5dab07bd47c6ba1d1727f882152f', '1', 'homelogo.png', 'png', '18100', 'f81a3d1044bc450596cd9fd6b6e88163png.file', '402880e8719067e00171906a2e980004', '20200419111010', '20200419111010', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', 'wtsp导入答卷', '1', '0', null);
 
 -- ----------------------------
 -- Table structure for `farm_docfile_text`
@@ -815,7 +812,6 @@ CREATE TABLE `farm_usermessage` (
 -- ----------------------------
 -- Records of farm_usermessage
 -- ----------------------------
-INSERT INTO `farm_usermessage` VALUES ('402880e8718ff73301718ff8c1680004', '202004190906', 'SYS', '系统消息', '1', null, '402880e8718ff73301718ff89e2f0002', '欢迎使用本系统，如果您的密码是系统自动生成的请及时重置密码!', '欢迎您首次登录，请阅仔细读本消息', '0');
 
 -- ----------------------------
 -- Table structure for `wts_card`
@@ -837,7 +833,8 @@ CREATE TABLE `wts_card` (
   `COMPLETENUM` int(11) DEFAULT NULL,
   `ALLNUM` int(11) DEFAULT NULL,
   `OVERTIME` varchar(2) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `USER_PAPER_CARD` (`PAPERID`,`USERID`,`ROOMID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -858,7 +855,9 @@ CREATE TABLE `wts_card_answer` (
   `CTIME` varchar(16) NOT NULL,
   `PCONTENT` varchar(256) DEFAULT NULL,
   `PSTATE` varchar(2) NOT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `USER_ANSWER` (`CARDID`,`VERSIONID`,`ANSWERID`),
+  KEY `USER_SUBVERSION` (`CARDID`,`VERSIONID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -1083,8 +1082,8 @@ CREATE TABLE `wts_paper` (
 -- ----------------------------
 -- Records of wts_paper
 -- ----------------------------
-INSERT INTO `wts_paper` VALUES ('402880e8719067e00171906a2e9f0005', '402881ec703338ab017033400c3d0005', '20200211160031', '20200419110929', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '1', '', '练习示例', '5', '0', '0', '0', '0', '0', '60', '<img alt=\"\" src=\"actionImg/Publoadimg.do?id=402880e8719067e00171906a2e980004&amp;type=max\" />', '0', '402881ec703338ab0170334393e40028');
 INSERT INTO `wts_paper` VALUES ('402881ec703338ab01703341ea5d001f', '402881ec703338ab017033400c3d0005', '20200211155842', '20200211160109', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '2', '', '考卷示例', '5', '0', '0', '0', '0', '0', '60', '', '0', '402881ec703338ab01703341ea5d001f');
+INSERT INTO `wts_paper` VALUES ('402881ec703338ab0170334393e40028', '402881ec703338ab017033400c3d0005', '20200211160031', '20200211160110', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '2', '', '练习示例', '5', '0', '0', '0', '0', '0', '60', '', '0', '402881ec703338ab0170334393e40028');
 
 -- ----------------------------
 -- Table structure for `wts_paper_answer`
@@ -1176,10 +1175,10 @@ CREATE TABLE `wts_paper_chapter` (
 -- ----------------------------
 -- Records of wts_paper_chapter
 -- ----------------------------
-INSERT INTO `wts_paper_chapter` VALUES ('402880e8719067e00171906a2e9f0006', '1', '2', '0', null, null, null, '全部题', '', 'NONE', '402880e8719067e00171906a2e9f0005', '1', '402880e8719067e00171906a2e9f0006');
 INSERT INTO `wts_paper_chapter` VALUES ('402881ec703338ab017033420d0b0020', '1', '2', '0', null, null, null, '选择题', '', 'NONE', '402881ec703338ab01703341ea5d001f', '1', '402881ec703338ab017033420d0b0020');
 INSERT INTO `wts_paper_chapter` VALUES ('402881ec703338ab0170334227c60021', '1', '2', '0', null, null, null, '填空题', '', 'NONE', '402881ec703338ab01703341ea5d001f', '2', '402881ec703338ab0170334227c60021');
 INSERT INTO `wts_paper_chapter` VALUES ('402881ec703338ab0170334271480022', '1', '2', '0', null, null, null, '其它题', '', 'NONE', '402881ec703338ab01703341ea5d001f', '3', '402881ec703338ab0170334271480022');
+INSERT INTO `wts_paper_chapter` VALUES ('402881ec703338ab01703343cd7a0029', '1', '2', '0', null, null, null, '全部题', '', 'NONE', '402881ec703338ab0170334393e40028', '1', '402881ec703338ab01703343cd7a0029');
 
 -- ----------------------------
 -- Table structure for `wts_paper_subject`
@@ -1195,22 +1194,23 @@ CREATE TABLE `wts_paper_subject` (
   `PAPERID` varchar(32) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `FK_WTS_PAPE_REFERENCE_WTS_SUBJ` (`VERSIONID`),
+  KEY `PAPERSUBJECT_PID_SID` (`PAPERID`,`SUBJECTID`),
   CONSTRAINT `FK_WTS_PAPE_REFERENCE_WTS_SUBJ` FOREIGN KEY (`VERSIONID`) REFERENCES `wts_subject_version` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of wts_paper_subject
 -- ----------------------------
-INSERT INTO `wts_paper_subject` VALUES ('402880e8719067e00171906a2e9f0007', '402881ec703338ab017033411a890009', '402881ec703338ab017033411a880008', '402880e8719067e00171906a2e9f0006', '1', '1', '402880e8719067e00171906a2e9f0005');
-INSERT INTO `wts_paper_subject` VALUES ('402880e8719067e00171906a2e9f0008', '402881ec703338ab017033411bcd001d', '402881ec703338ab017033411bcd001c', '402880e8719067e00171906a2e9f0006', '2', '1', '402880e8719067e00171906a2e9f0005');
-INSERT INTO `wts_paper_subject` VALUES ('402880e8719067e00171906a2e9f0009', '402881ec703338ab017033411b990019', '402881ec703338ab017033411b990018', '402880e8719067e00171906a2e9f0006', '3', '1', '402880e8719067e00171906a2e9f0005');
-INSERT INTO `wts_paper_subject` VALUES ('402880e8719067e00171906a2e9f000a', '402881ec703338ab017033411b740013', '402881ec703338ab017033411b740012', '402880e8719067e00171906a2e9f0006', '4', '1', '402880e8719067e00171906a2e9f0005');
-INSERT INTO `wts_paper_subject` VALUES ('402880e8719067e00171906a2e9f000b', '402881ec703338ab017033411b52000d', '402881ec703338ab017033411b51000c', '402880e8719067e00171906a2e9f0006', '5', '1', '402880e8719067e00171906a2e9f0005');
 INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab0170334294b10023', '402881ec703338ab017033411b740013', '402881ec703338ab017033411b740012', '402881ec703338ab017033420d0b0020', '1', '20', '402881ec703338ab01703341ea5d001f');
 INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab0170334295610024', '402881ec703338ab017033411b52000d', '402881ec703338ab017033411b51000c', '402881ec703338ab017033420d0b0020', '2', '20', '402881ec703338ab01703341ea5d001f');
 INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703342a8ba0025', '402881ec703338ab017033411a890009', '402881ec703338ab017033411a880008', '402881ec703338ab0170334227c60021', '1', '20', '402881ec703338ab01703341ea5d001f');
 INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703342d0930026', '402881ec703338ab017033411bcd001d', '402881ec703338ab017033411bcd001c', '402881ec703338ab0170334271480022', '1', '20', '402881ec703338ab01703341ea5d001f');
 INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703342d1510027', '402881ec703338ab017033411b990019', '402881ec703338ab017033411b990018', '402881ec703338ab0170334271480022', '2', '20', '402881ec703338ab01703341ea5d001f');
+INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703343e254002a', '402881ec703338ab017033411a890009', '402881ec703338ab017033411a880008', '402881ec703338ab01703343cd7a0029', '1', '1', '402881ec703338ab0170334393e40028');
+INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703343e2c2002b', '402881ec703338ab017033411bcd001d', '402881ec703338ab017033411bcd001c', '402881ec703338ab01703343cd7a0029', '2', '1', '402881ec703338ab0170334393e40028');
+INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703343e317002c', '402881ec703338ab017033411b990019', '402881ec703338ab017033411b990018', '402881ec703338ab01703343cd7a0029', '3', '1', '402881ec703338ab0170334393e40028');
+INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703343e376002d', '402881ec703338ab017033411b740013', '402881ec703338ab017033411b740012', '402881ec703338ab01703343cd7a0029', '4', '1', '402881ec703338ab0170334393e40028');
+INSERT INTO `wts_paper_subject` VALUES ('402881ec703338ab01703343e3e3002e', '402881ec703338ab017033411b52000d', '402881ec703338ab017033411b51000c', '402881ec703338ab01703343cd7a0029', '5', '1', '402881ec703338ab0170334393e40028');
 
 -- ----------------------------
 -- Table structure for `wts_paper_userown`
@@ -1319,7 +1319,7 @@ CREATE TABLE `wts_room` (
 -- Records of wts_room
 -- ----------------------------
 INSERT INTO `wts_room` VALUES ('402881ec703338ab01703344a1cd002f', null, null, null, '', '2', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '20200211160140', '20200211160140', '402881ec703338ab017033400c3d0005', '1', '', '', '0', '', '60', '2', '模拟考场', '2', '', '1', '1', '1', '402881ec703338ab01703344a1cd002f');
-INSERT INTO `wts_room` VALUES ('402881ec703338ab01703345479e0031', null, null, null, '', '0', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '20200419110908', '20200211160223', '402881ec703338ab017033400c3d0005', '1', '', '', '0', '<img alt=\"\" src=\"actionImg/Publoadimg.do?id=402880e8719067e0017190692e5e0001&amp;type=max\" />', '20', '2', '答题练习室', '2', '', '1', '1', '3', '402881ec703338ab01703345479e0031');
+INSERT INTO `wts_room` VALUES ('402881ec703338ab01703345479e0031', null, null, null, '', '2', '40288b854a329988014a329a12f30002', '系统管理员', '40288b854a329988014a329a12f30002', '系统管理员', '20200320123905', '20200211160223', '402881ec703338ab017033400c3d0005', '1', '', '', '0', '', '20', '2', '答题练习室', '2', '', '1', '1', '3', '402881ec703338ab01703345479e0031');
 
 -- ----------------------------
 -- Table structure for `wts_room_paper`
@@ -1339,6 +1339,7 @@ CREATE TABLE `wts_room_paper` (
 -- Records of wts_room_paper
 -- ----------------------------
 INSERT INTO `wts_room_paper` VALUES ('402881ec703338ab01703344ba3b0030', '402881ec703338ab01703344a1cd002f', '402881ec703338ab01703341ea5d001f', null);
+INSERT INTO `wts_room_paper` VALUES ('402881ec703338ab017033456eb60032', '402881ec703338ab01703345479e0031', '402881ec703338ab0170334393e40028', null);
 
 -- ----------------------------
 -- Table structure for `wts_room_user`
@@ -1428,7 +1429,8 @@ CREATE TABLE `wts_subject_answer` (
   `SORT` int(11) NOT NULL,
   `RIGHTANSWER` varchar(2) NOT NULL,
   `POINTWEIGHT` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `SUBJECTANSWER_VERSIONID` (`VERSIONID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
