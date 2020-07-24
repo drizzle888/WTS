@@ -541,9 +541,11 @@ public class RoomServiceImpl implements RoomServiceInter {
 				try {// 统计答题记录，题记录和用户记录
 					int point = (int) node.get("POINT");
 					int mpoint = (int) node.get("MPOINT");
-					subjectUserOwnServiceImpl.addFinishStandardSubject((String) node.get("SUBJECTID"),
-							(point == mpoint && mpoint > 0),
-							FarmAuthorityService.getInstance().getUserById((String) node.get("USERID")));
+					String subjectid = (String) node.get("SUBJECTID");
+					if (subjectid != null) {
+						subjectUserOwnServiceImpl.addFinishStandardSubject(subjectid, (point == mpoint && mpoint > 0),
+								FarmAuthorityService.getInstance().getUserById((String) node.get("USERID")));
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
