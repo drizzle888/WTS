@@ -254,7 +254,7 @@ public class SubjectServiceImpl implements SubjectServiceInter {
 	@Transactional
 	public List<SubjectUnit> addTextSubjects(String typeid, String texts, LoginUser currentUser) {
 		// texts按照换行符断行
-		texts = texts.replaceAll(" +", "").replaceAll("（", "(").replaceAll("）", ")")
+		texts = texts.replaceAll(" +", " ").replaceAll("（", "(").replaceAll("）", ")")
 		// .replaceAll("。", ".").replaceAll("，", ",")
 		;
 		String[] subNode = texts.split("\\[SUB:");
