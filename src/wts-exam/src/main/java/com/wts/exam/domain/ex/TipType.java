@@ -2,6 +2,8 @@ package com.wts.exam.domain.ex;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -87,24 +89,18 @@ public enum TipType implements java.io.Serializable{
 	 * @return
 	 */
 	public static String clearSubjectTextHead(String text) {
-		text=text.trim();
-		while (text.length() > 1) {
-			if (StringUtils.isNumeric(text.substring(0, 1))) {
-				text = text.substring(1);
-			} else {
-				if (text.length() > 1 && text.substring(0, 1).equals(".")) {
-					text = text.substring(1);
-				}
-				if (text.length() > 1 && text.substring(0, 1).equals("、")) {
-					text = text.substring(1);
-				}
-				if (text.length() > 1 && text.substring(0, 1).equals("．")) {
-					text = text.substring(1);
-				}
-				return text;
-			}
+		//正则表达式【数字.数字】
+		String pattern = "^\\d{0,3}\\.\\d";
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(text);
+		if (m.find()) {
+			//如果疑似小数开头直接返回
+			return text;
+		} else {
+			//如果序号和.之后跟着非数字则判断为题号，直接去掉
+			//正则表达式【数字.】
+			return text.trim().replaceAll("^\\d{0,3}\\.", "");
 		}
-		return text;
 	}
 
 	/**
