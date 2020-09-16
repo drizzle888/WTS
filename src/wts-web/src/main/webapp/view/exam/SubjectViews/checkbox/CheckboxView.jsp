@@ -31,7 +31,7 @@
 								<div><TIP:HtmlEscape text="${node.answer.answer}" /></div>
 							</c:if>
 							<c:if test="${!empty node.answer.answernote}">
-								<div class="ke-content ${(not empty node.answer.answer)?'ke-content-borderbox':''}">${node.answer.answernote}</div>
+								<div class="ke-content ${(not empty node.answer.answer)?'ke-content-borderbox':''}"><TIP:InitHtmlContentTag html="${node.answer.answernote}"></TIP:InitHtmlContentTag></div>
 							</c:if>
 						</div>
 					</c:forEach>
@@ -73,7 +73,7 @@
 									</div>
 									<div>${node.answer.answer}</div>
 									<c:if test="${!empty node.answer.answernote}">
-										<div class="ke-content ke-content-borderbox">${node.answer.answernote}</div>
+										<div class="ke-content ke-content-borderbox"><TIP:InitHtmlContentTag html="${node.answer.answernote}"></TIP:InitHtmlContentTag></div>
 									</c:if>
 								</div>
 							</c:if>
